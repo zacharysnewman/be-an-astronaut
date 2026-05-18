@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>The Cubicle Chronicles: Indebt Edition</title>
+    <style>
+        :root {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #ffffff;
+            color: #000000;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 0 10px 40px 10px;
+            font-size: 16px;
+            line-height: 1.5;
+            overscroll-behavior: none;
+            position: relative;
+        }
+
+        /* Console Style Header */
+        #log-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 90px;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            z-index: 120;
+            border-bottom: 2px solid #333;
+        }
+
+        #log {
+            height: 100%;
+            overflow-y: auto;
+            padding: 8px 15px;
+            user-select: text;
+        }
+
+        #log::-webkit-scrollbar { width: 8px; }
+        #log::-webkit-scrollbar-track { background: #000; }
+        #log::-webkit-scrollbar-thumb { background: #333; }
+
+        /* Unrestricted Sticky Header Row */
+        #header-row {
+            position: fixed;
+            top: 90px;
+            left: 0;
+            right: 0;
+            height: 55px;
+            background-color: #ffffff;
+            border-bottom: 2px solid #000000;
+            z-index: 115;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .content-container {
+            margin-top: 165px;
+        }
+
+        h1 {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin: 0;
+            display: inline-block;
+        }
+
+        h2.section-title {
+            font-family: Arial, sans-serif;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-bottom: 1px solid #000000;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-bottom: 2px;
+        }
+
+        .retro-box {
+            border: 1px solid #000000;
+            padding: 12px;
+            margin-top: 15px;
+            background-color: #ffffff;
+        }
+
+        .stat-row {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* Classic 90s Web Buttons */
+        button {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            padding: 3px 8px;
+            margin-right: 4px;
+            cursor: pointer;
+            background-color: #efefef;
+            border: 1px solid #767676;
+            border-radius: 2px;
+            color: #000;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        button:active {
+            background-color: #e5e5e5;
+            border-color: #444;
+        }
+
+        button:disabled {
+            background-color: #f8f8f8;
+            color: #888888;
+            border-color: #d3d3d3;
+            cursor: not-allowed;
+        }
+
+        /* 42px High Provider Tabs */
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .provider-tab {
+            height: 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            line-height: 1.2;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .provider-tab span {
+            font-size: 9px;
+            color: #555555;
+        }
+
+        /* Visual Bankruptcy Shroud Overlay */
+        #bankruptcy-overlay {
+            position: fixed;
+            top: 147px; /* Placed cleanly below header-row to leave parents button unblocked */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.50);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto; /* Hard-locks visual screen actions below */
+        }
+
+        .wifi-shroud-center {
+            padding: 24px;
+            background: #ffffff;
+            border: 2px solid #ff0000;
+            box-shadow: 4px 4px 0px #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Red Flashing Counter */
+        @keyframes flashing-bankrupt {
+            0%, 100% { color: #ff0000; opacity: 1; }
+            50% { color: #000000; opacity: 0.5; }
+        }
+
+        .flashing-bankrupt {
+            animation: flashing-bankrupt 0.8s infinite;
+            font-weight: bold;
+        }
+
+        /* Utilities */
+        .hidden { display: none !important; }
+        .bad { color: #b30000; }
+        .good { color: #008000; }
+        .promo { color: #0000ff; }
+        .system { color: #6600cc; }
+        .italic { font-style: italic; color: #555555; font-size: 0.9em; }
+        .bold { font-weight: bold; }
+
+        /* Debug Menu */
+        #debug-panel {
+            background-color: #ffffcc;
+            border: 1px solid #cccc00;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            z-index: 130;
+            position: relative;
+        }
+        #debug-panel button { margin-bottom: 4px; }
+        .debug-toggle {
+            float: right;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #0000ee;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Black Console Terminal -->
+    <div id="log-container">
+        <div id="log">
+            <span style="color: #aaaaaa">. . . System connected. Loading active profile from Indebt.com portal...</span><br>
+            <span style="color: #ff5555; font-weight: bold;">&gt; Current status: Insolvent. Operational capital depleted.</span>
+        </div>
+    </div>
+
+    <!-- Sticky Header Row outside Bankruptcy Shroud -->
+    <div id="header-row">
+        <h1>Bank: <span id="money-display">$1.00</span></h1>
+        <div>
+            <button id="btn-beg">Call Parents</button>
+            <span id="beg-cost-label" class="italic" style="font-size: 12px;">+$3.00</span>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <span class="debug-toggle" onclick="toggleDebugPanel()">[Debug Tools]</span>
+        <div style="clear: both;"></div>
+
+        <!-- Debug Menu -->
+        <div id="debug-panel" class="hidden">
+            <b>INDEBT.COM EXECUTOR SYSTEM TOOLS</b>
+            <br><br>
+            <button onclick="debugForceSave()">Force Cloud Save</button>
+            <button onclick="debugResetGame()">Wipe Game Progress</button>
+            <button onclick="debugTogglePhase()">Swap Game Phase</button>
+            <button onclick="debugSetMoneyZero()">Set Cash to $0.00</button>
+            <br><br>
+            <i>Dynamic Provider pricing values inside range [0.5x, 3.5x]:</i><br>
+            Finite Multiplier: <span id="db-finite-mult">1.0</span>x |
+            WeekLink Multiplier: <span id="db-weeklink-mult">1.5</span>x |
+            Bliply Multiplier: <span id="db-bliply-mult">2.2</span>x
+            <br><br>
+            <i>Instant Resources Injection:</i><br>
+            <button onclick="debugInject('money', 1000)">+$1,000 Cash</button>
+            <button onclick="debugInject('apps', 1000)">+1,000 Apps</button>
+            <button onclick="debugInject('creds', 500)">+500 Creds</button>
+            <button onclick="debugInject('paper', 100)">+100 Paper Sheets</button>
+        </div>
+
+        <!-- Visual Shroud Overlay -->
+        <div id="bankruptcy-overlay" class="hidden">
+            <div class="wifi-shroud-center">
+                <!-- Red Bold Crossed Out Broadcast Signal -->
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                    <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.5"></path>
+                    <path d="M5 12.5a10.94 10.94 0 0 1 5.83-2.84"></path>
+                    <path d="M12 20h.01"></path>
+                    <path d="M8.5 16.5c3.5-3.5 3.5-3.5 7 0"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- PHASE 1: "Indebt.com" Portal -->
+        <div id="phase1-container">
+            <h2 class="section-title">Phase 1: Indebt.com Portal</h2>
+            <div class="stat-row">Operational Fee Rate: <span id="income-display" class="bad">(-$0.01 / sec)</span></div>
+
+            <!-- Inline Compact Discovery Rows -->
+            <div id="inline-job-row" class="stat-row">
+                <button id="btn-find">Find</button>
+                <b>Jobs:</b> <span id="avail-jobs-display" class="bold">0</span> <span id="finder-rate-indicator" class="good"></span>
+            </div>
+
+            <div id="inline-app-row" class="stat-row hidden">
+                <button id="btn-apply" disabled>Submit</button>
+                <b>Applications:</b> <span id="apps-display" class="bold">0</span> <span id="submitter-rate-indicator" class="good"></span>
+            </div>
+
+            <!-- OpenClaw Box Frame -->
+            <div id="automation-p1-card" class="retro-box hidden">
+                <b>OpenClaw Automations</b>
+                <div style="font-size:12px; margin-bottom: 8px;" class="italic">The 10% Protocol: Automations reveal at 10% cost.</div>
+
+                <div id="upgrade-finder-row" class="stat-row">
+                    <button id="btn-upgrade-finder">Upgrade Auto-Finder</button>
+                    Level: <span id="finder-level-badge">0</span> | Cost: <span id="finder-cost-display">50</span> Apps
+                </div>
+
+                <div id="upgrade-submitter-row" class="stat-row hidden">
+                    <button id="btn-upgrade-submitter">Upgrade Auto-Submitter</button>
+                    Level: <span id="submitter-level-badge">0</span> | Cost: <span id="submitter-cost-display">50</span> Apps
+                </div>
+            </div>
+
+            <!-- Dynamic Internet Provider & Contract selector Gated Box -->
+            <div id="provider-container" class="retro-box hidden">
+                <b>Internet Provider Contract Selection</b>
+                <div style="font-size:12px; margin-bottom: 8px;">20-Second Window Locked Timer: <span id="contract-timer-display" class="bold">20.0s</span></div>
+
+                <div class="provider-grid">
+                    <button class="provider-tab" id="provider-finite">
+                        <b>Finite</b>
+                        <span id="rate-finite">($0.00/s)</span>
+                    </button>
+                    <button class="provider-tab" id="provider-weeklink">
+                        <b>WeekLink</b>
+                        <span id="rate-weeklink">($0.00/s)</span>
+                    </button>
+                    <button class="provider-tab" id="provider-bliply">
+                        <b>Bliply</b>
+                        <span id="rate-bliply">($0.00/s)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Parental Support Progression Upgrades Box -->
+            <div id="parental-upgrades-container" class="retro-box hidden">
+                <b>Parental Trust Optimizations</b>
+
+                <div id="upgrade-parental-t2" class="stat-row hidden">
+                    <button id="btn-upgrade-parent-t2">Acquire Optimization (Tier 2)</button>
+                    Wires <span class="bold">$6.00</span> | Cost: <span class="bold">2,000 Apps</span>
+                </div>
+
+                <div id="upgrade-parental-t3" class="stat-row hidden">
+                    <button id="btn-upgrade-parent-t3">Authorize Elite Trust (Tier 3)</button>
+                    Wires <span class="bold">$9.00</span> | Cost: <span class="bold">4,000 Apps</span>
+                </div>
+
+                <div id="upgrade-parental-t4" class="stat-row hidden">
+                    <button id="btn-upgrade-parent-t4">Install Automatic Script (Tier 4)</button>
+                    Wires <span class="bold">$9.00</span> Auto | Cost: <span class="bold">50,000 Apps</span>
+                </div>
+            </div>
+
+            <!-- Rendered Vector "Job Found" Link Card -->
+            <div id="job-card" class="hidden" style="border: 2px double #000000; padding: 15px; margin-top: 25px; background-color: #f5f5f5; text-align: center;">
+                <h3 style="margin: 0 0 8px 0; font-family: Arial, sans-serif;">*** CAREER OFFER FOUND ***</h3>
+                <p style="font-size: 14px; margin: 0 0 12px 0;">Macrofirm Human Resources has verified your submitted applications and opened an office space slot.</p>
+                <button id="btn-interview" style="font-size: 15px; font-weight: bold; border: 2px solid #000000; padding: 5px 12px;">Enter Macrofirm Office</button>
+                <div class="italic" style="margin-top: 6px; font-size: 12px;">Requires: 100,000 Applications</div>
+            </div>
+        </div>
+
+        <!-- PHASE 2: Corporate Grind Desk (Macrofirm) -->
+        <div id="phase2-container" class="hidden">
+            <h2 class="section-title">Business: Macrofirm Headquarters</h2>
+
+            <div class="stat-row">Corporate Grade: <span id="level-display">1</span></div>
+            <div class="stat-row">Supervisor Approval: <span id="appr-display">50</span>%</div>
+            <div class="stat-row italic" id="timer-display">Manager Status: Stable</div>
+
+            <div class="stat-row" style="margin-top: 12px;">
+                <button id="btn-compliment">Compliment Manager</button>
+                <button id="btn-lunch" class="hidden">Take Boss to Lunch</button>
+            </div>
+
+            <h2 class="section-title">Manufacturing & Logistics</h2>
+
+            <div class="stat-row">
+                Paper Inventory: <span id="paper-display">10</span> sheets
+                <button id="btn-paper">Buy Paper</button>
+                <span>Cost: <span id="paper-cost-display">$0.30</span></span>
+            </div>
+
+            <div class="stat-row">
+                Reports Drafted: <span id="reports-display">0</span>
+                <span id="report-rate-display" class="bold good"></span>
+            </div>
+
+            <div class="stat-row">
+                Staff Credibility: <span id="perf-display">0</span>
+            </div>
+
+            <div class="stat-row" style="margin-top: 12px;">
+                <button id="btn-write">Write Report</button>
+                <button id="btn-submit" disabled>Submit Report</button>
+            </div>
+
+            <div id="hr-deck-card">
+                <h2 class="section-title">Human Resources</h2>
+
+                <div class="stat-row">
+                    <button id="btn-upgrade-typist">Hire Typist</button>
+                    Level: <span id="typist-level-badge">0</span> | Cost: <span id="typist-cost-display">125</span> Creds
+                </div>
+
+                <div class="stat-row">
+                    <button id="btn-upgrade-courier">Deploy Courier</button>
+                    Level: <span id="courier-level-badge">0</span> | Cost: <span id="courier-cost-display">150</span> Creds
+                </div>
+
+                <div id="procurement-upgrade-row" class="stat-row">
+                    <button id="btn-upgrade-procurement">Execute Procurement Script</button>
+                    <span id="procurement-status-display">Cost: 100 Creds</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- MOBILE GESTURE PREVENTION ---
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('touchmove', function (event) {
+            if (event.scale !== 1) event.preventDefault();
+        }, { passive: false });
+
+        // --- LOCAL STORAGE KEY ---
+        const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v3';
+
+        // --- CORE GAME STATE ---
+        let state = {
+            phase: 1,
+            money: 1.00,
+
+            // Phase 1 Mechanics
+            availableJobs: 0.0,
+            applications: 0.0,
+            maxAppsReached: 0.0,
+            hasBegged: false,
+            hasUnlockedSubmission: false,
+
+            // Phase 1 Automations
+            openClawFinderLevel: 0,
+            openClawSubmitLevel: 0,
+            parentalTier: 1, // Tier 1: $3, Tier 2: $6, Tier 3: $9, Tier 4: $9 Auto
+
+            // Internet Provider selection metrics
+            selectedProvider: 'finite',
+            contractLocked: false,
+            providerTimer: 20.0,
+            finiteMultiplier: 1.0,
+            weeklinkMultiplier: 1.5,
+            bliplyMultiplier: 2.2,
+
+            // Phase 2 Mechanics
+            level: 1,
+            credibility: 0.0,
+            approval: 50.0,
+            reports: 0.0,
+            paper: 10.0,
+
+            // Phase 2 Automations
+            typistLevel: 0,
+            courierLevel: 0,
+            procurementUnlocked: false,
+
+            // Global Metrics
+            currentPaperPrice: 0.30,
+            lastComplimentTime: null
+        };
+
+        // --- PROGRESSION CONSTANTS ---
+        const BASE_FINDER_COST = 50;
+        const BASE_SUBMITTER_COST = 50;
+
+        const BASE_TYPIST_COST = 125;
+        const BASE_COURIER_COST = 150;
+        const PROCURE_FIXED_COST = 100;
+
+        // Sub-second loop timer variables
+        let lastTimestamp = performance.now();
+        let paperPriceTimer = 0.0;
+        let cloudSaveTimer = 0.0;
+        let warningThrottleTimer = 0.0;
+
+        // --- DOM REFERENCE UTILITIES ---
+        const ui = {
+            p1Container: document.getElementById('phase1-container'),
+            p2Container: document.getElementById('phase2-container'),
+
+            availJobs: document.getElementById('avail-jobs-display'),
+            apps: document.getElementById('apps-display'),
+            btnBeg: document.getElementById('btn-beg'),
+            begCostLabel: document.getElementById('beg-cost-label'),
+            btnFind: document.getElementById('btn-find'),
+            btnApply: document.getElementById('btn-apply'),
+            btnInterview: document.getElementById('btn-interview'),
+            jobCard: document.getElementById('job-card'),
+
+            inlineAppRow: document.getElementById('inline-app-row'),
+            finderRateInd: document.getElementById('finder-rate-indicator'),
+            submitterRateInd: document.getElementById('submitter-rate-indicator'),
+
+            // Phase 1 Automations Group
+            automationCardP1: document.getElementById('automation-p1-card'),
+            finderBadge: document.getElementById('finder-level-badge'),
+            btnUpgradeFinder: document.getElementById('btn-upgrade-finder'),
+            finderCostDisplay: document.getElementById('finder-cost-display'),
+            submitterBadge: document.getElementById('submitter-level-badge'),
+            btnUpgradeSubmitter: document.getElementById('btn-upgrade-submitter'),
+            submitterCostDisplay: document.getElementById('submitter-cost-display'),
+            upgradeSubmitterRow: document.getElementById('upgrade-submitter-row'),
+
+            // Internet Providers Selector Group
+            providerContainer: document.getElementById('provider-container'),
+            contractTimer: document.getElementById('contract-timer-display'),
+            btnFinite: document.getElementById('provider-finite'),
+            btnWeeklink: document.getElementById('provider-weeklink'),
+            btnBliply: document.getElementById('provider-bliply'),
+            rateFinite: document.getElementById('rate-finite'),
+            rateWeeklink: document.getElementById('rate-weeklink'),
+            rateBliply: document.getElementById('rate-bliply'),
+
+            // Parental Upgrades
+            parentalUpgradesContainer: document.getElementById('parental-upgrades-container'),
+            upgradeParentT2: document.getElementById('upgrade-parental-t2'),
+            upgradeParentT3: document.getElementById('upgrade-parental-t3'),
+            upgradeParentT4: document.getElementById('upgrade-parental-t4'),
+            btnUpgradeParentT2: document.getElementById('btn-upgrade-parent-t2'),
+            btnUpgradeParentT3: document.getElementById('btn-upgrade-parent-t3'),
+            btnUpgradeParentT4: document.getElementById('btn-upgrade-parent-t4'),
+
+            // Phase 2 Group
+            level: document.getElementById('level-display'),
+            perf: document.getElementById('perf-display'),
+            appr: document.getElementById('appr-display'),
+            paper: document.getElementById('paper-display'),
+            paperCostDisplay: document.getElementById('paper-cost-display'),
+            reports: document.getElementById('reports-display'),
+            reportRate: document.getElementById('report-rate-display'),
+            timer: document.getElementById('timer-display'),
+            btnPaper: document.getElementById('btn-paper'),
+            btnWrite: document.getElementById('btn-write'),
+            btnSubmit: document.getElementById('btn-submit'),
+            btnCompliment: document.getElementById('btn-compliment'),
+            btnLunch: document.getElementById('btn-lunch'),
+
+            // Phase 2 Automations Group
+            typistBadge: document.getElementById('typist-level-badge'),
+            typistCostDisplay: document.getElementById('typist-cost-display'),
+            btnUpgradeTypist: document.getElementById('btn-upgrade-typist'),
+            courierBadge: document.getElementById('courier-level-badge'),
+            courierCostDisplay: document.getElementById('courier-cost-display'),
+            btnUpgradeCourier: document.getElementById('btn-upgrade-courier'),
+            btnUpgradeProcurement: document.getElementById('btn-upgrade-procurement'),
+            procurementStatusDisplay: document.getElementById('procurement-status-display'),
+
+            money: document.getElementById('money-display'),
+            income: document.getElementById('income-display'),
+            log: document.getElementById('log'),
+            debugPanel: document.getElementById('debug-panel'),
+            bankruptcyOverlay: document.getElementById('bankruptcy-overlay'),
+
+            dbFiniteMult: document.getElementById('db-finite-mult'),
+            dbWeeklinkMult: document.getElementById('db-weeklink-mult'),
+            dbBliplyMult: document.getElementById('db-bliply-mult')
+        };
+
+        // --- CORE HELPER FUNCTIONS ---
+        function logMessage(msg, type = "") {
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            let colorStyle = "";
+            if (type === "bad") colorStyle = "color: #ff5555; font-weight: bold;";
+            if (type === "good") colorStyle = "color: #55ff55; font-weight: bold;";
+            if (type === "promo") colorStyle = "color: #55aaff; font-weight: bold;";
+            if (type === "system") colorStyle = "color: #d284fc;";
+
+            ui.log.innerHTML = `<span style="${colorStyle}">[${time}] ${msg}</span><br>` + ui.log.innerHTML;
+        }
+
+        function formatMoney(amount) {
+            const absAmount = Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            if (amount < 0) {
+                return `-$${absAmount}`;
+            }
+            return `$${absAmount}`;
+        }
+
+        function getGeometricCost(base, rate, level) {
+            return Math.floor(base * Math.pow(rate, level));
+        }
+
+        function getExponentialCost(base, multiplier, level) {
+            return Math.floor(base * Math.pow(multiplier, level));
+        }
+
+        function toggleDebugPanel() {
+            ui.debugPanel.classList.toggle('hidden');
+        }
+
+        function triggerCloudSave(manual = false) {
+            try {
+                localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(state));
+                if (manual) {
+                    logMessage("Cloud Database Save forced manually. Current layout written.", "system");
+                }
+            } catch (err) {
+                console.error("Local storage error: ", err);
+            }
+        }
+
+        function loadCloudState() {
+            try {
+                const raw = localStorage.getItem(SAVE_STORAGE_KEY);
+                if (raw) {
+                    const loaded = JSON.parse(raw);
+                    if (typeof loaded === "object" && loaded !== null) {
+                        state = { ...state, ...loaded };
+                        logMessage("Cloud save document found! Synced previous session telemetry.", "good");
+                        return;
+                    }
+                }
+                logMessage("No existing cloud profile detected. Welcoming new applicant.", "system");
+            } catch (e) {
+                logMessage("Local sandbox restricted saving. Session will reset on reload.", "bad");
+            }
+        }
+
+        function transitionToPhase(targetPhase) {
+            if (targetPhase === 2) {
+                state.phase = 2;
+                state.approval = 50.0;
+                ui.p1Container.classList.add('hidden');
+                ui.p2Container.classList.remove('hidden');
+                ui.bankruptcyOverlay.classList.add('hidden');
+                logMessage("Macrofirm Interview successfully completed. Assigned Desk 4B. Get to work.", "promo");
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            } else {
+                state.phase = 1;
+                ui.p2Container.classList.add('hidden');
+                ui.p1Container.classList.remove('hidden');
+                logMessage("Corporate connection severed. Returned to Indebt Jobseeker directory.", "system");
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            const formatComma = (val) => Math.floor(val).toLocaleString('en-US');
+
+            // Header Account Display
+            ui.money.innerText = formatMoney(state.money);
+
+            // Bankruptcy Shroud Visual Trigger
+            const isBankrupt = (state.phase === 1 && state.money <= 0.0);
+            if (isBankrupt) {
+                ui.money.classList.add('flashing-bankrupt');
+                ui.bankruptcyOverlay.classList.remove('hidden');
+                window.scrollTo(0, 0); // Programmatically force focus up to parent beg button
+            } else {
+                ui.money.classList.remove('flashing-bankrupt');
+                ui.bankruptcyOverlay.classList.add('hidden');
+            }
+
+            // Parental Bailout Button Status
+            let manualPayoutAmt = 3.00;
+            if (state.parentalTier === 2) manualPayoutAmt = 6.00;
+            if (state.parentalTier >= 3) manualPayoutAmt = 9.00;
+            ui.begCostLabel.innerText = `+$${manualPayoutAmt.toFixed(2)}`;
+
+            if (state.money <= 0.0) {
+                ui.btnBeg.disabled = false;
+            } else {
+                ui.btnBeg.disabled = state.applications < 50;
+            }
+
+            if (state.phase === 1) {
+                // --- PHASE 1 RENDER ---
+                // Base Cost of living is $0.01
+                let providerRate = 0.0;
+                let activeFeePenalty = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
+
+                if (state.openClawSubmitLevel >= 1) {
+                    if (state.selectedProvider === 'finite') providerRate = activeFeePenalty * state.finiteMultiplier;
+                    else if (state.selectedProvider === 'weeklink') providerRate = activeFeePenalty * state.weeklinkMultiplier;
+                    else if (state.selectedProvider === 'bliply') providerRate = activeFeePenalty * state.bliplyMultiplier;
+                } else {
+                    providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+                }
+
+                let totalDrain = 0.01 + providerRate;
+                ui.income.innerText = `(${formatMoney(-totalDrain)} / sec)`;
+                ui.income.classList.add('bad');
+                ui.income.classList.remove('good');
+
+                // Inline Stats
+                ui.availJobs.innerText = formatComma(state.availableJobs);
+                ui.apps.innerText = formatComma(state.applications);
+
+                let finderOut = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
+                ui.finderRateInd.innerText = finderOut > 0 ? `(+${finderOut}/s)` : '';
+
+                let submitterOut = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
+                ui.submitterRateInd.innerText = submitterOut > 0 ? `(+${submitterOut}/s)` : '';
+
+                // Inline Discovery Gates
+                ui.btnFind.disabled = state.money <= 0;
+                ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
+
+                if (state.hasUnlockedSubmission) {
+                    ui.inlineAppRow.classList.remove('hidden');
+                } else {
+                    ui.inlineAppRow.classList.add('hidden');
+                }
+
+                // 10% Protocol: Finder reveals at 5 cumulative apps (cost: 50)
+                if (state.maxAppsReached >= (0.10 * BASE_FINDER_COST)) {
+                    ui.automationCardP1.classList.remove('hidden');
+                } else {
+                    ui.automationCardP1.classList.add('hidden');
+                }
+
+                const finderCost = getExponentialCost(BASE_FINDER_COST, 3, state.openClawFinderLevel);
+                ui.finderBadge.innerText = state.openClawFinderLevel;
+                ui.finderCostDisplay.innerText = formatComma(finderCost);
+                ui.btnUpgradeFinder.disabled = state.applications < finderCost;
+
+                // Submitter reveals at Finder Level 2
+                if (state.openClawFinderLevel >= 2) {
+                    ui.upgradeSubmitterRow.classList.remove('hidden');
+                    const submitterCost = getExponentialCost(BASE_SUBMITTER_COST, 2, state.openClawSubmitLevel);
+                    ui.submitterBadge.innerText = state.openClawSubmitLevel;
+                    ui.submitterCostDisplay.innerText = formatComma(submitterCost);
+                    ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;
+                } else {
+                    ui.upgradeSubmitterRow.classList.add('hidden');
+                }
+
+                // Provider selection unlocked at Submitter level 1
+                const isSubmitUnlocked = (state.openClawSubmitLevel >= 1);
+                if (isSubmitUnlocked) {
+                    ui.providerContainer.classList.remove('hidden');
+
+                    let baseVal = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
+                    let fRate = baseVal * state.finiteMultiplier;
+                    let wRate = baseVal * state.weeklinkMultiplier;
+                    let bRate = baseVal * state.bliplyMultiplier;
+
+                    ui.rateFinite.innerText = `($${fRate.toFixed(4)}/s)`;
+                    ui.rateWeeklink.innerText = `($${wRate.toFixed(4)}/s)`;
+                    ui.rateBliply.innerText = `($${bRate.toFixed(4)}/s)`;
+
+                    ui.btnFinite.disabled = state.contractLocked;
+                    ui.btnWeeklink.disabled = state.contractLocked;
+                    ui.btnBliply.disabled = state.contractLocked;
+
+                    ui.btnFinite.style.backgroundColor = (state.selectedProvider === 'finite') ? '#bbb' : '#efefef';
+                    ui.btnWeeklink.style.backgroundColor = (state.selectedProvider === 'weeklink') ? '#bbb' : '#efefef';
+                    ui.btnBliply.style.backgroundColor = (state.selectedProvider === 'bliply') ? '#bbb' : '#efefef';
+                } else {
+                    ui.providerContainer.classList.add('hidden');
+                }
+
+                // Parental support curve gating (Tiered progression)
+                let showParentBox = false;
+
+                // Tier 2 reveals at 200 cumulative apps once manual beg happened
+                if (state.maxAppsReached >= 200 && state.hasBegged && state.parentalTier === 1) {
+                    ui.upgradeParentT2.classList.remove('hidden');
+                    ui.btnUpgradeParentT2.disabled = state.applications < 2000;
+                    showParentBox = true;
+                } else {
+                    ui.upgradeParentT2.classList.add('hidden');
+                }
+
+                // Tier 3 reveals after Tier 2 bought
+                if (state.parentalTier === 2) {
+                    ui.upgradeParentT3.classList.remove('hidden');
+                    ui.btnUpgradeParentT3.disabled = state.applications < 4000;
+                    showParentBox = true;
+                } else {
+                    ui.upgradeParentT3.classList.add('hidden');
+                }
+
+                // Tier 4 automatic script triggers at 50,000 apps (reveals after tier 3 bought, gated by 10% protocol: 5,000 maxAppsReached)
+                if (state.parentalTier === 3 && state.maxAppsReached >= 5000) {
+                    ui.upgradeParentT4.classList.remove('hidden');
+                    ui.btnUpgradeParentT4.disabled = state.applications < 50000;
+                    showParentBox = true;
+                } else {
+                    ui.upgradeParentT4.classList.add('hidden');
+                }
+
+                if (showParentBox) {
+                    ui.parentalUpgradesContainer.classList.remove('hidden');
+                } else {
+                    ui.parentalUpgradesContainer.classList.add('hidden');
+                }
+
+                // Macrofirm Interview triggers via a custom retro job card
+                if (state.maxAppsReached >= 10000) {
+                    ui.jobCard.classList.remove('hidden');
+                    ui.btnInterview.disabled = state.applications < 100000;
+                } else {
+                    ui.jobCard.classList.add('hidden');
+                }
+
+                // Debug labels
+                ui.dbFiniteMult.innerText = state.finiteMultiplier.toFixed(2);
+                ui.dbWeeklinkMult.innerText = state.weeklinkMultiplier.toFixed(2);
+                ui.dbBliplyMult.innerText = state.bliplyMultiplier.toFixed(2);
+
+            } else if (state.phase === 2) {
+                // --- PHASE 2 RENDER ---
+                const hourlySalary = state.level * 0.01;
+                ui.income.innerText = `(+${formatMoney(hourlySalary)} / sec)`;
+                ui.income.classList.remove('bad');
+                ui.income.classList.add('good');
+
+                ui.level.innerText = state.level;
+                ui.appr.innerText = state.approval.toFixed(0);
+                ui.paper.innerText = state.paper.toFixed(1);
+                ui.reports.innerText = Math.floor(state.reports);
+                ui.perf.innerText = state.credibility.toFixed(0);
+
+                ui.paperCostDisplay.innerText = formatMoney(state.currentPaperPrice);
+                ui.btnPaper.disabled = state.money < state.currentPaperPrice;
+                ui.btnWrite.disabled = state.paper < 1;
+                ui.btnSubmit.disabled = state.reports < 1;
+
+                if (state.approval >= 80) {
+                    ui.btnLunch.classList.remove('hidden');
+                } else {
+                    ui.btnLunch.classList.add('hidden');
+                }
+
+                if (state.typistLevel > 0 || state.courierLevel > 0) {
+                    ui.reportRate.innerText = `(+${state.typistLevel * 2}/s | -${state.courierLevel * 2}/s)`;
+                } else {
+                    ui.reportRate.innerText = "";
+                }
+
+                if (state.lastComplimentTime) {
+                    let passed = ((Date.now() - state.lastComplimentTime) / 1000).toFixed(1);
+                    ui.timer.innerText = `Manager Status: Wait ${passed}s`;
+                    if (passed < 5.0) ui.timer.classList.add('bad');
+                    else ui.timer.classList.remove('bad');
+                } else {
+                    ui.timer.innerText = "Manager Status: Stable";
+                }
+
+                const typistCost = getGeometricCost(BASE_TYPIST_COST, 1.5, state.typistLevel);
+                ui.typistBadge.innerText = state.typistLevel;
+                ui.typistCostDisplay.innerText = formatComma(typistCost);
+                ui.btnUpgradeTypist.disabled = state.credibility < typistCost;
+
+                const courierCost = getGeometricCost(BASE_COURIER_COST, 1.5, state.courierLevel);
+                ui.courierBadge.innerText = state.courierLevel;
+                ui.courierCostDisplay.innerText = formatComma(courierCost);
+                ui.btnUpgradeCourier.disabled = state.credibility < courierCost;
+
+                if (state.procurementUnlocked) {
+                    ui.btnUpgradeProcurement.disabled = true;
+                    ui.procurementStatusDisplay.innerText = "Integrated";
+                } else {
+                    ui.btnUpgradeProcurement.disabled = state.credibility < PROCURE_FIXED_COST;
+                    ui.procurementStatusDisplay.innerText = "Cost: 100 Creds";
+                }
+            }
+        }
+
+        // --- ATTACHED GAMEPLAY EVENTS ---
+        ui.btnBeg.addEventListener('click', () => {
+            let pAmount = 3.00;
+            if (state.parentalTier === 2) pAmount = 6.00;
+            if (state.parentalTier >= 3) pAmount = 9.00;
+
+            if (state.money <= 0.0) {
+                state.money += pAmount;
+                state.hasBegged = true;
+                logMessage(`Wired parental bailout capital. Bank balance credited with +$${pAmount.toFixed(2)}.`, "system");
+            } else {
+                if (state.applications >= 50) {
+                    state.applications -= 50;
+                    state.money += pAmount;
+                    state.hasBegged = true;
+                    logMessage(`Exchanged submitted pipelines to secure parent wire transfer of +$${pAmount.toFixed(2)}.`, "system");
+                }
+            }
+            updateUI();
+        });
+
+        ui.btnFind.addEventListener('click', () => {
+            if (state.money > 0) {
+                state.availableJobs += 1.0;
+                if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
+                    state.hasUnlockedSubmission = true;
+                    logMessage("Application pipelines activated! Submit engine unlocked.", "good");
+                }
+            }
+            updateUI();
+        });
+
+        ui.btnApply.addEventListener('click', () => {
+            if (state.money > 0 && state.availableJobs >= 1) {
+                state.availableJobs -= 1.0;
+                state.applications += 1.0;
+                state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeFinder.addEventListener('click', () => {
+            const cost = getExponentialCost(BASE_FINDER_COST, 3, state.openClawFinderLevel);
+            if (state.applications >= cost) {
+                state.applications -= cost;
+                state.openClawFinderLevel += 1;
+                logMessage(`OpenClaw Auto-Finder upgraded to Level ${state.openClawFinderLevel}. Processing capacity tripled.`, "good");
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeSubmitter.addEventListener('click', () => {
+            const cost = getExponentialCost(BASE_SUBMITTER_COST, 2, state.openClawSubmitLevel);
+            if (state.applications >= cost) {
+                state.applications -= cost;
+                state.openClawSubmitLevel += 1;
+                logMessage(`OpenClaw Auto-Submitter upgraded to Level ${state.openClawSubmitLevel}. Submission pipeline doubled.`, "good");
+            }
+            updateUI();
+        });
+
+        // Provider click handlers (Contracts Lock-in mechanics)
+        const registerProviderTab = (id, keyName) => {
+            document.getElementById(id).addEventListener('click', () => {
+                if (!state.contractLocked) {
+                    state.selectedProvider = keyName;
+                    state.contractLocked = true;
+
+                    let baseVal = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
+                    let mult = 1.0;
+                    if (keyName === 'finite') mult = state.finiteMultiplier;
+                    else if (keyName === 'weeklink') mult = state.weeklinkMultiplier;
+                    else if (keyName === 'bliply') mult = state.bliplyMultiplier;
+
+                    logMessage(`Signed legally-binding 20s contract with ${keyName.toUpperCase()} at $${(baseVal * mult).toFixed(4)}/s.`, "system");
+                    updateUI();
+                }
+            });
+        };
+        registerProviderTab('provider-finite', 'finite');
+        registerProviderTab('provider-weeklink', 'weeklink');
+        registerProviderTab('provider-bliply', 'bliply');
+
+        // Parental optimization upgrade purchases
+        ui.btnUpgradeParentT2.addEventListener('click', () => {
+            if (state.applications >= 2000 && state.parentalTier === 1) {
+                state.applications -= 2000;
+                state.parentalTier = 2;
+                logMessage("Parental Trust optimized to Tier 2. Emergency wire allowance increased to $6.00.", "good");
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeParentT3.addEventListener('click', () => {
+            if (state.applications >= 4000 && state.parentalTier === 2) {
+                state.applications -= 4000;
+                state.parentalTier = 3;
+                logMessage("Parental Trust optimized to Tier 3. Elite family trust wires $9.00.", "good");
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeParentT4.addEventListener('click', () => {
+            if (state.applications >= 50000 && state.parentalTier === 3) {
+                state.applications -= 50000;
+                state.parentalTier = 4;
+                logMessage("Automatic background banking loops initialized. Family allowance automated.", "good");
+            }
+            updateUI();
+        });
+
+        ui.btnInterview.addEventListener('click', () => {
+            if (state.applications >= 100000) {
+                state.applications -= 100000;
+                transitionToPhase(2);
+            }
+        });
+
+        // Phase 2 Operations triggers
+        ui.btnPaper.addEventListener('click', () => {
+            if (state.money >= state.currentPaperPrice) {
+                state.money -= state.currentPaperPrice;
+                state.paper += 10.0;
+                logMessage(`Acquired printing ream sheets at market rate of ${formatMoney(state.currentPaperPrice)}.`, "good");
+            }
+            updateUI();
+        });
+
+        ui.btnWrite.addEventListener('click', () => {
+            if (state.paper >= 1.0) {
+                state.paper -= 1.0;
+                state.reports += 1.0;
+            }
+            updateUI();
+        });
+
+        ui.btnSubmit.addEventListener('click', () => {
+            if (state.reports >= 1.0) {
+                state.reports -= 1.0;
+                state.credibility += 5.0;
+                logMessage("Administrative logs handed off. Supervisor credibility upgraded.");
+            }
+            updateUI();
+        });
+
+        ui.btnCompliment.addEventListener('click', () => {
+            const now = Date.now();
+            if (!state.lastComplimentTime) {
+                state.approval += 10.0;
+                logMessage("Lauded supervisor's coordinate tie palette.", "good");
+            } else {
+                let diff = (now - state.lastComplimentTime) / 1000;
+                if (diff < 5.0) {
+                    state.approval -= 5.0;
+                    logMessage("You're lingering around the supervisor's desk too aggressively.", "bad");
+                } else {
+                    state.approval += 10.0;
+                    logMessage("Expressed elegant technical alignment with supervisor's draft.", "good");
+                }
+            }
+            state.lastComplimentTime = now;
+            updateUI();
+        });
+
+        ui.btnLunch.addEventListener('click', () => {
+            if (state.approval >= 80.0) {
+                state.level += 1;
+                state.approval = 30.0;
+                logMessage(`Attended office banquet. Promoted to Grade Level ${state.level}. Salary rate buffed.`, "promo");
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeTypist.addEventListener('click', () => {
+            const cost = getGeometricCost(BASE_TYPIST_COST, 1.5, state.typistLevel);
+            if (state.credibility >= cost) {
+                state.credibility -= cost;
+                state.typistLevel += 1;
+                logMessage(`Enlisted Subcontracted Typist (Level ${state.typistLevel}) to handle documentation drafting.`, "good");
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeCourier.addEventListener('click', () => {
+            const cost = getGeometricCost(BASE_COURIER_COST, 1.5, state.courierLevel);
+            if (state.credibility >= cost) {
+                state.credibility -= cost;
+                state.courierLevel += 1;
+                logMessage(`Deployed HR Courier Line (Level ${state.courierLevel}) for automated submissions.`, "good");
+            }
+            updateUI();
+        });
+
+        ui.btnUpgradeProcurement.addEventListener('click', () => {
+            if (state.credibility >= PROCURE_FIXED_COST && !state.procurementUnlocked) {
+                state.credibility -= PROCURE_FIXED_COST;
+                state.procurementUnlocked = true;
+                logMessage(`Background procurement script online. Automated printing ream restocking functional.`, "good");
+            }
+            updateUI();
+        });
+
+        // --- DEBUG ACTIONS CONTROLLERS ---
+        function debugForceSave() { triggerCloudSave(true); }
+        function debugResetGame() {
+            if (confirm("Execute master database wipe? All progress will revert to zero.")) {
+                localStorage.removeItem(SAVE_STORAGE_KEY);
+                location.reload();
+            }
+        }
+        function debugTogglePhase() {
+            if (state.phase === 1) transitionToPhase(2);
+            else transitionToPhase(1);
+        }
+        function debugSetMoneyZero() {
+            state.money = 0.00;
+            logMessage("[DEBUG] Account wiped. Hard set to $0.00.", "bad");
+            updateUI();
+        }
+        function debugInject(type, value) {
+            if (type === 'money') state.money += value;
+            else if (type === 'apps') { state.applications += value; state.maxAppsReached = Math.max(state.maxAppsReached, state.applications); }
+            else if (type === 'creds') state.credibility += value;
+            else if (type === 'paper') state.paper += value;
+            logMessage(`[DEBUG] Injected resources +${value} to system.`, "system");
+            updateUI();
+        }
+
+        // --- CORE TICK PHYSICS LOOP (30 FPS) ---
+        function mainLoop(currentTimestamp) {
+            let dt = (currentTimestamp - lastTimestamp) / 1000;
+            if (dt < 0.0) dt = 0.0;
+            if (dt > 1.0) dt = 1.0;
+            lastTimestamp = currentTimestamp;
+
+            if (state.phase === 1) {
+                // Determine active operational drain fees
+                let providerRate = 0.0;
+                let activeFeePenalty = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
+
+                if (state.openClawSubmitLevel >= 1) {
+                    if (state.selectedProvider === 'finite') providerRate = activeFeePenalty * state.finiteMultiplier;
+                    else if (state.selectedProvider === 'weeklink') providerRate = activeFeePenalty * state.weeklinkMultiplier;
+                    else if (state.selectedProvider === 'bliply') providerRate = activeFeePenalty * state.bliplyMultiplier;
+                } else {
+                    providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+                }
+
+                let totalDrain = 0.01 + providerRate;
+                state.money -= totalDrain * dt;
+
+                // Handle visual and automatic bankruptcy loops
+                if (state.money <= 0.0) {
+                    state.money = 0.0;
+                    if (state.parentalTier === 4) {
+                        state.money += 9.00;
+                        state.hasBegged = true;
+                        logMessage("Automated Script: Direct trust wire injection completed. Directing +$9.00.", "system");
+                    }
+                }
+
+                // Auto-Finder outputs triple: +1, +3, +9, +27...
+                let finderVolume = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
+                state.availableJobs += finderVolume * dt;
+
+                if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
+                    state.hasUnlockedSubmission = true;
+                    logMessage("Application pipelines activated! Submit engine unlocked.", "good");
+                }
+
+                // Auto-Submitter outputs double: +1, +2, +4, +8...
+                let submitterVolume = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
+                let actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
+                if (actualSubmissions > 0) {
+                    state.availableJobs -= actualSubmissions;
+                    state.applications += actualSubmissions;
+                    state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+                }
+
+                // 20-Second Locked Contract selection tick
+                if (state.openClawSubmitLevel >= 1) {
+                    state.providerTimer -= dt;
+                    if (state.providerTimer <= 0.0) {
+                        state.providerTimer = 20.0;
+                        state.contractLocked = false; // Briefly lift the lock mechanism
+
+                        // Randomize multipliers within range [0.5x, 3.5x] representing 300% variance scale
+                        state.finiteMultiplier = 0.5 + Math.random() * 3.0;
+                        state.weeklinkMultiplier = 0.5 + Math.random() * 3.0;
+                        state.bliplyMultiplier = 0.5 + Math.random() * 3.0;
+
+                        logMessage("Billing contract window reset. Provider tariffs adjusted.", "system");
+                    }
+                    ui.contractTimer.innerText = state.providerTimer.toFixed(1) + "s";
+                }
+
+            } else if (state.phase === 2) {
+                let passiveSalaryRate = state.level * 0.01;
+                state.money += passiveSalaryRate * dt;
+
+                let typistDraftRate = state.typistLevel * 2.0;
+                let possibleDrafts = Math.min(typistDraftRate * dt, state.paper);
+                if (possibleDrafts > 0) {
+                    state.paper -= possibleDrafts;
+                    state.reports += possibleDrafts;
+                } else if (state.paper <= 0 && state.typistLevel > 0) {
+                    if (warningThrottleTimer <= 0) {
+                        logMessage("Operations Alert: Out of printing paper! Subcontracted typists idling.", "bad");
+                        warningThrottleTimer = 4.0;
+                    }
+                }
+
+                let courierSubRate = state.courierLevel * 2.0;
+                let possibleSubmissions = Math.min(courierSubRate * dt, state.reports);
+                if (possibleSubmissions > 0) {
+                    state.reports -= possibleSubmissions;
+                    state.credibility += possibleSubmissions * 5.0;
+                }
+
+                state.credibility -= 1.0 * dt;
+                if (state.credibility < 0.0) state.credibility = 0.0;
+
+                state.approval -= 0.5 * dt;
+                if (state.approval < 0.0) state.approval = 0.0;
+
+                if (state.procurementUnlocked && state.paper <= 0.02) {
+                    let price = state.currentPaperPrice;
+                    if (state.money >= price) {
+                        state.money -= price;
+                        state.paper += 10.0;
+                    }
+                }
+            }
+
+            // Commodity market dynamic fluctuation
+            paperPriceTimer += dt;
+            if (paperPriceTimer >= 1.0) {
+                paperPriceTimer -= 1.0;
+                let rollState = Math.floor(Math.random() * 3);
+                let priceVariation = 0.01 + (Math.random() * 0.03);
+                if (rollState === 0) state.currentPaperPrice = Math.min(0.50, state.currentPaperPrice + priceVariation);
+                else if (rollState === 1) state.currentPaperPrice = Math.max(0.10, state.currentPaperPrice - priceVariation);
+            }
+
+            // Database cloud backup trigger (every 15s)
+            cloudSaveTimer += dt;
+            if (cloudSaveTimer >= 15.0) {
+                cloudSaveTimer -= 15.0;
+                triggerCloudSave();
+            }
+
+            if (warningThrottleTimer > 0) warningThrottleTimer -= dt;
+
+            updateUI();
+            requestAnimationFrame(mainLoop);
+        }
+
+        // Initialize state configuration
+        window.onload = function () {
+            loadCloudState();
+            if (state.phase === 2) transitionToPhase(2);
+            else transitionToPhase(1);
+            requestAnimationFrame(mainLoop);
+        };
+    </script>
+</body>
+</html>
