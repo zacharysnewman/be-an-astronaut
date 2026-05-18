@@ -1,260 +1,391 @@
-# Refactor Plan: `js/app.js` → Multiple Modules
+# Plan: TypeScript + Vite + GitHub Pages Auto-Deploy
 
-## Goal
+## Summary
 
-Break the single 800-line `app.js` into focused, single-responsibility modules using native ES6 modules (`import`/`export`). No build tooling required — modern browsers support `<script type="module">` natively.
+Convert the project from a single vanilla-JS file to a typed, modular TypeScript codebase built with Vite, automatically deployed to GitHub Pages on every push to `main`.
+
+**Toolchain choices:**
+- **Vite** — zero-config dev server, fast HMR, outputs optimized static assets
+- **TypeScript** — strict mode, catches bugs at compile time, self-documents game logic
+- **GitHub Actions** — official Pages deploy pipeline, no third-party action needed
 
 ---
 
-## Proposed File Structure
+## Project Structure: Before → After
 
 ```
-js/
-├── constants.js   # All magic numbers and string keys
-├── state.js       # Game state object and loop timer variables
-├── ui.js          # DOM reference cache
-├── utils.js       # Pure helper functions (formatting, cost math, logging)
-├── storage.js     # Save/load persistence layer
-├── render.js      # UI rendering (updateUI split into phase renderers)
-├── events.js      # All click event listener registrations
-├── loop.js        # Game loop: mainLoop + phase-specific tick helpers
-└── main.js        # Entry point — init, wiring, first rAF call
+Before                          After
+─────────────────────────────   ─────────────────────────────────────
+index.html                      index.html
+css/styles.css                  css/styles.css
+js/app.js                       src/
+                                ├── types.ts
+                                ├── constants.ts
+                                ├── state.ts
+                                ├── ui.ts
+                                ├── utils.ts
+                                ├── storage.ts
+                                ├── render.ts
+                                ├── events.ts
+                                ├── loop.ts
+                                └── main.ts
+                                package.json
+                                tsconfig.json
+                                vite.config.ts
+                                .gitignore
+                                .github/
+                                └── workflows/
+                                    └── deploy.yml
+                                dist/  (gitignored, built output)
 ```
 
-`app.js` is deleted. `index.html` gets one script tag changed:
+`js/app.js` is deleted. The modules mirror the refactor plan, now in TypeScript.
+
+---
+
+## Step-by-Step Implementation
+
+### Step 1 — Initialize npm and install dependencies
+
+```bash
+npm init -y
+npm install --save-dev vite typescript
+```
+
+No runtime dependencies. Vite and TypeScript are dev-only — the build output is plain JS.
+
+---
+
+### Step 2 — `package.json` scripts
+
+Add to `package.json`:
+```json
+{
+  "scripts": {
+    "dev":     "vite",
+    "build":   "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  }
+}
+```
+
+`tsc --noEmit` runs the type-checker first. If it fails, the Vite build is blocked — type errors can never reach the deployed artifact.
+
+---
+
+### Step 3 — `tsconfig.json`
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}
+```
+
+`strict: true` enables the full safety net: `strictNullChecks`, `noImplicitAny`, etc.
+`noUnusedLocals` / `noUnusedParameters` keeps modules clean as they're split out.
+
+---
+
+### Step 4 — `vite.config.ts`
+
+```ts
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  base: '/be-an-astronaut/',
+});
+```
+
+The `base` path must match the GitHub Pages sub-path (`/<repo-name>/`). Without it, asset URLs break when served from a subdirectory. If a custom domain is ever added, change `base` to `'/'`.
+
+---
+
+### Step 5 — Update `index.html`
+
+Replace the existing script tag:
 ```html
-<!-- Before -->
+<!-- Remove -->
 <script src="js/app.js"></script>
 
-<!-- After -->
-<script type="module" src="js/main.js"></script>
+<!-- Add -->
+<script type="module" src="/src/main.ts"></script>
 ```
+
+Vite processes this directly during dev and replaces it with the compiled output at build time.
 
 ---
 
-## Module Breakdown
+### Step 6 — `.gitignore`
 
-### `js/constants.js`
-**Exports:** named constants only. No side effects.
-
-Extracts:
-- `SAVE_STORAGE_KEY`
-- `BASE_FINDER_COST`, `BASE_SUBMITTER_COST`
-- `BASE_TYPIST_COST`, `BASE_COURIER_COST`, `PROCURE_FIXED_COST`
-
-```js
-export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v3';
-export const BASE_FINDER_COST = 50;
-// ...
 ```
+node_modules/
+dist/
+```
+
+The `dist/` directory is generated by CI — committing it would cause conflicts and is unnecessary since GitHub Actions rebuilds it on every deploy.
 
 ---
 
-### `js/state.js`
-**Exports:** `state` object and the four loop timer variables.
+### Step 7 — TypeScript source modules
 
-Extracts the `state` object (lines 11–50) and the sub-second timer variables (`lastTimestamp`, `paperPriceTimer`, `cloudSaveTimer`, `warningThrottleTimer`).
+#### `src/types.ts`
+Shared type definitions. All other modules import from here.
 
-Keeping them together makes sense because the loop mutates all of them in one place.
+```ts
+export type Phase        = 1 | 2;
+export type Provider     = 'finite' | 'weeklink' | 'bliply';
+export type ParentalTier = 1 | 2 | 3 | 4;
+export type LogType      = 'bad' | 'good' | 'promo' | 'system' | '';
 
-```js
-export let state = { phase: 1, money: 1.00, ... };
-export let lastTimestamp = performance.now();
-export let paperPriceTimer = 0.0;
-// ...
+export interface GameState {
+  phase:                Phase;
+  money:                number;
+  availableJobs:        number;
+  applications:         number;
+  maxAppsReached:       number;
+  hasBegged:            boolean;
+  hasUnlockedSubmission: boolean;
+  openClawFinderLevel:  number;
+  openClawSubmitLevel:  number;
+  parentalTier:         ParentalTier;
+  selectedProvider:     Provider;
+  contractLocked:       boolean;
+  providerTimer:        number;
+  finiteMultiplier:     number;
+  weeklinkMultiplier:   number;
+  bliplyMultiplier:     number;
+  level:                number;
+  credibility:          number;
+  approval:             number;
+  reports:              number;
+  paper:                number;
+  typistLevel:          number;
+  courierLevel:         number;
+  procurementUnlocked:  boolean;
+  currentPaperPrice:    number;
+  lastComplimentTime:   number | null;
+}
 ```
 
----
+The union types (`Phase`, `Provider`, `ParentalTier`) immediately catch invalid assignments like `state.parentalTier = 5` or `state.selectedProvider = 'comcast'` at compile time.
 
-### `js/ui.js`
-**Exports:** `ui` DOM reference object.
+#### `src/constants.ts`
+```ts
+export const SAVE_STORAGE_KEY    = 'cubicle_chronicles_save_v3';
+export const BASE_FINDER_COST    = 50;
+export const BASE_SUBMITTER_COST = 50;
+export const BASE_TYPIST_COST    = 125;
+export const BASE_COURIER_COST   = 150;
+export const PROCURE_FIXED_COST  = 100;
+```
 
-Extracts the entire `ui = { ... }` block (lines 67–147). Centralizes all `getElementById` calls so they're never scattered across other modules.
+#### `src/state.ts`
+```ts
+import type { GameState } from './types';
 
-```js
+export const state: GameState = { phase: 1, money: 1.00, ... };
+
+export let lastTimestamp      = performance.now();
+export let paperPriceTimer    = 0.0;
+export let cloudSaveTimer     = 0.0;
+export let warningThrottleTimer = 0.0;
+```
+
+`GameState` enforces the shape of the initial object — missing or mistyped fields are caught immediately.
+
+#### `src/ui.ts`
+DOM references typed with specific `HTMLElement` subtypes so callers get proper property access:
+
+```ts
 export const ui = {
-    p1Container: document.getElementById('phase1-container'),
-    // ...
+  btnBeg:    document.getElementById('btn-beg')    as HTMLButtonElement,
+  money:     document.getElementById('money-display') as HTMLElement,
+  log:       document.getElementById('log')        as HTMLElement,
+  // ...all other refs typed appropriately
 };
 ```
 
----
+`HTMLButtonElement` exposes `.disabled`; plain `HTMLElement` exposes `.innerText`. TypeScript will error if you try to set `.disabled` on a non-button reference, catching copy-paste mistakes in `ui.ts` itself.
 
-### `js/utils.js`
-**Exports:** `logMessage`, `formatMoney`, `getGeometricCost`, `getExponentialCost`.
+#### `src/utils.ts`
+```ts
+import type { LogType } from './types';
+import { ui } from './ui';
 
-Pure or near-pure helpers with no game-logic side effects. `logMessage` depends on `ui.log` but has no state mutation.
-
-```js
-import { ui } from './ui.js';
-export function formatMoney(amount) { ... }
-export function logMessage(msg, type = "") { ... }
-export function getGeometricCost(base, rate, level) { ... }
-export function getExponentialCost(base, multiplier, level) { ... }
+export function logMessage(msg: string, type: LogType = ''): void { ... }
+export function formatMoney(amount: number): string { ... }
+export function getGeometricCost(base: number, rate: number, level: number): number { ... }
+export function getExponentialCost(base: number, multiplier: number, level: number): number { ... }
 ```
 
----
+#### `src/storage.ts`
+```ts
+import { SAVE_STORAGE_KEY } from './constants';
+import { state } from './state';
+import type { GameState } from './types';
+import { logMessage } from './utils';
 
-### `js/storage.js`
-**Exports:** `triggerCloudSave`, `loadCloudState`.
-
-Isolates all `localStorage` access. Depends on `state` and `SAVE_STORAGE_KEY`. Makes the persistence layer easy to swap later (e.g. IndexedDB, server sync).
-
-```js
-import { SAVE_STORAGE_KEY } from './constants.js';
-import { state } from './state.js';
-import { logMessage } from './utils.js';
-
-export function triggerCloudSave(manual = false) { ... }
-export function loadCloudState() { ... }
+export function triggerCloudSave(manual = false): void { ... }
+export function loadCloudState(): void { ... }
 ```
 
----
+`loadCloudState` casts the parsed JSON to `Partial<GameState>` before merging — TypeScript prevents blindly spreading an untyped `any` onto the state object.
 
-### `js/render.js`
-**Exports:** `updateUI`.
+#### `src/render.ts`
+```ts
+import type { Provider } from './types';
+// ...
 
-Extracts the large `updateUI` function (lines 220–416) and splits it into three internal helpers:
-
-- `renderCommon()` — money display, bankruptcy overlay, beg button
-- `renderPhase1()` — all Phase 1 display logic (~100 lines)
-- `renderPhase2()` — all Phase 2 display logic (~60 lines)
-- `updateUI()` — dispatches to the above based on `state.phase`
-
-This split makes each phase's render logic independently readable without changing any external behavior.
-
-```js
-import { state } from './state.js';
-import { ui } from './ui.js';
-import { formatMoney, getGeometricCost, getExponentialCost } from './utils.js';
-import { BASE_FINDER_COST, ... } from './constants.js';
-
-function renderPhase1() { ... }
-function renderPhase2() { ... }
-export function updateUI() { ... }
+function renderPhase1(): void { ... }
+function renderPhase2(): void { ... }
+export function updateUI(): void { ... }
 ```
 
----
+Internal render helpers are unexported — callers only ever call `updateUI()`.
 
-### `js/events.js`
-**Exports:** `registerEventListeners`.
-
-Extracts all `addEventListener` calls (lines 418–668) into one function called once at startup. Groups them into three internal blocks matching the existing comment structure:
-
-- Phase 1 action buttons (beg, find, apply, finder/submitter upgrades, provider tabs, parental upgrades, interview)
-- Phase 2 action buttons (paper, write, submit, compliment, lunch, typist, courier, procurement)
-- Debug panel buttons
-
-Avoids a single giant flat scope of listeners by wrapping them in a callable function.
-
-```js
-import { state } from './state.js';
-import { ui } from './ui.js';
-import { logMessage } from './utils.js';
-import { updateUI } from './render.js';
-import { triggerCloudSave } from './storage.js';
-import { transitionToPhase } from './loop.js';
-import { SAVE_STORAGE_KEY, ... } from './constants.js';
-
-export function registerEventListeners() { ... }
+#### `src/events.ts`
+```ts
+export function registerEventListeners(): void {
+  // Phase 1 handlers
+  // Phase 2 handlers
+  // Debug panel handlers
+}
 ```
 
----
+#### `src/loop.ts`
+```ts
+import type { Phase } from './types';
 
-### `js/loop.js`
-**Exports:** `mainLoop`, `transitionToPhase`.
-
-Extracts `mainLoop` (lines 671–791) and `transitionToPhase` (lines 202–218), splitting the loop body into two internal tick helpers:
-
-- `tickPhase1(dt)` — money drain, auto-finder, auto-submitter, contract timer, provider randomization
-- `tickPhase2(dt)` — salary income, typist drafting, courier submissions, credibility/approval decay, auto-procurement
-- `mainLoop(ts)` — clamps dt, dispatches ticks, runs paper price fluctuation, auto-save, calls `updateUI`, schedules next frame
-
-`transitionToPhase` belongs here because it touches phase-state and triggers `updateUI`, making it a loop-level concern rather than an event or render concern.
-
-```js
-import { state, lastTimestamp, ... } from './state.js';
-import { ui } from './ui.js';
-import { logMessage } from './utils.js';
-import { triggerCloudSave } from './storage.js';
-import { updateUI } from './render.js';
-import { ... } from './constants.js';
-
-function tickPhase1(dt) { ... }
-function tickPhase2(dt) { ... }
-export function transitionToPhase(targetPhase) { ... }
-export function mainLoop(currentTimestamp) { ... }
+function tickPhase1(dt: number): void { ... }
+function tickPhase2(dt: number): void { ... }
+export function transitionToPhase(target: Phase): void { ... }
+export function mainLoop(timestamp: number): void { ... }
 ```
 
----
+`Phase` as the parameter type for `transitionToPhase` means `transitionToPhase(3)` is a compile error.
 
-### `js/main.js`
-**Exports:** nothing. Side-effect-only entry point.
-
-Handles:
-- Mobile gesture prevention (the two `document.addEventListener` calls at the top of app.js)
-- `window.onload`: calls `loadCloudState`, `transitionToPhase`, `requestAnimationFrame(mainLoop)`
-- Calls `registerEventListeners()`
-
-```js
-import { loadCloudState } from './storage.js';
-import { transitionToPhase, mainLoop } from './loop.js';
-import { registerEventListeners } from './events.js';
-import { state } from './state.js';
+#### `src/main.ts`
+```ts
+import { loadCloudState } from './storage';
+import { transitionToPhase, mainLoop } from './loop';
+import { registerEventListeners } from './events';
+import { state } from './state';
 
 document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('touchmove', e => { if (e.scale !== 1) e.preventDefault(); }, { passive: false });
+document.addEventListener('touchmove', (e: TouchEvent) => {
+  if (e.scale !== 1) e.preventDefault();
+}, { passive: false });
 
 registerEventListeners();
 
-window.onload = function () {
-    loadCloudState();
-    transitionToPhase(state.phase === 2 ? 2 : 1);
-    requestAnimationFrame(mainLoop);
-};
+window.addEventListener('load', () => {
+  loadCloudState();
+  transitionToPhase(state.phase);
+  requestAnimationFrame(mainLoop);
+});
 ```
 
 ---
 
-## Dependency Graph
+### Step 8 — GitHub Actions deploy workflow
 
-```
-constants.js   (no deps)
-state.js       (no deps)
-ui.js          (no deps)
-utils.js       ← ui.js
-storage.js     ← constants.js, state.js, utils.js
-render.js      ← state.js, ui.js, utils.js, constants.js
-loop.js        ← state.js, ui.js, utils.js, storage.js, render.js, constants.js
-events.js      ← state.js, ui.js, utils.js, render.js, storage.js, loop.js, constants.js
-main.js        ← storage.js, loop.js, events.js, state.js
+Create `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Type-check and build
+        run: npm run build
+
+      - uses: actions/configure-pages@v4
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - uses: actions/deploy-pages@v4
+        id: deploy
 ```
 
-No circular dependencies.
+**How it works:**
+1. Every push to `main` triggers the workflow.
+2. `npm ci` installs exact locked versions.
+3. `npm run build` runs `tsc --noEmit` (type-check) then `vite build` (bundle).
+4. The `dist/` folder is uploaded as a Pages artifact and deployed.
+5. If `tsc` fails, the build step fails, and nothing is deployed — the live site stays on the last good build.
 
 ---
 
-## Key Decisions
+### Step 9 — Enable GitHub Pages in repository settings
 
-**ES modules over script tags:** Using `type="module"` gives us real `import`/`export` without a bundler, avoids global namespace collisions, and defers scripts automatically (no `defer` attribute needed).
+In the GitHub repository:
+1. Go to **Settings → Pages**
+2. Under **Source**, select **GitHub Actions**
+3. Save
 
-**`state` as a mutable exported object:** Since multiple modules need to read and write `state`, it's exported as a plain object and mutated in place. This avoids a complex store/dispatch pattern that would be over-engineered for this game's scale.
-
-**No new abstractions:** Every module boundary maps directly to an existing logical grouping already evident in the `app.js` comments. Nothing is redesigned — only separated.
+No branch-based publishing needed — the workflow handles everything.
 
 ---
 
-## Implementation Steps
+## Implementation Order
 
-1. Create `js/constants.js` — copy constants, verify nothing breaks.
-2. Create `js/state.js` — move state + timer vars.
-3. Create `js/ui.js` — move the `ui` object.
-4. Create `js/utils.js` — move 4 helpers, import `ui`.
-5. Create `js/storage.js` — move 2 functions, wire imports.
-6. Create `js/render.js` — move `updateUI`, split into 3 internal helpers.
-7. Create `js/loop.js` — move `mainLoop` + `transitionToPhase`, split into `tickPhase1`/`tickPhase2`.
-8. Create `js/events.js` — move all listeners into `registerEventListeners()`.
-9. Create `js/main.js` — wire everything together as the entry point.
-10. Update `index.html` — replace `<script src="js/app.js">` with `<script type="module" src="js/main.js">`.
-11. Delete `js/app.js`.
-12. Smoke-test both phases, debug panel, and save/load in the browser.
+1. Add `.gitignore`, run `npm init -y`, `npm install --save-dev vite typescript`
+2. Add `tsconfig.json` and `vite.config.ts`
+3. Update `package.json` scripts
+4. Create `src/types.ts` (no deps — start here)
+5. Create `src/constants.ts`
+6. Create `src/state.ts`
+7. Create `src/ui.ts`
+8. Create `src/utils.ts`
+9. Create `src/storage.ts`
+10. Create `src/render.ts`
+11. Create `src/loop.ts`
+12. Create `src/events.ts`
+13. Create `src/main.ts`
+14. Update `index.html` script tag
+15. Run `npm run dev` — verify both phases work locally
+16. Delete `js/app.js`
+17. Run `npm run build` — confirm zero type errors and successful bundle
+18. Create `.github/workflows/deploy.yml`
+19. Enable GitHub Pages (Actions source) in repo settings
+20. Push to `main` — verify the Actions run succeeds and the live URL works
