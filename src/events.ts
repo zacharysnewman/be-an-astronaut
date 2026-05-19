@@ -12,6 +12,7 @@ import {
   PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
+  PRETTIFY_TIER_COSTS,
   SAVE_STORAGE_KEY,
 } from './constants';
 
@@ -79,6 +80,43 @@ export function registerEventListeners(): void {
 
   const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
   const [js1Cost, js2Cost, js3Cost] = JOB_SEARCH_TIER_COSTS;
+  const [p1Cost, p2Cost, p3Cost, p4Cost] = PRETTIFY_TIER_COSTS;
+
+  ui.btnUpgradePrettifyT1.addEventListener('click', () => {
+    if (state.prettinessLevel === 0 && state.appsThruScreening >= p1Cost) {
+      state.appsThruScreening -= p1Cost;
+      state.prettinessLevel = 1;
+      logMessage('Resume reformatted with professional layout. Desirability increased.', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradePrettifyT2.addEventListener('click', () => {
+    if (state.prettinessLevel === 1 && state.appsThruScreening >= p2Cost) {
+      state.appsThruScreening -= p2Cost;
+      state.prettinessLevel = 2;
+      logMessage('Resume enhanced with curated achievements section. Desirability increased.', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradePrettifyT3.addEventListener('click', () => {
+    if (state.prettinessLevel === 2 && state.appsThruScreening >= p3Cost) {
+      state.appsThruScreening -= p3Cost;
+      state.prettinessLevel = 3;
+      logMessage('Resume polished with executive summary and metrics. Desirability increased.', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradePrettifyT4.addEventListener('click', () => {
+    if (state.prettinessLevel === 3 && state.appsThruScreening >= p4Cost) {
+      state.appsThruScreening -= p4Cost;
+      state.prettinessLevel = 4;
+      logMessage('Resume perfected with portfolio links and testimonials. Desirability maximized.', 'good');
+    }
+    updateUI();
+  });
 
   ui.btnUpgradeEfficiencyT1.addEventListener('click', () => {
     if (state.efficiencyTier === 0 && state.appsThruScreening >= t1Cost) {

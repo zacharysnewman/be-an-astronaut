@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, BASE_DESIRABILITY, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown,
@@ -70,20 +70,26 @@ function tickPhase1(dt: number): void {
       state.hasSubmittedApp = true;
     }
 
-    // ATS screening: drain Unread Applications → Apps Through Screening
-    // When the queue empties, pause for PROCESSOR_COOLDOWN_S before resuming.
+    // ATS screening: drain Unread Applications, split by desirability into pass-through vs. rejected.
+    // Keywords drive processing speed; desirability (reduced by keywords, boosted by prettiness)
+    // determines what fraction actually reaches appsThruScreening.
     if (screeningCooldown > 0) {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
-      const effectiveKeywords = state.keywords + state.prettinessLevel;
-      const outflowRate = effectiveKeywords > 0 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
-      const realizedOutflow = Math.min(outflowRate * dt, state.unreadApplications);
-      if (realizedOutflow > 0) {
-        state.unreadApplications -= realizedOutflow;
-        state.appsThruScreening += realizedOutflow;
-        state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
-        addTotalAppsScreened(realizedOutflow);
-        state.hasScreenedApp = true;
+      const outflowRate = state.keywords > 0 ? Math.pow(1.9, state.keywords - 2.5) : 0;
+      const desirability = Math.max(0, Math.min(1,
+        BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY
+      ));
+      const totalOutflow = Math.min(outflowRate * dt, state.unreadApplications);
+      if (totalOutflow > 0) {
+        state.unreadApplications -= totalOutflow;
+        const passThrough = totalOutflow * desirability;
+        if (passThrough > 0) {
+          state.appsThruScreening += passThrough;
+          state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
+          addTotalAppsScreened(passThrough);
+          state.hasScreenedApp = true;
+        }
       }
       if (state.unreadApplications <= 0) {
         setScreeningCooldown(PROCESSOR_COOLDOWN_S);
