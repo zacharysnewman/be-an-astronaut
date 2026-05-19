@@ -9,7 +9,7 @@ export function logMessage(msg: string, type: LogType = ''): void {
   if (type === 'promo')  colorStyle = 'color: #55aaff; font-weight: bold;';
   if (type === 'system') colorStyle = 'color: #d284fc;';
 
-  ui.log.innerHTML = `<span style="${colorStyle}">[${time}] ${msg}</span><br>` + ui.log.innerHTML;
+  ui.log.innerHTML += `<div style="${colorStyle}">[${time}] ${msg}</div>`;
 }
 
 export function formatMoney(amount: number): string {

@@ -46,12 +46,16 @@ body {
 
 #log {
     height: 100%;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 8px 15px;
     padding-left: max(15px, env(safe-area-inset-left, 0px));
     padding-right: max(15px, env(safe-area-inset-right, 0px));
     user-select: text;
-    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-size: 12px;
+    line-height: 1.4;
 }
 
 #log::-webkit-scrollbar { width: 8px; }
@@ -110,6 +114,10 @@ h2.section-title {
     padding-bottom: 2px;
 }
 
+#phase1-container > h2.section-title:first-child {
+    margin-top: 8px;
+}
+
 .retro-box {
     border: 1px solid #000000;
     padding: 12px;
@@ -158,6 +166,14 @@ button:disabled {
     color: #888888;
     border-color: #d3d3d3;
     cursor: not-allowed;
+}
+
+.btn-inline {
+    min-height: 0;
+    padding: 1px 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    vertical-align: baseline;
 }
 
 /* Provider Tabs */

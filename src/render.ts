@@ -24,7 +24,7 @@ function renderPhase1(): void {
   }
 
   const totalDrain = 0.01 + providerRate;
-  ui.income.innerText = `(${formatMoney(-totalDrain)} / sec)`;
+  ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
   ui.income.classList.remove('good');
 
@@ -32,10 +32,20 @@ function renderPhase1(): void {
   ui.apps.innerText = formatComma(state.applications);
 
   const finderOut = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
-  ui.finderRateInd.innerText = finderOut > 0 ? `(+${finderOut}/s)` : '';
+  if (finderOut > 0) {
+    ui.finderRateRow.classList.remove('hidden');
+    ui.finderRateDisplay.innerText = `+${finderOut}/s`;
+  } else {
+    ui.finderRateRow.classList.add('hidden');
+  }
 
   const submitterOut = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
-  ui.submitterRateInd.innerText = submitterOut > 0 ? `(+${submitterOut}/s)` : '';
+  if (submitterOut > 0) {
+    ui.submitterRateRow.classList.remove('hidden');
+    ui.submitterRateDisplay.innerText = `+${submitterOut}/s`;
+  } else {
+    ui.submitterRateRow.classList.add('hidden');
+  }
 
   ui.btnFind.disabled = state.money <= 0;
   ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
@@ -64,9 +74,9 @@ function renderPhase1(): void {
     ui.providerContainer.classList.remove('hidden');
 
     const baseVal = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
-    ui.rateFinite.innerText   = `($${(baseVal * state.finiteMultiplier).toFixed(4)}/s)`;
-    ui.rateWeeklink.innerText = `($${(baseVal * state.weeklinkMultiplier).toFixed(4)}/s)`;
-    ui.rateBliply.innerText   = `($${(baseVal * state.bliplyMultiplier).toFixed(4)}/s)`;
+    ui.rateFinite.innerText   = `$${(baseVal * state.finiteMultiplier).toFixed(4)}/s`;
+    ui.rateWeeklink.innerText = `$${(baseVal * state.weeklinkMultiplier).toFixed(4)}/s`;
+    ui.rateBliply.innerText   = `$${(baseVal * state.bliplyMultiplier).toFixed(4)}/s`;
 
     ui.btnFinite.disabled   = state.contractLocked;
     ui.btnWeeklink.disabled = state.contractLocked;
@@ -121,7 +131,7 @@ function renderPhase1(): void {
 
 function renderPhase2(): void {
   const hourlySalary = state.level * 0.01;
-  ui.income.innerText = `(+${formatMoney(hourlySalary)} / sec)`;
+  ui.income.innerText = `+${formatMoney(hourlySalary)}/s`;
   ui.income.classList.remove('bad');
   ui.income.classList.add('good');
 
@@ -139,7 +149,7 @@ function renderPhase2(): void {
   ui.btnLunch.classList.toggle('hidden', state.approval < 80);
 
   if (state.typistLevel > 0 || state.courierLevel > 0) {
-    ui.reportRate.innerText = `(+${state.typistLevel * 2}/s | -${state.courierLevel * 2}/s)`;
+    ui.reportRate.innerText = `+${state.typistLevel * 2}/s | -${state.courierLevel * 2}/s`;
   } else {
     ui.reportRate.innerText = '';
   }
