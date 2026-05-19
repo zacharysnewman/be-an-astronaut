@@ -38,7 +38,7 @@ function tickPhase1(dt: number): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
+  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 25) / 10000;
   const totalDrain = baseRate + automationFlat;
   state.money -= totalDrain * dt;
 
@@ -77,7 +77,7 @@ function tickPhase1(dt: number): void {
     if (state.openClawSubmitLevel >= 1) {
       state.providerTimer -= dt;
       if (state.providerTimer <= 0.0) {
-        state.providerTimer = 20.0;
+        state.providerTimer = 60.0;
         state.contractLocked = false;
 
         state.providerPriceIndex = (state.providerPriceIndex + 1) % PROVIDER_PRICE_SETS.length;

@@ -21,7 +21,7 @@ export const state: GameState = {
 
   selectedProvider: 'finite',
   contractLocked: false,
-  providerTimer: 20.0,
+  providerTimer: 60.0,
   finiteMultiplier: 1.0,
   weeklinkMultiplier: 1.5,
   bliplyMultiplier: 2.2,

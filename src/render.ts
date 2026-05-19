@@ -18,7 +18,7 @@ function renderPhase1(): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
+  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 25) / 10000;
   const totalDrain = baseRate + automationFlat;
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
@@ -67,7 +67,7 @@ function renderPhase1(): void {
   if (isSubmitUnlocked) {
     ui.providerContainer.classList.remove('hidden');
 
-    const flat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
+    const flat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 25) / 10000;
     ui.rateFinite.innerText   = `$${(0.01 * state.finiteMultiplier   + flat).toFixed(2)}/s`;
     ui.rateWeeklink.innerText = `$${(0.01 * state.weeklinkMultiplier + flat).toFixed(2)}/s`;
     ui.rateBliply.innerText   = `$${(0.01 * state.bliplyMultiplier   + flat).toFixed(2)}/s`;
