@@ -13,15 +13,7 @@ const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
 
 function renderPhase1(): void {
   let providerRate = 0.0;
-  const activeFeePenalty = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
-
-  if (state.openClawSubmitLevel >= 1) {
-    if (state.selectedProvider === 'finite')   providerRate = activeFeePenalty * state.finiteMultiplier;
-    else if (state.selectedProvider === 'weeklink') providerRate = activeFeePenalty * state.weeklinkMultiplier;
-    else if (state.selectedProvider === 'bliply')   providerRate = activeFeePenalty * state.bliplyMultiplier;
-  } else {
-    providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
-  }
+  providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
 
   const totalDrain = 0.01 + providerRate;
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
@@ -72,9 +64,9 @@ function renderPhase1(): void {
     ui.providerContainer.classList.remove('hidden');
 
     const baseVal = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
-    ui.rateFinite.innerText   = `$${(baseVal * state.finiteMultiplier).toFixed(4)}/s`;
-    ui.rateWeeklink.innerText = `$${(baseVal * state.weeklinkMultiplier).toFixed(4)}/s`;
-    ui.rateBliply.innerText   = `$${(baseVal * state.bliplyMultiplier).toFixed(4)}/s`;
+    ui.rateFinite.innerText   = `$${(baseVal * state.finiteMultiplier).toFixed(2)}/s`;
+    ui.rateWeeklink.innerText = `$${(baseVal * state.weeklinkMultiplier).toFixed(2)}/s`;
+    ui.rateBliply.innerText   = `$${(baseVal * state.bliplyMultiplier).toFixed(2)}/s`;
 
     ui.btnFinite.disabled   = state.contractLocked;
     ui.btnWeeklink.disabled = state.contractLocked;

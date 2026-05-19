@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { state } from './state';
+import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
   totalJobsFound, totalAppsSubmitted, rateJobsSnap, rateAppsSnap, rateTimer,
@@ -31,15 +31,7 @@ export function transitionToPhase(target: Phase): void {
 
 function tickPhase1(dt: number): void {
   let providerRate = 0.0;
-  const activeFeePenalty = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
-
-  if (state.openClawSubmitLevel >= 1) {
-    if (state.selectedProvider === 'finite')        providerRate = activeFeePenalty * state.finiteMultiplier;
-    else if (state.selectedProvider === 'weeklink') providerRate = activeFeePenalty * state.weeklinkMultiplier;
-    else if (state.selectedProvider === 'bliply')   providerRate = activeFeePenalty * state.bliplyMultiplier;
-  } else {
-    providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
-  }
+  providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
 
   const totalDrain = 0.01 + providerRate;
   state.money -= totalDrain * dt;
@@ -81,9 +73,11 @@ function tickPhase1(dt: number): void {
         state.providerTimer = 20.0;
         state.contractLocked = false;
 
-        state.finiteMultiplier   = 0.5 + Math.random() * 3.0;
-        state.weeklinkMultiplier = 0.5 + Math.random() * 3.0;
-        state.bliplyMultiplier   = 0.5 + Math.random() * 3.0;
+        state.providerPriceIndex = (state.providerPriceIndex + 1) % PROVIDER_PRICE_SETS.length;
+        const priceSet = PROVIDER_PRICE_SETS[state.providerPriceIndex];
+        state.finiteMultiplier   = priceSet.finite;
+        state.weeklinkMultiplier = priceSet.weeklink;
+        state.bliplyMultiplier   = priceSet.bliply;
 
         logMessage('Billing contract window reset. Provider tariffs adjusted.', 'system');
       }
