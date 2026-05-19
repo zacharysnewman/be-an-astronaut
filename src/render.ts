@@ -53,8 +53,8 @@ function renderPhase1(): void {
     ui.submitterRateRow.classList.add('hidden');
   }
 
-  // ATS screening section — visible once the player owns at least one Auto-Finder or Auto-Submitter
-  const showScreening = state.openClawFinderLevel >= 1 || state.openClawSubmitLevel >= 1;
+  // ATS screening section — visible once the player owns at least one Auto-Finder AND one Auto-Submitter
+  const showScreening = state.openClawFinderLevel >= 1 && state.openClawSubmitLevel >= 1;
   ui.keywordsSection.classList.toggle('hidden', !showScreening);
 
   const effectiveKeywords = state.keywords + state.prettinessLevel;
@@ -81,7 +81,7 @@ function renderPhase1(): void {
   ui.finderCostDisplay.innerText = formatComma(finderCost);
   ui.btnUpgradeFinder.disabled = state.applications < finderCost;
 
-  if (state.openClawFinderLevel >= 1) {
+  if (state.openClawFinderLevel > 1) {
     ui.upgradeSubmitterRow.classList.remove('hidden');
     const submitterCost = getLinearCost(BASE_SUBMITTER_COST, state.openClawSubmitLevel);
     ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
