@@ -16,9 +16,9 @@ import {
 
 export function registerEventListeners(): void {
   ui.btnBeg.addEventListener('click', () => {
-    let pAmount = 3.00;
-    if (state.parentalTier === 2) pAmount = 6.00;
-    if (state.parentalTier >= 3)  pAmount = 9.00;
+    let pAmount = 6.00;
+    if (state.parentalTier === 2) pAmount = 12.00;
+    if (state.parentalTier >= 3)  pAmount = 18.00;
 
     if (state.money <= 0.0) {
       state.money += pAmount;
@@ -104,7 +104,7 @@ export function registerEventListeners(): void {
     if (state.applications >= 2000 && state.parentalTier === 1) {
       state.applications -= 2000;
       state.parentalTier = 2;
-      logMessage('Parental Trust optimized to Tier 2. Emergency wire allowance increased to $6.00.', 'good');
+      logMessage('Parental Trust optimized to Tier 2. Emergency wire allowance increased to $12.00.', 'good');
     }
     updateUI();
   });
@@ -113,7 +113,7 @@ export function registerEventListeners(): void {
     if (state.applications >= 4000 && state.parentalTier === 2) {
       state.applications -= 4000;
       state.parentalTier = 3;
-      logMessage('Parental Trust optimized to Tier 3. Elite family trust wires $9.00.', 'good');
+      logMessage('Parental Trust optimized to Tier 3. Elite family trust wires $18.00.', 'good');
     }
     updateUI();
   });

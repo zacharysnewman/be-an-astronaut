@@ -43,9 +43,9 @@ function tickPhase1(dt: number): void {
   if (state.money <= 0.0) {
     state.money = 0.0;
     if (state.parentalTier === 4) {
-      state.money += 9.00;
+      state.money += 18.00;
       state.hasBegged = true;
-      logMessage('Automated Script: Direct trust wire injection completed. Directing +$9.00.', 'system');
+      logMessage('Automated Script: Direct trust wire injection completed. Directing +$18.00.', 'system');
     }
   }
 

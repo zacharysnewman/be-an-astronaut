@@ -197,11 +197,6 @@ export function updateUI(): void {
     document.body.classList.remove('overlay-active');
   }
 
-  let manualPayoutAmt = 3.00;
-  if (state.parentalTier === 2) manualPayoutAmt = 6.00;
-  if (state.parentalTier >= 3) manualPayoutAmt = 9.00;
-  ui.begCostLabel.innerText = `+$${manualPayoutAmt.toFixed(2)}`;
-
   if (state.money <= 0.0) {
     ui.btnBeg.disabled = false;
   } else {
