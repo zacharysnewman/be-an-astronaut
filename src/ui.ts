@@ -28,6 +28,13 @@ export const ui = {
   finderRateDisplay: el('finder-rate-display'),
   submitterRateRow: el('submitter-rate-row'),
   submitterRateDisplay: el('submitter-rate-display'),
+  appsThruScreeningRow: el('apps-thru-screening-row'),
+  appsThruScreeningDisplay: el('apps-thru-screening-display'),
+  keywordsSection: el('keywords-section'),
+  keywordsDisplay: el('keywords-display'),
+  btnKeywordsDown: el<HTMLButtonElement>('btn-keywords-down'),
+  btnKeywordsUp: el<HTMLButtonElement>('btn-keywords-up'),
+  screeningRateDisplay: el('screening-rate-display'),
 
   automationCardP1: el('automation-p1-card'),
   finderBadge: el('finder-level-badge'),
