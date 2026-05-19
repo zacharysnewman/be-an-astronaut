@@ -36,6 +36,7 @@ function renderPhase1(): void {
   ui.totalAppsDisplay.innerText = formatComma(totalAppsSubmitted);
   ui.availJobs.innerText = formatComma(state.availableJobs);
   ui.apps.innerText = formatComma(state.applications);
+  ui.unreadAppsDisplay.innerText = formatComma(state.unreadApplications);
   ui.appsThruScreeningDisplay.innerText = formatComma(state.appsThruScreening);
 
   if (state.hasFoundJob) {
@@ -52,9 +53,8 @@ function renderPhase1(): void {
     ui.submitterRateRow.classList.add('hidden');
   }
 
-  // ATS screening section
-  const showScreening = state.hasUnlockedSubmission;
-  ui.appsThruScreeningRow.classList.toggle('hidden', !showScreening);
+  // ATS screening section — visible once the player owns at least one Auto-Finder or Auto-Submitter
+  const showScreening = state.openClawFinderLevel >= 1 || state.openClawSubmitLevel >= 1;
   ui.keywordsSection.classList.toggle('hidden', !showScreening);
 
   const effectiveKeywords = state.keywords + state.prettinessLevel;

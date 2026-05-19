@@ -7,7 +7,8 @@ export interface GameState {
   phase:                Phase;
   money:                number;
   availableJobs:        number;
-  applications:         number;  // Unread Apps buffer (submitted, awaiting ATS screening)
+  applications:         number;  // Applications total (cumulative submitted count)
+  unreadApplications:   number;  // ATS buffer: fills with submissions, drains to appsThruScreening
   appsThruScreening:    number;  // Screened apps — the spendable currency/score
   maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
   keywords:             number;  // Player-controlled ATS keyword count

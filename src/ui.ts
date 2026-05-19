@@ -28,7 +28,7 @@ export const ui = {
   finderRateDisplay: el('finder-rate-display'),
   submitterRateRow: el('submitter-rate-row'),
   submitterRateDisplay: el('submitter-rate-display'),
-  appsThruScreeningRow: el('apps-thru-screening-row'),
+  unreadAppsDisplay: el('unread-apps-display'),
   appsThruScreeningDisplay: el('apps-thru-screening-display'),
   keywordsSection: el('keywords-section'),
   keywordsDisplay: el('keywords-display'),

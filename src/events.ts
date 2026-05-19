@@ -52,7 +52,8 @@ export function registerEventListeners(): void {
   ui.btnApply.addEventListener('click', () => {
     if (state.money > 0 && state.availableJobs >= 1) {
       state.availableJobs -= 1.0;
-      state.applications += 1.0;  // goes into Unread Apps buffer
+      state.applications += 1.0;
+      state.unreadApplications += 1.0;
       addTotalAppsSubmitted(1.0);
       state.hasSubmittedApp = true;
     }
