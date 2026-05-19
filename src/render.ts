@@ -185,16 +185,16 @@ export function updateUI(): void {
   ui.money.innerText = formatMoney(state.money);
 
   ui.tabMacrofirm.disabled = state.phase < 2;
-  ui.headerBeg.classList.toggle('hidden', state.money > 0.0);
 
   const isBankrupt = state.phase === 1 && state.money <= 0.0;
   if (isBankrupt) {
     ui.money.classList.add('flashing-bankrupt');
     ui.bankruptcyOverlay.classList.remove('hidden');
-    window.scrollTo(0, 0);
+    document.body.classList.add('overlay-active');
   } else {
     ui.money.classList.remove('flashing-bankrupt');
     ui.bankruptcyOverlay.classList.add('hidden');
+    document.body.classList.remove('overlay-active');
   }
 
   let manualPayoutAmt = 3.00;

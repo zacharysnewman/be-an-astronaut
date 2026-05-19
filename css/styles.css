@@ -96,15 +96,8 @@ body {
     font-weight: bold;
 }
 
-#header-beg {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
 #beg-cost-label {
     font-size: 12px;
-    white-space: nowrap;
 }
 
 .content-container {
@@ -227,18 +220,21 @@ button:disabled {
 }
 
 /* Visual Bankruptcy Shroud Overlay */
+body.overlay-active {
+    overflow: hidden;
+}
+
 #bankruptcy-overlay {
     position: fixed;
-    top: calc(182px + env(safe-area-inset-top, 0px)); /* Placed cleanly below header-row to leave beg button unblocked */
+    top: 0;
     left: 0;
     right: 0;
-    bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+    bottom: 0;
     background-color: rgba(255, 255, 255, 0.50);
-    z-index: 100;
+    z-index: 125;
     display: flex;
     justify-content: center;
     align-items: center;
-    pointer-events: auto; /* Hard-locks visual screen actions below */
 }
 
 .wifi-shroud-center {
@@ -247,8 +243,16 @@ button:disabled {
     border: 2px solid #ff0000;
     box-shadow: 4px 4px 0px #000000;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 16px;
+}
+
+#header-beg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
 /* Red Flashing Counter */

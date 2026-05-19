@@ -13,7 +13,6 @@ export const ui = {
 
   goalGetJob: el('goal-get-job'),
   goalCheckJob: el('goal-check-job'),
-  headerBeg: el('header-beg'),
 
   availJobs: el('avail-jobs-display'),
   apps: el('apps-display'),
