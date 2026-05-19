@@ -1,4 +1,4 @@
-import { SAVE_STORAGE_KEY, OLD_SAVE_STORAGE_KEY } from './constants';
+import { SAVE_STORAGE_KEY } from './constants';
 import { state } from './state';
 import type { GameState } from './types';
 import { logMessage } from './utils';
@@ -25,23 +25,6 @@ export function loadCloudState(): void {
         return;
       }
     }
-
-    // Migrate from v4: in v4 'applications' was the currency; in v5 that's 'appsThruScreening'
-    const rawV4 = localStorage.getItem(OLD_SAVE_STORAGE_KEY);
-    if (rawV4) {
-      const loaded = JSON.parse(rawV4) as Record<string, unknown>;
-      if (typeof loaded === 'object' && loaded !== null) {
-        Object.assign(state, loaded);
-        state.appsThruScreening = (loaded.applications as number | undefined) ?? 0;
-        state.applications = 0;
-        if (loaded.efficiencyUnlocked === true && state.efficiencyTier === 0) {
-          state.efficiencyTier = 1;
-        }
-        logMessage('Session migrated from v4 profile. Previous applications credited to screening pipeline.', 'good');
-        return;
-      }
-    }
-
     logMessage('No existing cloud profile detected. Welcoming new applicant.', 'system');
   } catch (_e) {
     logMessage('Local sandbox restricted saving. Session will reset on reload.', 'bad');

@@ -26,6 +26,10 @@ Upgrade rows follow the "25% reveal" rule: a row becomes visible once the player
 
 The helper `shouldShowUpgrade(maxResource, cost, purchased)` in `render.ts` encodes this rule — use it for all new one-time upgrade rows.
 
+# No backwards compatibility
+
+This app is unreleased. Do not write save migration code, legacy key fallbacks, or any other backwards-compatibility shims. When the save format changes, just bump the save key and let old saves be abandoned. Delete the old key constant and any migration logic entirely.
+
 # Service provider section
 
 The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state/logic in `loop.ts` remains intact, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.

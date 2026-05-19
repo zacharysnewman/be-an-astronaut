@@ -13,7 +13,6 @@ import {
   PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
   SAVE_STORAGE_KEY,
-  OLD_SAVE_STORAGE_KEY,
 } from './constants';
 
 export function registerEventListeners(): void {
@@ -274,7 +273,6 @@ export function registerEventListeners(): void {
   document.getElementById('btn-debug-reset')!.addEventListener('click', () => {
     if (confirm('Execute master database wipe? All progress will revert to zero.')) {
       localStorage.removeItem(SAVE_STORAGE_KEY);
-      localStorage.removeItem(OLD_SAVE_STORAGE_KEY);
       location.reload();
     }
   });
