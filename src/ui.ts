@@ -34,6 +34,7 @@ export const ui = {
   keywordsDisplay: el('keywords-display'),
   btnKeywordsDown: el<HTMLButtonElement>('btn-keywords-down'),
   btnKeywordsUp: el<HTMLButtonElement>('btn-keywords-up'),
+  screeningRateRow: el('screening-rate-row'),
   screeningRateDisplay: el('screening-rate-display'),
 
   automationCardP1: el('automation-p1-card'),

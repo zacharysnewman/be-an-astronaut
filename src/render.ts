@@ -1,4 +1,4 @@
-import { state, jobsFoundRate, appsSubmittedRate, displayedMoney, totalAppsSubmitted } from './state';
+import { state, jobsFoundRate, appsSubmittedRate, appsScreenedRate, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { formatMoney, getLinearCost, getGeometricCost } from './utils';
 import {
@@ -41,14 +41,14 @@ function renderPhase1(): void {
 
   if (state.hasFoundJob) {
     ui.finderRateRow.classList.remove('hidden');
-    ui.finderRateDisplay.innerText = `+${jobsFoundRate.toFixed(1)}/s`;
+    ui.finderRateDisplay.innerText = `+${jobsFoundRate.toFixed(1)}`;
   } else {
     ui.finderRateRow.classList.add('hidden');
   }
 
   if (state.hasSubmittedApp) {
     ui.submitterRateRow.classList.remove('hidden');
-    ui.submitterRateDisplay.innerText = `+${appsSubmittedRate.toFixed(1)}/s`;
+    ui.submitterRateDisplay.innerText = `+${appsSubmittedRate.toFixed(1)}`;
   } else {
     ui.submitterRateRow.classList.add('hidden');
   }
@@ -57,16 +57,13 @@ function renderPhase1(): void {
   const showScreening = state.openClawFinderLevel >= 1 && state.openClawSubmitLevel >= 1;
   ui.keywordsSection.classList.toggle('hidden', !showScreening);
 
-  const effectiveKeywords = state.keywords + state.prettinessLevel;
-  const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
   ui.keywordsDisplay.innerText = String(state.keywords);
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
-  if (outflowRate > 0) {
-    ui.screeningRateDisplay.innerText = `${outflowRate.toFixed(2)}/s`;
-    ui.screeningRateDisplay.className = 'good';
+  if (state.hasScreenedApp) {
+    ui.screeningRateRow.classList.remove('hidden');
+    ui.screeningRateDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
   } else {
-    ui.screeningRateDisplay.innerText = `0.00/s (need ≥3 keywords)`;
-    ui.screeningRateDisplay.className = '';
+    ui.screeningRateRow.classList.add('hidden');
   }
 
   ui.btnFind.disabled = state.money <= 0;
