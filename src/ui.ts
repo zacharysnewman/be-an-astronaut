@@ -5,6 +5,14 @@ function el<T extends HTMLElement>(id: string): T {
 export const ui = {
   p1Container: el('phase1-container'),
   p2Container: el('phase2-container'),
+  goalsContainer: el('goals-container'),
+
+  tabJobSearch: el<HTMLButtonElement>('tab-job-search'),
+  tabGoals: el<HTMLButtonElement>('tab-goals'),
+  tabMacrofirm: el<HTMLButtonElement>('tab-macrofirm'),
+
+  goalGetJob: el('goal-get-job'),
+  goalCheckJob: el('goal-check-job'),
 
   availJobs: el('avail-jobs-display'),
   apps: el('apps-display'),

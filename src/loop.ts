@@ -8,21 +8,20 @@ import { ui } from './ui';
 import { logMessage } from './utils';
 import { triggerCloudSave } from './storage';
 import { updateUI } from './render';
+import { switchTab } from './tabs';
 
 export function transitionToPhase(target: Phase): void {
   if (target === 2) {
     state.phase = 2;
     state.approval = 50.0;
-    ui.p1Container.classList.add('hidden');
-    ui.p2Container.classList.remove('hidden');
     ui.bankruptcyOverlay.classList.add('hidden');
     logMessage('Macrofirm Interview successfully completed. Assigned Desk 4B. Get to work.', 'promo');
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    switchTab('macrofirm');
   } else {
     state.phase = 1;
-    ui.p2Container.classList.add('hidden');
-    ui.p1Container.classList.remove('hidden');
     logMessage('Corporate connection severed. Returned to Indebt Jobseeker directory.', 'system');
+    switchTab('job-search');
   }
   updateUI();
 }

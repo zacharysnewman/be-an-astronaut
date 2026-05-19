@@ -71,7 +71,44 @@
             </div>
         </div>
 
-        <!-- PHASE 1: "Indebt.com" Portal -->
+        <!-- Personal Goals Panel -->
+        <div id="goals-container" class="hidden">
+            <h2 class="section-title">Personal Goals</h2>
+
+            <div class="goal-item">
+                <span class="goal-check">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Fly to the Moon</span>
+                    <span class="goal-tag">long term</span>
+                </div>
+            </div>
+
+            <div class="goal-item">
+                <span class="goal-check">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Become an Astronaut</span>
+                    <span class="goal-tag">medium term</span>
+                </div>
+            </div>
+
+            <div class="goal-item">
+                <span class="goal-check">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Move Out</span>
+                    <span class="goal-tag">short term</span>
+                </div>
+            </div>
+
+            <div class="goal-item" id="goal-get-job">
+                <span class="goal-check" id="goal-check-job">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Get a Job</span>
+                    <span class="goal-tag">immediate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Search (Phase 1) -->
         <div id="phase1-container">
             <h2 class="section-title">Indebt.com</h2>
             <div class="stat-row">Internet Fees: <span id="income-display" class="bad">-$0.01/s</span></div>
@@ -210,6 +247,13 @@
         </div>
 
     </div>
+
+    <!-- Bottom Tab Bar -->
+    <nav id="tab-bar">
+        <button class="tab-btn tab-active" id="tab-job-search">Job Search</button>
+        <button class="tab-btn" id="tab-goals">Personal Goals</button>
+        <button class="tab-btn" id="tab-macrofirm" disabled>Macrofirm Job</button>
+    </nav>
 
     <script type="module" src="/src/main.ts"></script>
 </body>

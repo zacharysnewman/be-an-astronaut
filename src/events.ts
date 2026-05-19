@@ -4,6 +4,7 @@ import { logMessage, formatMoney, getExponentialCost, getGeometricCost } from '.
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
 import { updateUI } from './render';
+import { switchTab } from './tabs';
 import {
   BASE_FINDER_COST,
   BASE_SUBMITTER_COST,
@@ -211,6 +212,11 @@ export function registerEventListeners(): void {
     }
     updateUI();
   });
+
+  // Tab bar
+  ui.tabJobSearch.addEventListener('click', () => switchTab('job-search'));
+  ui.tabGoals.addEventListener('click', () => switchTab('goals'));
+  ui.tabMacrofirm.addEventListener('click', () => switchTab('macrofirm'));
 
   // Debug panel
   document.getElementById('debug-toggle')!.addEventListener('click', () => {

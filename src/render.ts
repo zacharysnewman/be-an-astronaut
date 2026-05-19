@@ -181,8 +181,16 @@ function renderPhase2(): void {
   }
 }
 
+function renderGoals(): void {
+  const jobDone = state.phase >= 2;
+  ui.goalGetJob.classList.toggle('goal-done', jobDone);
+  ui.goalCheckJob.innerText = jobDone ? '☑' : '☐';
+}
+
 export function updateUI(): void {
   ui.money.innerText = formatMoney(state.money);
+
+  ui.tabMacrofirm.disabled = state.phase < 2;
 
   const isBankrupt = state.phase === 1 && state.money <= 0.0;
   if (isBankrupt) {
@@ -205,6 +213,7 @@ export function updateUI(): void {
     ui.btnBeg.disabled = state.applications < 50;
   }
 
+  renderGoals();
   if (state.phase === 1) renderPhase1();
   else if (state.phase === 2) renderPhase2();
 }
