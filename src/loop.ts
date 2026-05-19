@@ -82,7 +82,7 @@ function tickPhase1(dt: number): void {
         state.hasSubmittedApp = true;
       }
       if (state.availableJobs <= 0) {
-        setSubmitterCooldown(1.0);
+        setSubmitterCooldown(2.0);
       }
     }
 
