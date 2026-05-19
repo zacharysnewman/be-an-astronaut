@@ -5,7 +5,7 @@ export const PROVIDER_PRICE_SETS = generateProviderPriceSets(15);
 
 export const state: GameState = {
   phase: 1,
-  money: 1.00,
+  money: 5.00,
 
   availableJobs: Math.floor(Math.random() * 11) + 10,
   applications: 0.0,
