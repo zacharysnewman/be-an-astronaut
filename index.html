@@ -90,8 +90,32 @@
 
         <!-- Job Search (Phase 1) -->
         <div id="phase1-container">
-            <h2 class="section-title">Indebt.com</h2>
+            <!-- Internet Service section (always visible) -->
+            <h2 class="section-title">Internet Service</h2>
             <div class="stat-row">Internet Fees: <span id="income-display" class="bad">-$0.01/s</span></div>
+
+            <!-- Dynamic Internet Provider & Contract Selector Gated Box -->
+            <div id="provider-container" class="retro-box hidden">
+                <b>Internet Providers</b>
+
+                <div class="provider-grid">
+                    <button class="provider-tab" id="provider-finite">
+                        <b>Finite</b>
+                        <span id="rate-finite">$0.00/s</span>
+                    </button>
+                    <button class="provider-tab" id="provider-weeklink">
+                        <b>WeekLink</b>
+                        <span id="rate-weeklink">$0.00/s</span>
+                    </button>
+                    <button class="provider-tab" id="provider-bliply">
+                        <b>Bliply</b>
+                        <span id="rate-bliply">$0.00/s</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Job Search section -->
+            <h2 class="section-title">Indebt.com</h2>
 
             <!-- Inline Compact Discovery Rows -->
             <div id="inline-job-row" class="stat-row">
@@ -119,26 +143,6 @@
                 <div id="upgrade-submitter-row" class="stat-row hidden">
                     <button id="btn-upgrade-submitter">Upgrade Auto-Submitter</button>
                     Level: <span id="submitter-level-badge">0</span> | Cost: <span id="submitter-cost-display">50</span> Apps
-                </div>
-            </div>
-
-            <!-- Dynamic Internet Provider & Contract Selector Gated Box -->
-            <div id="provider-container" class="retro-box hidden">
-                <b>Internet Providers</b>
-
-                <div class="provider-grid">
-                    <button class="provider-tab" id="provider-finite">
-                        <b>Finite</b>
-                        <span id="rate-finite">$0.00/s</span>
-                    </button>
-                    <button class="provider-tab" id="provider-weeklink">
-                        <b>WeekLink</b>
-                        <span id="rate-weeklink">$0.00/s</span>
-                    </button>
-                    <button class="provider-tab" id="provider-bliply">
-                        <b>Bliply</b>
-                        <span id="rate-bliply">$0.00/s</span>
-                    </button>
                 </div>
             </div>
 
