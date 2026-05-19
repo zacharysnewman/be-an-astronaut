@@ -30,6 +30,10 @@ The helper `shouldShowUpgrade(maxResource, cost, purchased)` in `render.ts` enco
 
 This app is unreleased. Do not write save migration code, legacy key fallbacks, or any other backwards-compatibility shims. When the save format changes, just bump the save key and let old saves be abandoned. Delete the old key constant and any migration logic entirely.
 
+# Commit descriptions
+
+Commit descriptions (the body, not the subject line) should be a brief, bulleted summary of changes — one bullet per logical change, no prose paragraphs.
+
 # Service provider section
 
 The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state/logic in `loop.ts` remains intact, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.

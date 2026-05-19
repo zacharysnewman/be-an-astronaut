@@ -9,6 +9,7 @@ export const state: GameState = {
 
   availableJobs: 0.0,
   applications: 0.0,
+  unreadApplications: 0.0,
   appsThruScreening: 0.0,
   maxAppsReached: 0.0,
   keywords: 0,
