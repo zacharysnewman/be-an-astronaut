@@ -41,7 +41,7 @@ export function registerEventListeners(): void {
     if (state.money >= 1.00) {
       state.money -= 1.00;
       const mult = Math.pow(10, state.jobSearchTier);
-      state.availableJobs = (Math.floor(Math.random() * 11) + 10) * mult;
+      state.availableJobs = (Math.floor(Math.random() * 101) + 100) * mult;
     }
     updateUI();
   });
