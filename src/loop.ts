@@ -2,11 +2,11 @@ import type { Phase } from './types';
 import { EFFICIENCY_TIER_MULTS } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
+  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, submitterCooldown,
   totalJobsFound, totalAppsSubmitted, totalAppsScreened,
   rateJobsSnap, rateAppsSnap, rateAppsScreenedSnap, rateTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
+  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown, setSubmitterCooldown,
   addTotalJobsFound, addTotalAppsSubmitted, addTotalAppsScreened,
   setRateJobsSnap, setRateAppsSnap, setRateAppsScreenedSnap,
   setRateTimer, setJobsFoundRate, setAppsSubmittedRate, setAppsScreenedRate,
@@ -68,27 +68,42 @@ function tickPhase1(dt: number): void {
       logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
     }
 
-    const submitterVolume = state.openClawSubmitLevel * effMult;
-    const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
-    if (actualSubmissions > 0) {
-      state.availableJobs -= actualSubmissions;
-      state.applications += actualSubmissions;
-      state.unreadApplications += actualSubmissions;
-      state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
-      addTotalAppsSubmitted(actualSubmissions);
-      state.hasSubmittedApp = true;
+    if (submitterCooldown > 0) {
+      setSubmitterCooldown(submitterCooldown - dt);
+    } else {
+      const submitterVolume = state.openClawSubmitLevel * effMult;
+      const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
+      if (actualSubmissions > 0) {
+        state.availableJobs -= actualSubmissions;
+        state.applications += actualSubmissions;
+        state.unreadApplications += actualSubmissions;
+        state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
+        addTotalAppsSubmitted(actualSubmissions);
+        state.hasSubmittedApp = true;
+      }
+      if (state.availableJobs <= 0) {
+        setSubmitterCooldown(1.0);
+      }
     }
 
     // ATS screening: drain Unread Applications → Apps Through Screening
-    const effectiveKeywords = state.keywords + state.prettinessLevel;
-    const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
-    const realizedOutflow = Math.min(outflowRate * dt, state.unreadApplications);
-    if (realizedOutflow > 0) {
-      state.unreadApplications -= realizedOutflow;
-      state.appsThruScreening += realizedOutflow;
-      state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
-      addTotalAppsScreened(realizedOutflow);
-      state.hasScreenedApp = true;
+    // When the queue empties, pause for 1 second before resuming.
+    if (screeningCooldown > 0) {
+      setScreeningCooldown(screeningCooldown - dt);
+    } else {
+      const effectiveKeywords = state.keywords + state.prettinessLevel;
+      const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
+      const realizedOutflow = Math.min(outflowRate * dt, state.unreadApplications);
+      if (realizedOutflow > 0) {
+        state.unreadApplications -= realizedOutflow;
+        state.appsThruScreening += realizedOutflow;
+        state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
+        addTotalAppsScreened(realizedOutflow);
+        state.hasScreenedApp = true;
+      }
+      if (state.unreadApplications <= 0) {
+        setScreeningCooldown(1.0);
+      }
     }
 
     if (state.openClawSubmitLevel >= 1) {
