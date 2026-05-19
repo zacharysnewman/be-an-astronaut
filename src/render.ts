@@ -12,10 +12,14 @@ import {
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
 
 function renderPhase1(): void {
-  let providerRate = 0.0;
-  providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
-
-  const totalDrain = 0.01 + providerRate;
+  let baseRate = 0.01;
+  if (state.openClawSubmitLevel >= 1) {
+    if (state.selectedProvider === 'finite')        baseRate = 0.01 * state.finiteMultiplier;
+    else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
+    else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
+  }
+  const automationFlat = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+  const totalDrain = baseRate + automationFlat;
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
   ui.income.classList.remove('good');
@@ -63,10 +67,10 @@ function renderPhase1(): void {
   if (isSubmitUnlocked) {
     ui.providerContainer.classList.remove('hidden');
 
-    const baseVal = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
-    ui.rateFinite.innerText   = `$${(baseVal * state.finiteMultiplier).toFixed(2)}/s`;
-    ui.rateWeeklink.innerText = `$${(baseVal * state.weeklinkMultiplier).toFixed(2)}/s`;
-    ui.rateBliply.innerText   = `$${(baseVal * state.bliplyMultiplier).toFixed(2)}/s`;
+    const flat = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+    ui.rateFinite.innerText   = `$${(0.01 * state.finiteMultiplier   + flat).toFixed(2)}/s`;
+    ui.rateWeeklink.innerText = `$${(0.01 * state.weeklinkMultiplier + flat).toFixed(2)}/s`;
+    ui.rateBliply.innerText   = `$${(0.01 * state.bliplyMultiplier   + flat).toFixed(2)}/s`;
 
     ui.btnFinite.disabled   = state.contractLocked;
     ui.btnWeeklink.disabled = state.contractLocked;
