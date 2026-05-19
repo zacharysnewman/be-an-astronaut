@@ -11,6 +11,8 @@ export interface GameState {
   maxAppsReached:       number;
   hasBegged:            boolean;
   hasUnlockedSubmission: boolean;
+  hasFoundJob:          boolean;
+  hasSubmittedApp:      boolean;
   openClawFinderLevel:  number;
   openClawSubmitLevel:  number;
   parentalTier:         ParentalTier;

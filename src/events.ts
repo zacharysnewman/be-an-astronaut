@@ -38,6 +38,7 @@ export function registerEventListeners(): void {
   ui.btnFind.addEventListener('click', () => {
     if (state.money > 0) {
       state.availableJobs += 1.0;
+      state.hasFoundJob = true;
       addTotalJobsFound(1.0);
       if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
         state.hasUnlockedSubmission = true;
@@ -53,6 +54,7 @@ export function registerEventListeners(): void {
       state.applications += 1.0;
       state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
       addTotalAppsSubmitted(1.0);
+      state.hasSubmittedApp = true;
     }
     updateUI();
   });
