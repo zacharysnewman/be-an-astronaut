@@ -10,6 +10,7 @@ export interface GameState {
   applications:         number;  // Applications total (cumulative submitted count)
   unreadApplications:   number;  // ATS buffer: fills with submissions, drains to appsThruScreening
   appsThruScreening:    number;  // Screened apps — the spendable currency/score
+  appsScreenedOut:      number;  // Cumulative rejected apps (screened out, never passed)
   maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
   peakAppsSubmitted:    number;  // Historical peak of applications submitted (for submitter reveal thresholds)
   keywords:             number;  // Player-controlled ATS keyword count

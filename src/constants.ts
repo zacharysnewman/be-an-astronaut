@@ -1,4 +1,4 @@
-export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v10';
+export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v11';
 export const BASE_SUBMITTER_COST = 50;
 export const BASE_TYPIST_COST    = 125;
 export const BASE_COURIER_COST   = 150;

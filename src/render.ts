@@ -1,4 +1,4 @@
-import { state, appsScreenedRate, displayedMoney, totalAppsSubmitted } from './state';
+import { state, appsScreenedRate, appsRejectedRate, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { formatMoney, getGeometricCost } from './utils';
 import {
@@ -56,12 +56,13 @@ function renderPhase1(): void {
   ));
   ui.desirabilityDisplay.innerText = `${Math.round(desirability * 100)}%`;
 
-  if (state.hasScreenedApp) {
-    ui.screeningRateRow.classList.remove('hidden');
-    ui.screeningRateDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
-  } else {
-    ui.screeningRateRow.classList.add('hidden');
-  }
+  ui.rejectedAppsRow.classList.toggle('hidden', state.appsScreenedOut <= 0);
+  ui.rejectedAppsDisplay.innerText = formatComma(state.appsScreenedOut);
+
+  const showRate = state.hasScreenedApp || state.appsScreenedOut > 0;
+  ui.screeningRateRow.classList.toggle('hidden', !showRate);
+  ui.screeningRatePassDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
+  ui.screeningRateRejectDisplay.innerText = appsRejectedRate.toFixed(1);
 
   const [p1Cost, p2Cost, p3Cost, p4Cost] = PRETTIFY_TIER_COSTS;
   ui.upgradePrettifyT1Row.classList.toggle('hidden',

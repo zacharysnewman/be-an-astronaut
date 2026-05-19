@@ -11,6 +11,7 @@ export const state: GameState = {
   applications: 0.0,
   unreadApplications: 0.0,
   appsThruScreening: 0.0,
+  appsScreenedOut: 0.0,
   maxAppsReached: 0.0,
   peakAppsSubmitted: 0.0,
   keywords: 0,
@@ -55,11 +56,14 @@ export let screeningCooldown    = 0.0;
 export let moneyDisplayTimer    = 0.0;
 export let displayedMoney       = state.money;
 
-export let totalAppsSubmitted  = 0.0;
-export let totalAppsScreened   = 0.0;
+export let totalAppsSubmitted   = 0.0;
+export let totalAppsScreened    = 0.0;
+export let totalAppsRejected    = 0.0;
 export let rateAppsScreenedSnap = 0.0;
-export let rateTimer           = 0.0;
-export let appsScreenedRate    = 0.0;
+export let rateAppsRejectedSnap = 0.0;
+export let rateTimer            = 0.0;
+export let appsScreenedRate     = 0.0;
+export let appsRejectedRate     = 0.0;
 
 export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
 export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; }
@@ -68,8 +72,11 @@ export function setWarningThrottleTimer(v: number): void { warningThrottleTimer 
 export function setScreeningCooldown(v: number): void    { screeningCooldown = v; }
 export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
-export function addTotalAppsSubmitted(v: number): void   { totalAppsSubmitted += v; }
+export function addTotalAppsSubmitted(v: number): void    { totalAppsSubmitted += v; }
 export function addTotalAppsScreened(v: number): void    { totalAppsScreened += v; }
+export function addTotalAppsRejected(v: number): void    { totalAppsRejected += v; }
 export function setRateAppsScreenedSnap(v: number): void { rateAppsScreenedSnap = v; }
+export function setRateAppsRejectedSnap(v: number): void { rateAppsRejectedSnap = v; }
 export function setRateTimer(v: number): void            { rateTimer = v; }
 export function setAppsScreenedRate(v: number): void     { appsScreenedRate = v; }
+export function setAppsRejectedRate(v: number): void     { appsRejectedRate = v; }

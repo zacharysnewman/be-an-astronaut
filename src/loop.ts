@@ -3,13 +3,13 @@ import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, BASE_DESIRABILITY, PRETTIN
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown,
-  totalAppsScreened,
-  rateAppsScreenedSnap, rateTimer,
+  totalAppsScreened, totalAppsRejected,
+  rateAppsScreenedSnap, rateAppsRejectedSnap, rateTimer,
   moneyDisplayTimer,
   setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown,
-  addTotalAppsSubmitted, addTotalAppsScreened,
-  setRateAppsScreenedSnap,
-  setRateTimer, setAppsScreenedRate,
+  addTotalAppsSubmitted, addTotalAppsScreened, addTotalAppsRejected,
+  setRateAppsScreenedSnap, setRateAppsRejectedSnap,
+  setRateTimer, setAppsScreenedRate, setAppsRejectedRate,
   setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
 import { ui } from './ui';
@@ -84,11 +84,16 @@ function tickPhase1(dt: number): void {
       if (totalOutflow > 0) {
         state.unreadApplications -= totalOutflow;
         const passThrough = totalOutflow * desirability;
+        const screenedOut = totalOutflow - passThrough;
         if (passThrough > 0) {
           state.appsThruScreening += passThrough;
           state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
           addTotalAppsScreened(passThrough);
           state.hasScreenedApp = true;
+        }
+        if (screenedOut > 0) {
+          state.appsScreenedOut += screenedOut;
+          addTotalAppsRejected(screenedOut);
         }
       }
       if (state.unreadApplications <= 0) {
@@ -160,7 +165,9 @@ export function mainLoop(timestamp: number): void {
   setRateTimer(rateTimer + dt);
   if (rateTimer >= 1.0) {
     setAppsScreenedRate((totalAppsScreened - rateAppsScreenedSnap) / rateTimer);
+    setAppsRejectedRate((totalAppsRejected - rateAppsRejectedSnap) / rateTimer);
     setRateAppsScreenedSnap(totalAppsScreened);
+    setRateAppsRejectedSnap(totalAppsRejected);
     setRateTimer(0.0);
   }
 
