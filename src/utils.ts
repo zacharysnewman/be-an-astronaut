@@ -1,6 +1,25 @@
 import type { LogType } from './types';
 import { ui } from './ui';
 
+function mulberry32(seed: number): () => number {
+  let a = seed;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export function generateProviderPriceSets(count: number): Array<{ finite: number; weeklink: number; bliply: number }> {
+  const rng = mulberry32(0xBEA5730);
+  return Array.from({ length: count }, () => ({
+    finite:   parseFloat((0.5 + rng() * 3.0).toFixed(2)),
+    weeklink: parseFloat((0.5 + rng() * 3.0).toFixed(2)),
+    bliply:   parseFloat((0.5 + rng() * 3.0).toFixed(2)),
+  }));
+}
+
 export function logMessage(msg: string, type: LogType = ''): void {
   const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   let colorStyle = '';

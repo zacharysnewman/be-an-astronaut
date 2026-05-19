@@ -20,6 +20,7 @@ export interface GameState {
   finiteMultiplier:     number;
   weeklinkMultiplier:   number;
   bliplyMultiplier:     number;
+  providerPriceIndex:   number;
   level:                number;
   credibility:          number;
   approval:             number;

@@ -1,4 +1,7 @@
 import type { GameState } from './types';
+import { generateProviderPriceSets } from './utils';
+
+export const PROVIDER_PRICE_SETS = generateProviderPriceSets(15);
 
 export const state: GameState = {
   phase: 1,
@@ -20,6 +23,7 @@ export const state: GameState = {
   finiteMultiplier: 1.0,
   weeklinkMultiplier: 1.5,
   bliplyMultiplier: 2.2,
+  providerPriceIndex: 0,
 
   level: 1,
   credibility: 0.0,
