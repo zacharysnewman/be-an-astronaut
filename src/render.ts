@@ -79,14 +79,14 @@ function renderPhase1(): void {
   const finderCost = getLinearCost(BASE_FINDER_COST, state.openClawFinderLevel);
   ui.finderBadge.innerText = String(state.openClawFinderLevel);
   ui.finderCostDisplay.innerText = formatComma(finderCost);
-  ui.btnUpgradeFinder.disabled = state.appsThruScreening < finderCost;
+  ui.btnUpgradeFinder.disabled = state.applications < finderCost;
 
   if (state.openClawFinderLevel >= 1) {
     ui.upgradeSubmitterRow.classList.remove('hidden');
     const submitterCost = getLinearCost(BASE_SUBMITTER_COST, state.openClawSubmitLevel);
     ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
     ui.submitterCostDisplay.innerText = formatComma(submitterCost);
-    ui.btnUpgradeSubmitter.disabled = state.appsThruScreening < submitterCost;
+    ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;
 
     const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
     ui.upgradeEfficiencyT1Row.classList.toggle('hidden',
@@ -96,9 +96,9 @@ function renderPhase1(): void {
     ui.upgradeEfficiencyT3Row.classList.toggle('hidden',
       !shouldShowUpgrade(state.maxAppsReached, t3Cost, state.efficiencyTier >= 3));
 
-    ui.btnUpgradeEfficiencyT1.disabled = state.appsThruScreening < t1Cost;
-    ui.btnUpgradeEfficiencyT2.disabled = state.appsThruScreening < t2Cost;
-    ui.btnUpgradeEfficiencyT3.disabled = state.appsThruScreening < t3Cost;
+    ui.btnUpgradeEfficiencyT1.disabled = state.applications < t1Cost;
+    ui.btnUpgradeEfficiencyT2.disabled = state.applications < t2Cost;
+    ui.btnUpgradeEfficiencyT3.disabled = state.applications < t3Cost;
   } else {
     ui.upgradeSubmitterRow.classList.add('hidden');
     ui.upgradeEfficiencyT1Row.classList.add('hidden');
@@ -113,7 +113,7 @@ function renderPhase1(): void {
 
   if (state.maxAppsReached >= 10000) {
     ui.jobCard.classList.remove('hidden');
-    ui.btnInterview.disabled = state.appsThruScreening < 100000;
+    ui.btnInterview.disabled = state.applications < 100000;
   } else {
     ui.jobCard.classList.add('hidden');
   }
@@ -202,7 +202,7 @@ export function updateUI(): void {
   if (state.money <= 0.0) {
     ui.btnBeg.disabled = false;
   } else {
-    ui.btnBeg.disabled = state.appsThruScreening < 50;
+    ui.btnBeg.disabled = state.applications < 50;
   }
 
   renderGoals();
