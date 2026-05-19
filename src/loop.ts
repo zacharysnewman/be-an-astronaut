@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, submitterCooldown,
@@ -82,7 +82,7 @@ function tickPhase1(dt: number): void {
         state.hasSubmittedApp = true;
       }
       if (state.availableJobs <= 0) {
-        setSubmitterCooldown(2.0);
+        setSubmitterCooldown(PROCESSOR_COOLDOWN_S);
       }
     }
 
@@ -102,7 +102,7 @@ function tickPhase1(dt: number): void {
         state.hasScreenedApp = true;
       }
       if (state.unreadApplications <= 0) {
-        setScreeningCooldown(1.0);
+        setScreeningCooldown(PROCESSOR_COOLDOWN_S);
       }
     }
 
