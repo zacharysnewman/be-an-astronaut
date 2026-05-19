@@ -3,9 +3,11 @@ import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
   totalJobsFound, totalAppsSubmitted, rateJobsSnap, rateAppsSnap, rateTimer,
+  moneyDisplayTimer,
   setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
   addTotalJobsFound, addTotalAppsSubmitted,
   setRateJobsSnap, setRateAppsSnap, setRateTimer, setJobsFoundRate, setAppsSubmittedRate,
+  setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
 import { ui } from './ui';
 import { logMessage } from './utils';
@@ -158,6 +160,12 @@ export function mainLoop(timestamp: number): void {
   }
 
   if (warningThrottleTimer > 0) setWarningThrottleTimer(warningThrottleTimer - dt);
+
+  setMoneyDisplayTimer(moneyDisplayTimer + dt);
+  if (moneyDisplayTimer >= 1.0) {
+    setMoneyDisplayTimer(moneyDisplayTimer - 1.0);
+    setDisplayedMoney(Math.max(0, state.money));
+  }
 
   updateUI();
   requestAnimationFrame(mainLoop);

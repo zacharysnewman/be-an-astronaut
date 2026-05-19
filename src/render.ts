@@ -1,4 +1,4 @@
-import { state, jobsFoundRate, appsSubmittedRate } from './state';
+import { state, jobsFoundRate, appsSubmittedRate, displayedMoney } from './state';
 import { ui } from './ui';
 import { formatMoney, getLinearCost, getGeometricCost } from './utils';
 import {
@@ -182,11 +182,11 @@ function renderGoals(): void {
 }
 
 export function updateUI(): void {
-  ui.money.innerText = formatMoney(state.money);
-
-  ui.tabMacrofirm.disabled = state.phase < 2;
-
   const isBankrupt = state.phase === 1 && state.money <= 0.0;
+  ui.money.innerText = formatMoney(isBankrupt ? 0 : displayedMoney);
+
+  ui.tabMacrofirm.classList.toggle('hidden', state.phase < 2);
+
   if (isBankrupt) {
     ui.money.classList.add('flashing-bankrupt');
     ui.bankruptcyOverlay.classList.remove('hidden');

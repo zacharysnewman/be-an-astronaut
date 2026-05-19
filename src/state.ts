@@ -41,10 +41,12 @@ export const state: GameState = {
   lastComplimentTime: null,
 };
 
-export let lastTimestamp       = performance.now();
-export let paperPriceTimer     = 0.0;
-export let cloudSaveTimer      = 0.0;
+export let lastTimestamp        = performance.now();
+export let paperPriceTimer      = 0.0;
+export let cloudSaveTimer       = 0.0;
 export let warningThrottleTimer = 0.0;
+export let moneyDisplayTimer    = 0.0;
+export let displayedMoney       = state.money;
 
 export let totalJobsFound     = 0.0;
 export let totalAppsSubmitted  = 0.0;
@@ -58,6 +60,8 @@ export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
 export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; }
 export function setCloudSaveTimer(v: number): void       { cloudSaveTimer = v; }
 export function setWarningThrottleTimer(v: number): void { warningThrottleTimer = v; }
+export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
+export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
 export function addTotalJobsFound(v: number): void       { totalJobsFound += v; }
 export function addTotalAppsSubmitted(v: number): void   { totalAppsSubmitted += v; }
 export function setRateJobsSnap(v: number): void         { rateJobsSnap = v; }
