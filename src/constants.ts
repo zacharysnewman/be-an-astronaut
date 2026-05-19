@@ -7,7 +7,8 @@ export const PROCURE_FIXED_COST  = 100;
 export const EFFICIENCY_TIER_COSTS  = [500, 1000, 1500] as const;
 export const JOB_SEARCH_TIER_COSTS  = [100, 1000, 10000] as const;
 export const PRETTIFY_TIER_COSTS    = [75, 250, 800, 2500] as const;
-export const PROCESSOR_COOLDOWN_S   = 2.0;
+export const PROCESSOR_COOLDOWN_S        = 2.0;
+export const SCREENING_RATE_PER_KEYWORD  = 5;
 // Boost multipliers: tier 1 = +100% (2x), tier 2 = +150% (2.5x), tier 3 = +300% (4x)
 export const EFFICIENCY_TIER_MULTS  = [1, 2, 2.5, 4] as const;
 
