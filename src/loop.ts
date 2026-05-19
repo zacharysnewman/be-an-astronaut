@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, BASE_DESIRABILITY, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_PER_KEYWORD, BASE_DESIRABILITY, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown,
@@ -76,7 +76,7 @@ function tickPhase1(dt: number): void {
     if (screeningCooldown > 0) {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
-      const outflowRate = state.keywords > 0 ? Math.pow(1.9, state.keywords - 2.5) : 0;
+      const outflowRate = state.keywords * SCREENING_RATE_PER_KEYWORD;
       const desirability = Math.max(0, Math.min(1,
         BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY
       ));
