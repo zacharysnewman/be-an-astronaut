@@ -21,6 +21,11 @@ export function loadCloudState(): void {
       const loaded = JSON.parse(raw) as Partial<GameState>;
       if (typeof loaded === 'object' && loaded !== null) {
         Object.assign(state, loaded);
+        // Migrate v3 saves: efficiencyUnlocked boolean → efficiencyTier number
+        const legacy = loaded as Record<string, unknown>;
+        if (legacy.efficiencyUnlocked === true && state.efficiencyTier === 0) {
+          state.efficiencyTier = 1;
+        }
         logMessage('Cloud save document found! Synced previous session telemetry.', 'good');
         return;
       }

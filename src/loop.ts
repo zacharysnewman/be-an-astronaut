@@ -1,4 +1,5 @@
 import type { Phase } from './types';
+import { EFFICIENCY_TIER_MULTS } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
@@ -54,7 +55,7 @@ function tickPhase1(dt: number): void {
   const isBankrupt = state.money <= 0.0;
 
   if (!isBankrupt) {
-    const effMult = state.efficiencyUnlocked ? 2 : 1;
+    const effMult = EFFICIENCY_TIER_MULTS[state.efficiencyTier];
     const finderVolume = state.openClawFinderLevel * effMult;
     const jobsGenerated = finderVolume * dt;
     state.availableJobs += jobsGenerated;

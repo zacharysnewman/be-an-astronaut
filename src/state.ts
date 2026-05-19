@@ -36,7 +36,7 @@ export const state: GameState = {
   typistLevel: 0,
   courierLevel: 0,
   procurementUnlocked: false,
-  efficiencyUnlocked: false,
+  efficiencyTier: 0,
 
   currentPaperPrice: 0.30,
   lastComplimentTime: null,
