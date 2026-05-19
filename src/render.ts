@@ -11,6 +11,7 @@ import {
   PRETTIFY_TIER_COSTS,
   PRETTINESS_BOOST,
   KEYWORD_PENALTY,
+  DESIRABILITY_KEYWORD_PENALTY,
 } from './constants';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
@@ -51,7 +52,7 @@ function renderPhase1(): void {
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
 
   const rawFindability = state.keywords * KEYWORD_PENALTY + state.prettinessLevel * PRETTINESS_BOOST;
-  const rawDesirability = Math.max(0, 1.0 - state.keywords * KEYWORD_PENALTY);
+  const rawDesirability = Math.max(0, 1.0 - state.keywords * DESIRABILITY_KEYWORD_PENALTY);
   ui.findabilityDisplay.innerText = `${Math.round(rawFindability * 100)}%`;
   ui.desirabilityDisplay.innerText = `${Math.round(rawDesirability * 100)}%`;
 
