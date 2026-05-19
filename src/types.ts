@@ -11,6 +11,7 @@ export interface GameState {
   unreadApplications:   number;  // ATS buffer: fills with submissions, drains to appsThruScreening
   appsThruScreening:    number;  // Screened apps — the spendable currency/score
   maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
+  peakAppsSubmitted:    number;  // Historical peak of applications submitted (for finder/submitter reveal thresholds)
   keywords:             number;  // Player-controlled ATS keyword count
   prettinessLevel:      number;  // Upgrade modifier: adds to keywords for outflow calc only
   hasBegged:            boolean;

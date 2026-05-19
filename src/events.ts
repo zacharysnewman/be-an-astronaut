@@ -1,6 +1,6 @@
 import { state, addTotalJobsFound, addTotalAppsSubmitted } from './state';
 import { ui } from './ui';
-import { logMessage, formatMoney, getLinearCost, getGeometricCost } from './utils';
+import { logMessage, formatMoney, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
 import { updateUI } from './render';
@@ -26,8 +26,8 @@ export function registerEventListeners(): void {
       state.hasBegged = true;
       logMessage(`Wired parental bailout capital. Bank balance credited with +$${pAmount.toFixed(2)}.`, 'system');
     } else {
-      if (state.applications >= 50) {
-        state.applications -= 50;
+      if (state.appsThruScreening >= 50) {
+        state.appsThruScreening -= 50;
         state.money += pAmount;
         state.hasBegged = true;
         logMessage(`Exchanged screened applications to secure parent wire transfer of +$${pAmount.toFixed(2)}.`, 'system');
@@ -54,7 +54,7 @@ export function registerEventListeners(): void {
       state.availableJobs -= 1.0;
       state.applications += 1.0;
       state.unreadApplications += 1.0;
-      state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+      state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
       addTotalAppsSubmitted(1.0);
       state.hasSubmittedApp = true;
     }
@@ -62,9 +62,9 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeFinder.addEventListener('click', () => {
-    const cost = getLinearCost(BASE_FINDER_COST, state.openClawFinderLevel);
-    if (state.applications >= cost) {
-      state.applications -= cost;
+    const cost = BASE_FINDER_COST * state.openClawFinderLevel;
+    if (state.appsThruScreening >= cost) {
+      state.appsThruScreening -= cost;
       state.openClawFinderLevel += 1;
       logMessage(`OpenClaw Auto-Finder acquired. ${state.openClawFinderLevel} active. Finding +1 job/s.`, 'good');
     }
@@ -72,9 +72,9 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeSubmitter.addEventListener('click', () => {
-    const cost = getLinearCost(BASE_SUBMITTER_COST, state.openClawSubmitLevel);
-    if (state.applications >= cost) {
-      state.applications -= cost;
+    const cost = BASE_SUBMITTER_COST * state.openClawSubmitLevel;
+    if (state.appsThruScreening >= cost) {
+      state.appsThruScreening -= cost;
       state.openClawSubmitLevel += 1;
       logMessage(`OpenClaw Auto-Submitter acquired. ${state.openClawSubmitLevel} active. Submitting +1 app/s.`, 'good');
     }
@@ -94,8 +94,8 @@ export function registerEventListeners(): void {
   const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
 
   ui.btnUpgradeEfficiencyT1.addEventListener('click', () => {
-    if (state.efficiencyTier === 0 && state.applications >= t1Cost) {
-      state.applications -= t1Cost;
+    if (state.efficiencyTier === 0 && state.appsThruScreening >= t1Cost) {
+      state.appsThruScreening -= t1Cost;
       state.efficiencyTier = 1;
       logMessage('OpenClaw Efficiency Protocol Tier 1 engaged. Automation output doubled (+100%).', 'good');
     }
@@ -103,8 +103,8 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeEfficiencyT2.addEventListener('click', () => {
-    if (state.efficiencyTier === 1 && state.applications >= t2Cost) {
-      state.applications -= t2Cost;
+    if (state.efficiencyTier === 1 && state.appsThruScreening >= t2Cost) {
+      state.appsThruScreening -= t2Cost;
       state.efficiencyTier = 2;
       logMessage('OpenClaw Efficiency Protocol Tier 2 engaged. Automation output at +150%.', 'good');
     }
@@ -112,8 +112,8 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeEfficiencyT3.addEventListener('click', () => {
-    if (state.efficiencyTier === 2 && state.applications >= t3Cost) {
-      state.applications -= t3Cost;
+    if (state.efficiencyTier === 2 && state.appsThruScreening >= t3Cost) {
+      state.appsThruScreening -= t3Cost;
       state.efficiencyTier = 3;
       logMessage('OpenClaw Efficiency Protocol Tier 3 engaged. Automation output at +300%.', 'good');
     }
@@ -142,8 +142,8 @@ export function registerEventListeners(): void {
   registerProviderTab(ui.btnBliply, 'bliply');
 
   ui.btnUpgradeParentT2.addEventListener('click', () => {
-    if (state.applications >= 2000 && state.parentalTier === 1) {
-      state.applications -= 2000;
+    if (state.appsThruScreening >= 2000 && state.parentalTier === 1) {
+      state.appsThruScreening -= 2000;
       state.parentalTier = 2;
       logMessage('Parental Trust optimized to Tier 2. Emergency wire allowance increased to $12.00.', 'good');
     }
@@ -151,8 +151,8 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeParentT3.addEventListener('click', () => {
-    if (state.applications >= 4000 && state.parentalTier === 2) {
-      state.applications -= 4000;
+    if (state.appsThruScreening >= 4000 && state.parentalTier === 2) {
+      state.appsThruScreening -= 4000;
       state.parentalTier = 3;
       logMessage('Parental Trust optimized to Tier 3. Elite family trust wires $18.00.', 'good');
     }
@@ -160,8 +160,8 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeParentT4.addEventListener('click', () => {
-    if (state.applications >= 50000 && state.parentalTier === 3) {
-      state.applications -= 50000;
+    if (state.appsThruScreening >= 50000 && state.parentalTier === 3) {
+      state.appsThruScreening -= 50000;
       state.parentalTier = 4;
       logMessage('Automatic background banking loops initialized. Family allowance automated.', 'good');
     }
@@ -169,8 +169,8 @@ export function registerEventListeners(): void {
   });
 
   ui.btnInterview.addEventListener('click', () => {
-    if (state.applications >= 100000) {
-      state.applications -= 100000;
+    if (state.appsThruScreening >= 100000) {
+      state.appsThruScreening -= 100000;
       transitionToPhase(2);
     }
   });
@@ -297,8 +297,8 @@ export function registerEventListeners(): void {
   });
 
   document.getElementById('btn-debug-inject-apps')!.addEventListener('click', () => {
-    state.applications += 1000;
-    state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+    state.appsThruScreening += 1000;
+    state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
     logMessage('[DEBUG] Injected +1000 screened apps to system.', 'system');
     updateUI();
   });
