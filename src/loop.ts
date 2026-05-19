@@ -2,11 +2,11 @@ import type { Phase } from './types';
 import { EFFICIENCY_TIER_MULTS } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
+  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown,
   totalJobsFound, totalAppsSubmitted, totalAppsScreened,
   rateJobsSnap, rateAppsSnap, rateAppsScreenedSnap, rateTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
+  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown,
   addTotalJobsFound, addTotalAppsSubmitted, addTotalAppsScreened,
   setRateJobsSnap, setRateAppsSnap, setRateAppsScreenedSnap,
   setRateTimer, setJobsFoundRate, setAppsSubmittedRate, setAppsScreenedRate,
@@ -80,15 +80,23 @@ function tickPhase1(dt: number): void {
     }
 
     // ATS screening: drain Unread Applications → Apps Through Screening
-    const effectiveKeywords = state.keywords + state.prettinessLevel;
-    const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
-    const realizedOutflow = Math.min(outflowRate * dt, state.unreadApplications);
-    if (realizedOutflow > 0) {
-      state.unreadApplications -= realizedOutflow;
-      state.appsThruScreening += realizedOutflow;
-      state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
-      addTotalAppsScreened(realizedOutflow);
-      state.hasScreenedApp = true;
+    // When the queue empties, pause for 1 second before resuming.
+    if (screeningCooldown > 0) {
+      setScreeningCooldown(screeningCooldown - dt);
+    } else {
+      const effectiveKeywords = state.keywords + state.prettinessLevel;
+      const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
+      const realizedOutflow = Math.min(outflowRate * dt, state.unreadApplications);
+      if (realizedOutflow > 0) {
+        state.unreadApplications -= realizedOutflow;
+        state.appsThruScreening += realizedOutflow;
+        state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
+        addTotalAppsScreened(realizedOutflow);
+        state.hasScreenedApp = true;
+      }
+      if (state.unreadApplications <= 0) {
+        setScreeningCooldown(1.0);
+      }
     }
 
     if (state.openClawSubmitLevel >= 1) {

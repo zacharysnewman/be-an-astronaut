@@ -52,6 +52,7 @@ export let lastTimestamp        = performance.now();
 export let paperPriceTimer      = 0.0;
 export let cloudSaveTimer       = 0.0;
 export let warningThrottleTimer = 0.0;
+export let screeningCooldown    = 0.0;
 export let moneyDisplayTimer    = 0.0;
 export let displayedMoney       = state.money;
 
@@ -70,6 +71,7 @@ export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
 export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; }
 export function setCloudSaveTimer(v: number): void       { cloudSaveTimer = v; }
 export function setWarningThrottleTimer(v: number): void { warningThrottleTimer = v; }
+export function setScreeningCooldown(v: number): void    { screeningCooldown = v; }
 export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
 export function addTotalJobsFound(v: number): void       { totalJobsFound += v; }
