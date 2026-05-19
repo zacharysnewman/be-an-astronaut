@@ -8,21 +8,20 @@ import { ui } from './ui';
 import { logMessage } from './utils';
 import { triggerCloudSave } from './storage';
 import { updateUI } from './render';
+import { switchTab } from './tabs';
 
 export function transitionToPhase(target: Phase): void {
   if (target === 2) {
     state.phase = 2;
     state.approval = 50.0;
-    ui.p1Container.classList.add('hidden');
-    ui.p2Container.classList.remove('hidden');
     ui.bankruptcyOverlay.classList.add('hidden');
     logMessage('Macrofirm Interview successfully completed. Assigned Desk 4B. Get to work.', 'promo');
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    switchTab('macrofirm');
   } else {
     state.phase = 1;
-    ui.p2Container.classList.add('hidden');
-    ui.p1Container.classList.remove('hidden');
     logMessage('Corporate connection severed. Returned to Indebt Jobseeker directory.', 'system');
+    switchTab('job-search');
   }
   updateUI();
 }
@@ -51,35 +50,38 @@ function tickPhase1(dt: number): void {
     }
   }
 
-  const finderVolume = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
-  state.availableJobs += finderVolume * dt;
+  const isBankrupt = state.money <= 0.0;
 
-  if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
-    state.hasUnlockedSubmission = true;
-    logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
-  }
+  if (!isBankrupt) {
+    const finderVolume = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
+    state.availableJobs += finderVolume * dt;
 
-  const submitterVolume = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
-  const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
-  if (actualSubmissions > 0) {
-    state.availableJobs -= actualSubmissions;
-    state.applications += actualSubmissions;
-    state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
-  }
-
-  if (state.openClawSubmitLevel >= 1) {
-    state.providerTimer -= dt;
-    if (state.providerTimer <= 0.0) {
-      state.providerTimer = 20.0;
-      state.contractLocked = false;
-
-      state.finiteMultiplier   = 0.5 + Math.random() * 3.0;
-      state.weeklinkMultiplier = 0.5 + Math.random() * 3.0;
-      state.bliplyMultiplier   = 0.5 + Math.random() * 3.0;
-
-      logMessage('Billing contract window reset. Provider tariffs adjusted.', 'system');
+    if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
+      state.hasUnlockedSubmission = true;
+      logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
     }
-    ui.contractTimer.innerText = state.providerTimer.toFixed(1) + 's';
+
+    const submitterVolume = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
+    const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
+    if (actualSubmissions > 0) {
+      state.availableJobs -= actualSubmissions;
+      state.applications += actualSubmissions;
+      state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+    }
+
+    if (state.openClawSubmitLevel >= 1) {
+      state.providerTimer -= dt;
+      if (state.providerTimer <= 0.0) {
+        state.providerTimer = 20.0;
+        state.contractLocked = false;
+
+        state.finiteMultiplier   = 0.5 + Math.random() * 3.0;
+        state.weeklinkMultiplier = 0.5 + Math.random() * 3.0;
+        state.bliplyMultiplier   = 0.5 + Math.random() * 3.0;
+
+        logMessage('Billing contract window reset. Provider tariffs adjusted.', 'system');
+      }
+    }
   }
 }
 

@@ -5,6 +5,14 @@ function el<T extends HTMLElement>(id: string): T {
 export const ui = {
   p1Container: el('phase1-container'),
   p2Container: el('phase2-container'),
+  goalsContainer: el('goals-container'),
+
+  tabJobSearch: el<HTMLButtonElement>('tab-job-search'),
+  tabGoals: el<HTMLButtonElement>('tab-goals'),
+  tabMacrofirm: el<HTMLButtonElement>('tab-macrofirm'),
+
+  goalGetJob: el('goal-get-job'),
+  goalCheckJob: el('goal-check-job'),
 
   availJobs: el('avail-jobs-display'),
   apps: el('apps-display'),
@@ -16,8 +24,10 @@ export const ui = {
   jobCard: el('job-card'),
 
   inlineAppRow: el('inline-app-row'),
-  finderRateInd: el('finder-rate-indicator'),
-  submitterRateInd: el('submitter-rate-indicator'),
+  finderRateRow: el('finder-rate-row'),
+  finderRateDisplay: el('finder-rate-display'),
+  submitterRateRow: el('submitter-rate-row'),
+  submitterRateDisplay: el('submitter-rate-display'),
 
   automationCardP1: el('automation-p1-card'),
   finderBadge: el('finder-level-badge'),
@@ -29,7 +39,6 @@ export const ui = {
   upgradeSubmitterRow: el('upgrade-submitter-row'),
 
   providerContainer: el('provider-container'),
-  contractTimer: el('contract-timer-display'),
   btnFinite: el<HTMLButtonElement>('provider-finite'),
   btnWeeklink: el<HTMLButtonElement>('provider-weeklink'),
   btnBliply: el<HTMLButtonElement>('provider-bliply'),

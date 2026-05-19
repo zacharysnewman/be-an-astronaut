@@ -16,16 +16,16 @@
     <!-- Top Black Console Terminal -->
     <div id="log-container">
         <div id="log">
-            <span class="log-init">. . . System connected. Loading active profile from Indebt.com portal...</span><br>
-            <span class="log-error">&gt; Current status: Insolvent. Operational capital depleted.</span>
+            <div class="log-init">. . . System connected. Loading active profile from Indebt.com portal...</div>
+            <div class="log-error">&gt; Current status: Insolvent. Operational capital depleted.</div>
         </div>
     </div>
 
     <!-- Sticky Header Row outside Bankruptcy Shroud -->
     <div id="header-row">
-        <h1>Bank: <span id="money-display">$1.00</span></h1>
+        <h1>Account Balance: <span id="money-display">$1.00</span></h1>
         <div>
-            <button id="btn-beg">Call Parents</button>
+            <button id="btn-beg">Beg Parents for Money</button>
             <span id="beg-cost-label" class="italic">+$3.00</span>
         </div>
     </div>
@@ -58,32 +58,73 @@
         <!-- Visual Bankruptcy Shroud Overlay -->
         <div id="bankruptcy-overlay" class="hidden">
             <div class="wifi-shroud-center">
-                <!-- Red Bold Crossed Out Broadcast Signal -->
-                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                <!-- No Connection Icon -->
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="4" x2="20" y2="20"></line>
+                    <path d="M10.71 5.05A16 16 0 0 1 22.56 9"></path>
+                    <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
                     <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.5"></path>
                     <path d="M5 12.5a10.94 10.94 0 0 1 5.83-2.84"></path>
-                    <path d="M12 20h.01"></path>
                     <path d="M8.5 16.5c3.5-3.5 3.5-3.5 7 0"></path>
+                    <circle cx="12" cy="20" r="0.75" fill="#ff0000"></circle>
                 </svg>
             </div>
         </div>
 
-        <!-- PHASE 1: "Indebt.com" Portal -->
+        <!-- Personal Goals Panel -->
+        <div id="goals-container" class="hidden">
+            <h2 class="section-title">Personal Goals</h2>
+
+            <div class="goal-item">
+                <span class="goal-check">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Fly to the Moon</span>
+                    <span class="goal-tag">long term</span>
+                </div>
+            </div>
+
+            <div class="goal-item">
+                <span class="goal-check">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Become an Astronaut</span>
+                    <span class="goal-tag">medium term</span>
+                </div>
+            </div>
+
+            <div class="goal-item">
+                <span class="goal-check">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Move Out</span>
+                    <span class="goal-tag">short term</span>
+                </div>
+            </div>
+
+            <div class="goal-item" id="goal-get-job">
+                <span class="goal-check" id="goal-check-job">☐</span>
+                <div class="goal-body">
+                    <span class="goal-text">Get a Job</span>
+                    <span class="goal-tag">immediate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Search (Phase 1) -->
         <div id="phase1-container">
-            <h2 class="section-title">Phase 1: Indebt.com Portal</h2>
-            <div class="stat-row">Operational Fee Rate: <span id="income-display" class="bad">(-$0.01 / sec)</span></div>
+            <h2 class="section-title">Indebt.com</h2>
+            <div class="stat-row">Internet Fees: <span id="income-display" class="bad">-$0.01/s</span></div>
 
             <!-- Inline Compact Discovery Rows -->
             <div id="inline-job-row" class="stat-row">
-                <button id="btn-find">Find</button>
-                <b>Jobs:</b> <span id="avail-jobs-display" class="bold">0</span> <span id="finder-rate-indicator" class="good"></span>
+                <button id="btn-find" class="btn-inline">Find</button>
+                <b>Jobs:</b> <span id="avail-jobs-display" class="bold">0</span>
             </div>
+            <div id="finder-rate-row" class="stat-row hidden">Jobs Found Rate: <span id="finder-rate-display" class="good"></span></div>
 
             <div id="inline-app-row" class="stat-row hidden">
-                <button id="btn-apply" disabled>Submit</button>
-                <b>Applications:</b> <span id="apps-display" class="bold">0</span> <span id="submitter-rate-indicator" class="good"></span>
+                <button id="btn-apply" class="btn-inline" disabled>Submit</button>
+                <b>Applications:</b> <span id="apps-display" class="bold">0</span>
             </div>
+            <div id="submitter-rate-row" class="stat-row hidden">Applications Submitted Rate: <span id="submitter-rate-display" class="good"></span></div>
 
             <!-- OpenClaw Box Frame -->
             <div id="automation-p1-card" class="retro-box hidden">
@@ -103,21 +144,20 @@
 
             <!-- Dynamic Internet Provider & Contract Selector Gated Box -->
             <div id="provider-container" class="retro-box hidden">
-                <b>Internet Provider Contract Selection</b>
-                <div class="hint">20-Second Window Locked Timer: <span id="contract-timer-display" class="bold">20.0s</span></div>
+                <b>Internet Providers</b>
 
                 <div class="provider-grid">
                     <button class="provider-tab" id="provider-finite">
                         <b>Finite</b>
-                        <span id="rate-finite">($0.00/s)</span>
+                        <span id="rate-finite">$0.00/s</span>
                     </button>
                     <button class="provider-tab" id="provider-weeklink">
                         <b>WeekLink</b>
-                        <span id="rate-weeklink">($0.00/s)</span>
+                        <span id="rate-weeklink">$0.00/s</span>
                     </button>
                     <button class="provider-tab" id="provider-bliply">
                         <b>Bliply</b>
-                        <span id="rate-bliply">($0.00/s)</span>
+                        <span id="rate-bliply">$0.00/s</span>
                     </button>
                 </div>
             </div>
@@ -207,6 +247,13 @@
         </div>
 
     </div>
+
+    <!-- Bottom Tab Bar -->
+    <nav id="tab-bar">
+        <button class="tab-btn tab-active" id="tab-job-search">Job Search</button>
+        <button class="tab-btn" id="tab-goals">Personal Goals</button>
+        <button class="tab-btn" id="tab-macrofirm" disabled>Macrofirm Job</button>
+    </nav>
 
     <script type="module" src="/src/main.ts"></script>
 </body>

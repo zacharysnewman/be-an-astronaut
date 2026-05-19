@@ -20,7 +20,7 @@ body {
     padding: 0 10px 40px 10px;
     padding-left: max(10px, env(safe-area-inset-left, 0px));
     padding-right: max(10px, env(safe-area-inset-right, 0px));
-    padding-bottom: max(40px, env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     font-size: 16px;
     line-height: 1.5;
     overscroll-behavior: none;
@@ -46,12 +46,16 @@ body {
 
 #log {
     height: 100%;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 8px 15px;
     padding-left: max(15px, env(safe-area-inset-left, 0px));
     padding-right: max(15px, env(safe-area-inset-right, 0px));
     user-select: text;
-    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-size: 12px;
+    line-height: 1.4;
 }
 
 #log::-webkit-scrollbar { width: 8px; }
@@ -110,6 +114,11 @@ h2.section-title {
     padding-bottom: 2px;
 }
 
+#phase1-container > h2.section-title:first-child {
+    margin-top: 8px;
+}
+
+
 .retro-box {
     border: 1px solid #000000;
     padding: 12px;
@@ -160,6 +169,14 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.btn-inline {
+    min-height: 0;
+    padding: 1px 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    vertical-align: baseline;
+}
+
 /* Provider Tabs */
 .provider-grid {
     display: grid;
@@ -194,7 +211,7 @@ button:disabled {
     top: calc(147px + env(safe-area-inset-top, 0px)); /* Placed cleanly below header-row to leave parents button unblocked */
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px));
     background-color: rgba(255, 255, 255, 0.50);
     z-index: 100;
     display: flex;
@@ -283,4 +300,98 @@ button:disabled {
     text-decoration: underline;
     cursor: pointer;
     margin-top: 5px;
+}
+
+/* Bottom Tab Bar */
+#tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(52px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: #ffffff;
+    border-top: 2px solid #000000;
+    display: flex;
+    align-items: stretch;
+    z-index: 115;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.tab-btn {
+    flex: 1;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    border: none;
+    border-right: 1px solid #cccccc;
+    background: #f0f0f0;
+    color: #777777;
+    cursor: pointer;
+    padding: 4px 6px;
+    touch-action: manipulation;
+    min-height: 0;
+    border-radius: 0;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.tab-btn:last-child {
+    border-right: none;
+}
+
+.tab-btn.tab-active {
+    background: #ffffff;
+    color: #000000;
+    border-top: 3px solid #000000;
+}
+
+.tab-btn:disabled {
+    background: #f5f5f5;
+    color: #bbbbbb;
+    cursor: not-allowed;
+}
+
+/* Personal Goals Panel */
+#goals-container > h2.section-title:first-child,
+#phase2-container > h2.section-title:first-child {
+    margin-top: 8px;
+}
+
+.goal-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+.goal-check {
+    flex-shrink: 0;
+    width: 1.2em;
+}
+
+.goal-body {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.goal-text {
+    flex: 1;
+}
+
+.goal-tag {
+    font-size: 11px;
+    color: #777777;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.goal-item.goal-done .goal-text {
+    text-decoration: line-through;
+    color: #999999;
 }
