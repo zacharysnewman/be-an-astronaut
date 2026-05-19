@@ -1,6 +1,6 @@
 import { state, jobsFoundRate, appsSubmittedRate } from './state';
 import { ui } from './ui';
-import { formatMoney, getExponentialCost, getGeometricCost } from './utils';
+import { formatMoney, getLinearCost, getGeometricCost } from './utils';
 import {
   BASE_FINDER_COST,
   BASE_SUBMITTER_COST,
@@ -48,14 +48,14 @@ function renderPhase1(): void {
 
   ui.automationCardP1.classList.toggle('hidden', state.maxAppsReached < (0.10 * BASE_FINDER_COST));
 
-  const finderCost = getExponentialCost(BASE_FINDER_COST, 3, state.openClawFinderLevel);
+  const finderCost = getLinearCost(BASE_FINDER_COST, state.openClawFinderLevel);
   ui.finderBadge.innerText = String(state.openClawFinderLevel);
   ui.finderCostDisplay.innerText = formatComma(finderCost);
   ui.btnUpgradeFinder.disabled = state.applications < finderCost;
 
-  if (state.openClawFinderLevel >= 2) {
+  if (state.openClawFinderLevel >= 1) {
     ui.upgradeSubmitterRow.classList.remove('hidden');
-    const submitterCost = getExponentialCost(BASE_SUBMITTER_COST, 2, state.openClawSubmitLevel);
+    const submitterCost = getLinearCost(BASE_SUBMITTER_COST, state.openClawSubmitLevel);
     ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
     ui.submitterCostDisplay.innerText = formatComma(submitterCost);
     ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;

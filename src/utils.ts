@@ -40,6 +40,6 @@ export function getGeometricCost(base: number, rate: number, level: number): num
   return Math.floor(base * Math.pow(rate, level));
 }
 
-export function getExponentialCost(base: number, multiplier: number, level: number): number {
-  return Math.floor(base * Math.pow(multiplier, level));
+export function getLinearCost(base: number, count: number): number {
+  return base * (count + 1);
 }

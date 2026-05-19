@@ -1,6 +1,6 @@
 import { state, addTotalJobsFound, addTotalAppsSubmitted } from './state';
 import { ui } from './ui';
-import { logMessage, formatMoney, getExponentialCost, getGeometricCost } from './utils';
+import { logMessage, formatMoney, getLinearCost, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
 import { updateUI } from './render';
@@ -58,21 +58,21 @@ export function registerEventListeners(): void {
   });
 
   ui.btnUpgradeFinder.addEventListener('click', () => {
-    const cost = getExponentialCost(BASE_FINDER_COST, 3, state.openClawFinderLevel);
+    const cost = getLinearCost(BASE_FINDER_COST, state.openClawFinderLevel);
     if (state.applications >= cost) {
       state.applications -= cost;
       state.openClawFinderLevel += 1;
-      logMessage(`OpenClaw Auto-Finder upgraded to Level ${state.openClawFinderLevel}. Processing capacity tripled.`, 'good');
+      logMessage(`OpenClaw Auto-Finder acquired. ${state.openClawFinderLevel} active. Finding +1 job/s.`, 'good');
     }
     updateUI();
   });
 
   ui.btnUpgradeSubmitter.addEventListener('click', () => {
-    const cost = getExponentialCost(BASE_SUBMITTER_COST, 2, state.openClawSubmitLevel);
+    const cost = getLinearCost(BASE_SUBMITTER_COST, state.openClawSubmitLevel);
     if (state.applications >= cost) {
       state.applications -= cost;
       state.openClawSubmitLevel += 1;
-      logMessage(`OpenClaw Auto-Submitter upgraded to Level ${state.openClawSubmitLevel}. Submission pipeline doubled.`, 'good');
+      logMessage(`OpenClaw Auto-Submitter acquired. ${state.openClawSubmitLevel} active. Submitting +1 app/s.`, 'good');
     }
     updateUI();
   });

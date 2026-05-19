@@ -52,7 +52,7 @@ function tickPhase1(dt: number): void {
   const isBankrupt = state.money <= 0.0;
 
   if (!isBankrupt) {
-    const finderVolume = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
+    const finderVolume = state.openClawFinderLevel;
     const jobsGenerated = finderVolume * dt;
     state.availableJobs += jobsGenerated;
     if (jobsGenerated > 0) addTotalJobsFound(jobsGenerated);
@@ -62,7 +62,7 @@ function tickPhase1(dt: number): void {
       logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
     }
 
-    const submitterVolume = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
+    const submitterVolume = state.openClawSubmitLevel;
     const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
     if (actualSubmissions > 0) {
       state.availableJobs -= actualSubmissions;
