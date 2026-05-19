@@ -11,15 +11,14 @@ export interface GameState {
   unreadApplications:   number;  // ATS buffer: fills with submissions, drains to appsThruScreening
   appsThruScreening:    number;  // Screened apps — the spendable currency/score
   maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
-  peakAppsSubmitted:    number;  // Historical peak of applications submitted (for finder/submitter reveal thresholds)
+  peakAppsSubmitted:    number;  // Historical peak of applications submitted (for submitter reveal thresholds)
   keywords:             number;  // Player-controlled ATS keyword count
   prettinessLevel:      number;  // Upgrade modifier: adds to keywords for outflow calc only
   hasBegged:            boolean;
   hasUnlockedSubmission: boolean;
-  hasFoundJob:          boolean;
   hasSubmittedApp:      boolean;
   hasScreenedApp:       boolean;
-  openClawFinderLevel:  number;
+  jobSearchTier:        number;  // 0-3: multiplies Find Jobs result by 10^tier
   openClawSubmitLevel:  number;
   parentalTier:         ParentalTier;
   selectedProvider:     Provider;

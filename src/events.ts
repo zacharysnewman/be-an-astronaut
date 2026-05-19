@@ -1,4 +1,4 @@
-import { state, addTotalJobsFound, addTotalAppsSubmitted } from './state';
+import { state, addTotalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { logMessage, formatMoney, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
@@ -6,12 +6,12 @@ import { transitionToPhase } from './loop';
 import { updateUI } from './render';
 import { switchTab } from './tabs';
 import {
-  BASE_FINDER_COST,
   BASE_SUBMITTER_COST,
   BASE_TYPIST_COST,
   BASE_COURIER_COST,
   PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
+  JOB_SEARCH_TIER_COSTS,
   SAVE_STORAGE_KEY,
 } from './constants';
 
@@ -38,13 +38,8 @@ export function registerEventListeners(): void {
 
   ui.btnFind.addEventListener('click', () => {
     if (state.money > 0) {
-      state.availableJobs += 1.0;
-      state.hasFoundJob = true;
-      addTotalJobsFound(1.0);
-      if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
-        state.hasUnlockedSubmission = true;
-        logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
-      }
+      const mult = Math.pow(10, state.jobSearchTier);
+      state.availableJobs = (Math.floor(Math.random() * 11) + 10) * mult;
     }
     updateUI();
   });
@@ -57,16 +52,6 @@ export function registerEventListeners(): void {
       state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
       addTotalAppsSubmitted(1.0);
       state.hasSubmittedApp = true;
-    }
-    updateUI();
-  });
-
-  ui.btnUpgradeFinder.addEventListener('click', () => {
-    const cost = BASE_FINDER_COST * state.openClawFinderLevel;
-    if (state.appsThruScreening >= cost) {
-      state.appsThruScreening -= cost;
-      state.openClawFinderLevel += 1;
-      logMessage(`OpenClaw Auto-Finder acquired. ${state.openClawFinderLevel} active. Finding +1 job/s.`, 'good');
     }
     updateUI();
   });
@@ -92,6 +77,7 @@ export function registerEventListeners(): void {
   });
 
   const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
+  const [js1Cost, js2Cost, js3Cost] = JOB_SEARCH_TIER_COSTS;
 
   ui.btnUpgradeEfficiencyT1.addEventListener('click', () => {
     if (state.efficiencyTier === 0 && state.appsThruScreening >= t1Cost) {
@@ -120,13 +106,40 @@ export function registerEventListeners(): void {
     updateUI();
   });
 
+  ui.btnUpgradeJobSearchT1.addEventListener('click', () => {
+    if (state.jobSearchTier === 0 && state.appsThruScreening >= js1Cost) {
+      state.appsThruScreening -= js1Cost;
+      state.jobSearchTier = 1;
+      logMessage('Job Search Algorithm upgraded to Tier 1. Finding 10x more jobs per search.', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradeJobSearchT2.addEventListener('click', () => {
+    if (state.jobSearchTier === 1 && state.appsThruScreening >= js2Cost) {
+      state.appsThruScreening -= js2Cost;
+      state.jobSearchTier = 2;
+      logMessage('Job Search Algorithm upgraded to Tier 2. Finding 100x more jobs per search.', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradeJobSearchT3.addEventListener('click', () => {
+    if (state.jobSearchTier === 2 && state.appsThruScreening >= js3Cost) {
+      state.appsThruScreening -= js3Cost;
+      state.jobSearchTier = 3;
+      logMessage('Job Search Algorithm upgraded to Tier 3. Finding 1,000x more jobs per search.', 'good');
+    }
+    updateUI();
+  });
+
   const registerProviderTab = (btn: HTMLButtonElement, keyName: 'finite' | 'weeklink' | 'bliply') => {
     btn.addEventListener('click', () => {
       if (!state.contractLocked) {
         state.selectedProvider = keyName;
         state.contractLocked = true;
 
-        const baseVal = Math.max(0.01, (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02));
+        const baseVal = Math.max(0.01, state.openClawSubmitLevel * 0.02);
         let mult = 1.0;
         if (keyName === 'finite')        mult = state.finiteMultiplier;
         else if (keyName === 'weeklink') mult = state.weeklinkMultiplier;

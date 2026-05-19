@@ -1,13 +1,13 @@
-import { state, jobsFoundRate, appsSubmittedRate, appsScreenedRate, displayedMoney, totalAppsScreened } from './state';
+import { state, appsScreenedRate, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { formatMoney, getGeometricCost } from './utils';
 import {
-  BASE_FINDER_COST,
   BASE_SUBMITTER_COST,
   BASE_TYPIST_COST,
   BASE_COURIER_COST,
   PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
+  JOB_SEARCH_TIER_COSTS,
 } from './constants';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
@@ -25,7 +25,7 @@ function renderPhase1(): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
+  const automationFlat = Math.floor(state.openClawSubmitLevel * 0.0025 * 100) / 100;
   const totalDrain = baseRate + automationFlat;
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
@@ -33,28 +33,14 @@ function renderPhase1(): void {
   ui.headerFees.innerText = ui.income.innerText;
   ui.headerFees.className = 'bad';
 
-  // ATS screening section — visible once the player owns at least one Auto-Finder AND one Auto-Submitter
-  const showScreening = state.openClawFinderLevel >= 1 && state.openClawSubmitLevel >= 1;
+  // Job Applications section — visible once the player owns at least one Auto-Submitter
+  const showScreening = state.openClawSubmitLevel >= 1;
 
   ui.totalReadRow.classList.toggle('hidden', !showScreening);
-  ui.totalReadDisplay.innerText = formatComma(totalAppsScreened);
+  ui.totalReadDisplay.innerText = formatComma(totalAppsSubmitted);
   ui.availJobs.innerText = formatComma(state.availableJobs);
   ui.unreadAppsDisplay.innerText = formatComma(state.unreadApplications);
   ui.appsThruScreeningDisplay.innerText = formatComma(state.appsThruScreening);
-
-  if (state.hasFoundJob) {
-    ui.finderRateRow.classList.remove('hidden');
-    ui.finderRateDisplay.innerText = `+${jobsFoundRate.toFixed(1)}`;
-  } else {
-    ui.finderRateRow.classList.add('hidden');
-  }
-
-  if (state.hasSubmittedApp) {
-    ui.submitterRateRow.classList.remove('hidden');
-    ui.submitterRateDisplay.innerText = `+${appsSubmittedRate.toFixed(1)}`;
-  } else {
-    ui.submitterRateRow.classList.add('hidden');
-  }
 
   ui.keywordsSection.classList.toggle('hidden', !showScreening);
 
@@ -72,14 +58,20 @@ function renderPhase1(): void {
 
   ui.inlineAppRow.classList.toggle('hidden', !state.hasUnlockedSubmission);
 
+  // Job Search tier upgrades
+  const [js1Cost, js2Cost, js3Cost] = JOB_SEARCH_TIER_COSTS;
+  ui.upgradeJobSearchT1Row.classList.toggle('hidden',
+    !shouldShowUpgrade(state.maxAppsReached, js1Cost, state.jobSearchTier >= 1));
+  ui.upgradeJobSearchT2Row.classList.toggle('hidden',
+    state.jobSearchTier < 1 || !shouldShowUpgrade(state.maxAppsReached, js2Cost, state.jobSearchTier >= 2));
+  ui.upgradeJobSearchT3Row.classList.toggle('hidden',
+    state.jobSearchTier < 2 || !shouldShowUpgrade(state.maxAppsReached, js3Cost, state.jobSearchTier >= 3));
+  ui.btnUpgradeJobSearchT1.disabled = state.appsThruScreening < js1Cost;
+  ui.btnUpgradeJobSearchT2.disabled = state.appsThruScreening < js2Cost;
+  ui.btnUpgradeJobSearchT3.disabled = state.appsThruScreening < js3Cost;
+
   ui.automationCardP1.classList.toggle('hidden', state.peakAppsSubmitted < 25);
 
-  const finderCost = BASE_FINDER_COST * state.openClawFinderLevel;
-  ui.finderBadge.innerText = String(state.openClawFinderLevel);
-  ui.finderCostDisplay.innerText = formatComma(finderCost);
-  ui.btnUpgradeFinder.disabled = state.appsThruScreening < finderCost;
-
-  ui.upgradeSubmitterRow.classList.toggle('hidden', state.openClawFinderLevel < 1);
   const submitterCost = BASE_SUBMITTER_COST * state.openClawSubmitLevel;
   ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
   ui.submitterCostDisplay.innerText = formatComma(submitterCost);
