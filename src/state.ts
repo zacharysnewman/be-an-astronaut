@@ -9,7 +9,10 @@ export const state: GameState = {
 
   availableJobs: 0.0,
   applications: 0.0,
+  appsThruScreening: 0.0,
   maxAppsReached: 0.0,
+  keywords: 0,
+  prettinessLevel: 0,
   hasBegged: false,
   hasUnlockedSubmission: false,
   hasFoundJob: false,

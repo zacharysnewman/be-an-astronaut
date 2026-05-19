@@ -36,6 +36,7 @@ function renderPhase1(): void {
   ui.totalAppsDisplay.innerText = formatComma(totalAppsSubmitted);
   ui.availJobs.innerText = formatComma(state.availableJobs);
   ui.apps.innerText = formatComma(state.applications);
+  ui.appsThruScreeningDisplay.innerText = formatComma(state.appsThruScreening);
 
   if (state.hasFoundJob) {
     ui.finderRateRow.classList.remove('hidden');
@@ -51,6 +52,23 @@ function renderPhase1(): void {
     ui.submitterRateRow.classList.add('hidden');
   }
 
+  // ATS screening section
+  const showScreening = state.hasUnlockedSubmission;
+  ui.appsThruScreeningRow.classList.toggle('hidden', !showScreening);
+  ui.keywordsSection.classList.toggle('hidden', !showScreening);
+
+  const effectiveKeywords = state.keywords + state.prettinessLevel;
+  const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
+  ui.keywordsDisplay.innerText = String(state.keywords);
+  ui.btnKeywordsDown.disabled = state.keywords <= 0;
+  if (outflowRate > 0) {
+    ui.screeningRateDisplay.innerText = `${outflowRate.toFixed(2)}/s`;
+    ui.screeningRateDisplay.className = 'good';
+  } else {
+    ui.screeningRateDisplay.innerText = `0.00/s (need ≥3 keywords)`;
+    ui.screeningRateDisplay.className = '';
+  }
+
   ui.btnFind.disabled = state.money <= 0;
   ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
 
@@ -61,14 +79,14 @@ function renderPhase1(): void {
   const finderCost = getLinearCost(BASE_FINDER_COST, state.openClawFinderLevel);
   ui.finderBadge.innerText = String(state.openClawFinderLevel);
   ui.finderCostDisplay.innerText = formatComma(finderCost);
-  ui.btnUpgradeFinder.disabled = state.applications < finderCost;
+  ui.btnUpgradeFinder.disabled = state.appsThruScreening < finderCost;
 
   if (state.openClawFinderLevel >= 1) {
     ui.upgradeSubmitterRow.classList.remove('hidden');
     const submitterCost = getLinearCost(BASE_SUBMITTER_COST, state.openClawSubmitLevel);
     ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
     ui.submitterCostDisplay.innerText = formatComma(submitterCost);
-    ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;
+    ui.btnUpgradeSubmitter.disabled = state.appsThruScreening < submitterCost;
 
     const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
     ui.upgradeEfficiencyT1Row.classList.toggle('hidden',
@@ -78,9 +96,9 @@ function renderPhase1(): void {
     ui.upgradeEfficiencyT3Row.classList.toggle('hidden',
       !shouldShowUpgrade(state.maxAppsReached, t3Cost, state.efficiencyTier >= 3));
 
-    ui.btnUpgradeEfficiencyT1.disabled = state.applications < t1Cost;
-    ui.btnUpgradeEfficiencyT2.disabled = state.applications < t2Cost;
-    ui.btnUpgradeEfficiencyT3.disabled = state.applications < t3Cost;
+    ui.btnUpgradeEfficiencyT1.disabled = state.appsThruScreening < t1Cost;
+    ui.btnUpgradeEfficiencyT2.disabled = state.appsThruScreening < t2Cost;
+    ui.btnUpgradeEfficiencyT3.disabled = state.appsThruScreening < t3Cost;
   } else {
     ui.upgradeSubmitterRow.classList.add('hidden');
     ui.upgradeEfficiencyT1Row.classList.add('hidden');
@@ -95,7 +113,7 @@ function renderPhase1(): void {
 
   if (state.maxAppsReached >= 10000) {
     ui.jobCard.classList.remove('hidden');
-    ui.btnInterview.disabled = state.applications < 100000;
+    ui.btnInterview.disabled = state.appsThruScreening < 100000;
   } else {
     ui.jobCard.classList.add('hidden');
   }
@@ -184,7 +202,7 @@ export function updateUI(): void {
   if (state.money <= 0.0) {
     ui.btnBeg.disabled = false;
   } else {
-    ui.btnBeg.disabled = state.applications < 50;
+    ui.btnBeg.disabled = state.appsThruScreening < 50;
   }
 
   renderGoals();

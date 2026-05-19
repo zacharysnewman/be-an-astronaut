@@ -7,8 +7,11 @@ export interface GameState {
   phase:                Phase;
   money:                number;
   availableJobs:        number;
-  applications:         number;
-  maxAppsReached:       number;
+  applications:         number;  // Unread Apps buffer (submitted, awaiting ATS screening)
+  appsThruScreening:    number;  // Screened apps — the spendable currency/score
+  maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
+  keywords:             number;  // Player-controlled ATS keyword count
+  prettinessLevel:      number;  // Upgrade modifier: adds to keywords for outflow calc only
   hasBegged:            boolean;
   hasUnlockedSubmission: boolean;
   hasFoundJob:          boolean;

@@ -71,9 +71,18 @@ function tickPhase1(dt: number): void {
     if (actualSubmissions > 0) {
       state.availableJobs -= actualSubmissions;
       state.applications += actualSubmissions;
-      state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
       addTotalAppsSubmitted(actualSubmissions);
       state.hasSubmittedApp = true;
+    }
+
+    // ATS screening: drain Unread Apps buffer → Apps Through Screening
+    const effectiveKeywords = state.keywords + state.prettinessLevel;
+    const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
+    const realizedOutflow = Math.min(outflowRate * dt, state.applications);
+    if (realizedOutflow > 0) {
+      state.applications -= realizedOutflow;
+      state.appsThruScreening += realizedOutflow;
+      state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
     }
 
     if (state.openClawSubmitLevel >= 1) {
