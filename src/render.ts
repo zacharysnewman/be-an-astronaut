@@ -18,7 +18,7 @@ function renderPhase1(): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+  const automationFlat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
   const totalDrain = baseRate + automationFlat;
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
@@ -27,14 +27,14 @@ function renderPhase1(): void {
   ui.availJobs.innerText = formatComma(state.availableJobs);
   ui.apps.innerText = formatComma(state.applications);
 
-  if (state.openClawFinderLevel > 0 || jobsFoundRate > 0) {
+  if (state.hasFoundJob) {
     ui.finderRateRow.classList.remove('hidden');
     ui.finderRateDisplay.innerText = `+${jobsFoundRate.toFixed(1)}/s`;
   } else {
     ui.finderRateRow.classList.add('hidden');
   }
 
-  if (state.openClawSubmitLevel > 0 || appsSubmittedRate > 0) {
+  if (state.hasSubmittedApp) {
     ui.submitterRateRow.classList.remove('hidden');
     ui.submitterRateDisplay.innerText = `+${appsSubmittedRate.toFixed(1)}/s`;
   } else {
@@ -67,7 +67,7 @@ function renderPhase1(): void {
   if (isSubmitUnlocked) {
     ui.providerContainer.classList.remove('hidden');
 
-    const flat = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+    const flat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
     ui.rateFinite.innerText   = `$${(0.01 * state.finiteMultiplier   + flat).toFixed(2)}/s`;
     ui.rateWeeklink.innerText = `$${(0.01 * state.weeklinkMultiplier + flat).toFixed(2)}/s`;
     ui.rateBliply.innerText   = `$${(0.01 * state.bliplyMultiplier   + flat).toFixed(2)}/s`;
@@ -196,11 +196,6 @@ export function updateUI(): void {
     ui.bankruptcyOverlay.classList.add('hidden');
     document.body.classList.remove('overlay-active');
   }
-
-  let manualPayoutAmt = 3.00;
-  if (state.parentalTier === 2) manualPayoutAmt = 6.00;
-  if (state.parentalTier >= 3) manualPayoutAmt = 9.00;
-  ui.begCostLabel.innerText = `+$${manualPayoutAmt.toFixed(2)}`;
 
   if (state.money <= 0.0) {
     ui.btnBeg.disabled = false;

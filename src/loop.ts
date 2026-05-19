@@ -36,16 +36,16 @@ function tickPhase1(dt: number): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+  const automationFlat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
   const totalDrain = baseRate + automationFlat;
   state.money -= totalDrain * dt;
 
   if (state.money <= 0.0) {
     state.money = 0.0;
     if (state.parentalTier === 4) {
-      state.money += 9.00;
+      state.money += 18.00;
       state.hasBegged = true;
-      logMessage('Automated Script: Direct trust wire injection completed. Directing +$9.00.', 'system');
+      logMessage('Automated Script: Direct trust wire injection completed. Directing +$18.00.', 'system');
     }
   }
 
@@ -55,7 +55,7 @@ function tickPhase1(dt: number): void {
     const finderVolume = state.openClawFinderLevel;
     const jobsGenerated = finderVolume * dt;
     state.availableJobs += jobsGenerated;
-    if (jobsGenerated > 0) addTotalJobsFound(jobsGenerated);
+    if (jobsGenerated > 0) { addTotalJobsFound(jobsGenerated); state.hasFoundJob = true; }
 
     if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
       state.hasUnlockedSubmission = true;
@@ -69,6 +69,7 @@ function tickPhase1(dt: number): void {
       state.applications += actualSubmissions;
       state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
       addTotalAppsSubmitted(actualSubmissions);
+      state.hasSubmittedApp = true;
     }
 
     if (state.openClawSubmitLevel >= 1) {

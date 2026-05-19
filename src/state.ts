@@ -12,6 +12,8 @@ export const state: GameState = {
   maxAppsReached: 0.0,
   hasBegged: false,
   hasUnlockedSubmission: false,
+  hasFoundJob: false,
+  hasSubmittedApp: false,
 
   openClawFinderLevel: 0,
   openClawSubmitLevel: 0,

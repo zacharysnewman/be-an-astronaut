@@ -17,7 +17,6 @@ export const ui = {
   availJobs: el('avail-jobs-display'),
   apps: el('apps-display'),
   btnBeg: el<HTMLButtonElement>('btn-beg'),
-  begCostLabel: el('beg-cost-label'),
   btnFind: el<HTMLButtonElement>('btn-find'),
   btnApply: el<HTMLButtonElement>('btn-apply'),
   btnInterview: el<HTMLButtonElement>('btn-interview'),
