@@ -8,6 +8,10 @@ import {
   PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
+  PRETTIFY_TIER_COSTS,
+  BASE_DESIRABILITY,
+  PRETTINESS_BOOST,
+  KEYWORD_PENALTY,
 } from './constants';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
@@ -46,12 +50,32 @@ function renderPhase1(): void {
 
   ui.keywordsDisplay.innerText = String(state.keywords);
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
+
+  const desirability = Math.max(0, Math.min(1,
+    BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY
+  ));
+  ui.desirabilityDisplay.innerText = `${Math.round(desirability * 100)}%`;
+
   if (state.hasScreenedApp) {
     ui.screeningRateRow.classList.remove('hidden');
     ui.screeningRateDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
   } else {
     ui.screeningRateRow.classList.add('hidden');
   }
+
+  const [p1Cost, p2Cost, p3Cost, p4Cost] = PRETTIFY_TIER_COSTS;
+  ui.upgradePrettifyT1Row.classList.toggle('hidden',
+    !shouldShowUpgrade(state.maxAppsReached, p1Cost, state.prettinessLevel >= 1));
+  ui.upgradePrettifyT2Row.classList.toggle('hidden',
+    state.prettinessLevel < 1 || !shouldShowUpgrade(state.maxAppsReached, p2Cost, state.prettinessLevel >= 2));
+  ui.upgradePrettifyT3Row.classList.toggle('hidden',
+    state.prettinessLevel < 2 || !shouldShowUpgrade(state.maxAppsReached, p3Cost, state.prettinessLevel >= 3));
+  ui.upgradePrettifyT4Row.classList.toggle('hidden',
+    state.prettinessLevel < 3 || !shouldShowUpgrade(state.maxAppsReached, p4Cost, state.prettinessLevel >= 4));
+  ui.btnUpgradePrettifyT1.disabled = state.appsThruScreening < p1Cost;
+  ui.btnUpgradePrettifyT2.disabled = state.appsThruScreening < p2Cost;
+  ui.btnUpgradePrettifyT3.disabled = state.appsThruScreening < p3Cost;
+  ui.btnUpgradePrettifyT4.disabled = state.appsThruScreening < p4Cost;
 
   ui.btnFind.disabled = state.money < 1.00;
   ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
