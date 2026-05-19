@@ -39,7 +39,6 @@ function renderPhase1(): void {
   ui.totalReadRow.classList.toggle('hidden', !showScreening);
   ui.totalReadDisplay.innerText = formatComma(totalAppsScreened);
   ui.availJobs.innerText = formatComma(state.availableJobs);
-  ui.apps.innerText = formatComma(state.applications);
   ui.unreadAppsDisplay.innerText = formatComma(state.unreadApplications);
   ui.appsThruScreeningDisplay.innerText = formatComma(state.appsThruScreening);
 

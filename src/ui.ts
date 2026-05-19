@@ -17,7 +17,6 @@ export const ui = {
   totalReadRow: el('total-read-row'),
   totalReadDisplay: el('total-read-display'),
   availJobs: el('avail-jobs-display'),
-  apps: el('apps-display'),
   btnBeg: el<HTMLButtonElement>('btn-beg'),
   btnFind: el<HTMLButtonElement>('btn-find'),
   btnApply: el<HTMLButtonElement>('btn-apply'),
