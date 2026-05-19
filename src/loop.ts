@@ -72,6 +72,7 @@ function tickPhase1(dt: number): void {
       state.availableJobs -= actualSubmissions;
       state.applications += actualSubmissions;
       state.unreadApplications += actualSubmissions;
+      state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
       addTotalAppsSubmitted(actualSubmissions);
       state.hasSubmittedApp = true;
     }
@@ -83,7 +84,6 @@ function tickPhase1(dt: number): void {
     if (realizedOutflow > 0) {
       state.unreadApplications -= realizedOutflow;
       state.appsThruScreening += realizedOutflow;
-      state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
     }
 
     if (state.openClawSubmitLevel >= 1) {
