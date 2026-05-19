@@ -7,7 +7,7 @@ export const state: GameState = {
   phase: 1,
   money: 5.00,
 
-  availableJobs: Math.floor(Math.random() * 11) + 10,
+  availableJobs: Math.floor(Math.random() * 101) + 100,
   applications: 0.0,
   unreadApplications: 0.0,
   appsThruScreening: 0.0,
