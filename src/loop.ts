@@ -84,7 +84,10 @@ function tickPhase1(dt: number): void {
         const processable = Math.min(wholeApps, Math.floor(state.unreadApplications));
         if (processable > 0) {
           state.unreadApplications -= processable;
-          const passThrough = Math.round(processable * desirability);
+          let passThrough = 0;
+          for (let i = 0; i < processable; i++) {
+            if (Math.random() < desirability) passThrough++;
+          }
           const screenedOut = processable - passThrough;
           if (passThrough > 0) {
             state.appsThruScreening += passThrough;
