@@ -1,12 +1,12 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_PER_KEYWORD, BASE_DESIRABILITY, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown,
+  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress,
   totalAppsScreened, totalAppsRejected,
   rateAppsScreenedSnap, rateAppsRejectedSnap, rateTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown,
+  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown, setScreeningProgress,
   addTotalAppsSubmitted, addTotalAppsScreened, addTotalAppsRejected,
   setRateAppsScreenedSnap, setRateAppsRejectedSnap,
   setRateTimer, setAppsScreenedRate, setAppsRejectedRate,
@@ -70,30 +70,32 @@ function tickPhase1(dt: number): void {
       state.hasSubmittedApp = true;
     }
 
-    // ATS screening: drain Unread Applications, split by desirability into pass-through vs. rejected.
-    // Keywords drive processing speed; desirability (reduced by keywords, boosted by prettiness)
-    // determines what fraction actually reaches appsThruScreening.
+    // ATS screening: findability drives speed, desirability is pass/fail rate.
+    // Only whole applications are processed — fractional progress accumulates each tick.
     if (screeningCooldown > 0) {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
-      const outflowRate = state.keywords * SCREENING_RATE_PER_KEYWORD;
-      const desirability = Math.max(0, Math.min(1,
-        BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY
-      ));
-      const totalOutflow = Math.min(outflowRate * dt, state.unreadApplications);
-      if (totalOutflow > 0) {
-        state.unreadApplications -= totalOutflow;
-        const passThrough = totalOutflow * desirability;
-        const screenedOut = totalOutflow - passThrough;
-        if (passThrough > 0) {
-          state.appsThruScreening += passThrough;
-          state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
-          addTotalAppsScreened(passThrough);
-          state.hasScreenedApp = true;
-        }
-        if (screenedOut > 0) {
-          state.appsScreenedOut += screenedOut;
-          addTotalAppsRejected(screenedOut);
+      const findability = state.keywords * KEYWORD_PENALTY + state.prettinessLevel * PRETTINESS_BOOST;
+      const desirability = Math.max(0, 1.0 - state.keywords * KEYWORD_PENALTY);
+      setScreeningProgress(screeningProgress + SCREENING_RATE_BASE * findability * dt);
+      const wholeApps = Math.floor(screeningProgress);
+      if (wholeApps > 0) {
+        setScreeningProgress(screeningProgress - wholeApps);
+        const processable = Math.min(wholeApps, Math.floor(state.unreadApplications));
+        if (processable > 0) {
+          state.unreadApplications -= processable;
+          const passThrough = Math.round(processable * desirability);
+          const screenedOut = processable - passThrough;
+          if (passThrough > 0) {
+            state.appsThruScreening += passThrough;
+            state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
+            addTotalAppsScreened(passThrough);
+            state.hasScreenedApp = true;
+          }
+          if (screenedOut > 0) {
+            state.appsScreenedOut += screenedOut;
+            addTotalAppsRejected(screenedOut);
+          }
         }
       }
       if (state.unreadApplications <= 0) {

@@ -53,6 +53,7 @@ export let paperPriceTimer      = 0.0;
 export let cloudSaveTimer       = 0.0;
 export let warningThrottleTimer = 0.0;
 export let screeningCooldown    = 0.0;
+export let screeningProgress    = 0.0;  // accumulates fractional app progress; only whole apps are processed
 export let moneyDisplayTimer    = 0.0;
 export let displayedMoney       = state.money;
 
@@ -70,6 +71,7 @@ export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; 
 export function setCloudSaveTimer(v: number): void       { cloudSaveTimer = v; }
 export function setWarningThrottleTimer(v: number): void { warningThrottleTimer = v; }
 export function setScreeningCooldown(v: number): void    { screeningCooldown = v; }
+export function setScreeningProgress(v: number): void    { screeningProgress = v; }
 export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
 export function addTotalAppsSubmitted(v: number): void    { totalAppsSubmitted += v; }

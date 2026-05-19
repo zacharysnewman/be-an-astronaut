@@ -30,6 +30,7 @@ export const ui = {
   keywordsDisplay: el('keywords-display'),
   btnKeywordsDown: el<HTMLButtonElement>('btn-keywords-down'),
   btnKeywordsUp: el<HTMLButtonElement>('btn-keywords-up'),
+  findabilityDisplay: el('findability-display'),
   desirabilityDisplay: el('desirability-display'),
   rejectedAppsRow: el('rejected-apps-row'),
   rejectedAppsDisplay: el('rejected-apps-display'),
