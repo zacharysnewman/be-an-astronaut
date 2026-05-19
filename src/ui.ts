@@ -14,6 +14,7 @@ export const ui = {
   goalGetJob: el('goal-get-job'),
   goalCheckJob: el('goal-check-job'),
 
+  totalAppsDisplay: el('total-apps-display'),
   availJobs: el('avail-jobs-display'),
   apps: el('apps-display'),
   btnBeg: el<HTMLButtonElement>('btn-beg'),
