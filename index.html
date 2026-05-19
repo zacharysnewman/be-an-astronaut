@@ -118,16 +118,15 @@
                 </div>
             </div>
 
-            <!-- Total Read and Submit rows (above ATS Screening, outside any section) -->
-            <div id="total-read-row" class="stat-row hidden">Total Applications Read: <span id="total-read-display" class="bold">0</span></div>
+            <!-- Total Applications Submitted row (above Job Applications section) -->
+            <div id="total-read-row" class="stat-row hidden">Total Applications Submitted: <span id="total-read-display" class="bold">0</span></div>
             <div id="inline-app-row" class="stat-row hidden">
                 <button id="btn-apply" class="btn-inline" disabled>Submit Application</button>
             </div>
-            <div id="submitter-rate-row" class="stat-row hidden">Submitted per second: <span id="submitter-rate-display" class="good"></span></div>
 
-            <!-- ATS Keyword Control (at top of page) -->
+            <!-- Job Applications (ATS Screening) -->
             <div id="keywords-section" class="hidden">
-                <h2 class="section-title">ATS Screening</h2>
+                <h2 class="section-title">Job Applications</h2>
                 <div id="apps-thru-screening-row" class="stat-row">Apps Through Screening: <span id="apps-thru-screening-display" class="bold good">0</span></div>
                 <div class="stat-row">Unread Applications: <span id="unread-apps-display" class="bold">0</span></div>
                 <div class="stat-row">
@@ -144,21 +143,29 @@
 
             <!-- Inline Compact Discovery Rows -->
             <div id="inline-job-row" class="stat-row">
-                <button id="btn-find" class="btn-inline">Find</button>
-                <b>Jobs:</b> <span id="avail-jobs-display" class="bold">0</span>
+                <button id="btn-find" class="btn-inline">Find Jobs</button>
+                <b>Available:</b> <span id="avail-jobs-display" class="bold">0</span>
             </div>
-            <div id="finder-rate-row" class="stat-row hidden">Jobs Found per second: <span id="finder-rate-display" class="good"></span></div>
+
+            <!-- Job Search Algorithm Upgrades -->
+            <div id="upgrade-job-search-t1-row" class="stat-row hidden">
+                <button id="btn-upgrade-job-search-t1" class="btn-inline">Upgrade Job Search (Tier 1)</button>
+                10x jobs per search | Cost: <span class="bold">100 Screened</span>
+            </div>
+            <div id="upgrade-job-search-t2-row" class="stat-row hidden">
+                <button id="btn-upgrade-job-search-t2" class="btn-inline">Upgrade Job Search (Tier 2)</button>
+                100x jobs per search | Cost: <span class="bold">1,000 Screened</span>
+            </div>
+            <div id="upgrade-job-search-t3-row" class="stat-row hidden">
+                <button id="btn-upgrade-job-search-t3" class="btn-inline">Upgrade Job Search (Tier 3)</button>
+                1,000x jobs per search | Cost: <span class="bold">10,000 Screened</span>
+            </div>
 
             <!-- OpenClaw Automations Section -->
             <div id="automation-p1-card" class="hidden">
                 <h2 class="section-title">OpenClaw Automations</h2>
 
-                <div id="upgrade-finder-row" class="stat-row">
-                    <button id="btn-upgrade-finder" class="btn-inline">Buy Auto-Finder</button>
-                    Count: <span id="finder-level-badge">0</span> | Cost: <span id="finder-cost-display">0</span> Screened
-                </div>
-
-                <div id="upgrade-submitter-row" class="stat-row hidden">
+                <div id="upgrade-submitter-row" class="stat-row">
                     <button id="btn-upgrade-submitter" class="btn-inline">Buy Auto-Submitter</button>
                     Count: <span id="submitter-level-badge">0</span> | Cost: <span id="submitter-cost-display">0</span> Screened
                 </div>

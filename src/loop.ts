@@ -2,14 +2,14 @@ import type { Phase } from './types';
 import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, submitterCooldown,
-  totalJobsFound, totalAppsSubmitted, totalAppsScreened,
-  rateJobsSnap, rateAppsSnap, rateAppsScreenedSnap, rateTimer,
+  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown,
+  totalAppsScreened,
+  rateAppsScreenedSnap, rateTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown, setSubmitterCooldown,
-  addTotalJobsFound, addTotalAppsSubmitted, addTotalAppsScreened,
-  setRateJobsSnap, setRateAppsSnap, setRateAppsScreenedSnap,
-  setRateTimer, setJobsFoundRate, setAppsSubmittedRate, setAppsScreenedRate,
+  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown,
+  addTotalAppsSubmitted, addTotalAppsScreened,
+  setRateAppsScreenedSnap,
+  setRateTimer, setAppsScreenedRate,
   setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
 import { ui } from './ui';
@@ -41,7 +41,7 @@ function tickPhase1(dt: number): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
+  const automationFlat = Math.floor(state.openClawSubmitLevel * 0.0025 * 100) / 100;
   const totalDrain = baseRate + automationFlat;
   state.money -= totalDrain * dt;
 
@@ -58,41 +58,25 @@ function tickPhase1(dt: number): void {
 
   if (!isBankrupt) {
     const effMult = EFFICIENCY_TIER_MULTS[state.efficiencyTier];
-    const finderVolume = state.openClawFinderLevel * effMult;
-    const jobsGenerated = finderVolume * dt;
-    state.availableJobs += jobsGenerated;
-    if (jobsGenerated > 0) { addTotalJobsFound(jobsGenerated); state.hasFoundJob = true; }
 
-    if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
-      state.hasUnlockedSubmission = true;
-      logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
-    }
-
-    if (submitterCooldown > 0) {
-      setSubmitterCooldown(submitterCooldown - dt);
-    } else {
-      const submitterVolume = state.openClawSubmitLevel * effMult;
-      const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
-      if (actualSubmissions > 0) {
-        state.availableJobs -= actualSubmissions;
-        state.applications += actualSubmissions;
-        state.unreadApplications += actualSubmissions;
-        state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
-        addTotalAppsSubmitted(actualSubmissions);
-        state.hasSubmittedApp = true;
-      }
-      if (state.availableJobs <= 0) {
-        setSubmitterCooldown(PROCESSOR_COOLDOWN_S);
-      }
+    const submitterVolume = state.openClawSubmitLevel * effMult;
+    const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
+    if (actualSubmissions > 0) {
+      state.availableJobs -= actualSubmissions;
+      state.applications += actualSubmissions;
+      state.unreadApplications += actualSubmissions;
+      state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
+      addTotalAppsSubmitted(actualSubmissions);
+      state.hasSubmittedApp = true;
     }
 
     // ATS screening: drain Unread Applications → Apps Through Screening
-    // When the queue empties, pause for 1 second before resuming.
+    // When the queue empties, pause for PROCESSOR_COOLDOWN_S before resuming.
     if (screeningCooldown > 0) {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
       const effectiveKeywords = state.keywords + state.prettinessLevel;
-      const outflowRate = effectiveKeywords > 2 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
+      const outflowRate = effectiveKeywords > 0 ? Math.pow(1.9, effectiveKeywords - 2.5) : 0;
       const realizedOutflow = Math.min(outflowRate * dt, state.unreadApplications);
       if (realizedOutflow > 0) {
         state.unreadApplications -= realizedOutflow;
@@ -169,11 +153,7 @@ export function mainLoop(timestamp: number): void {
 
   setRateTimer(rateTimer + dt);
   if (rateTimer >= 1.0) {
-    setJobsFoundRate((totalJobsFound - rateJobsSnap) / rateTimer);
-    setAppsSubmittedRate((totalAppsSubmitted - rateAppsSnap) / rateTimer);
     setAppsScreenedRate((totalAppsScreened - rateAppsScreenedSnap) / rateTimer);
-    setRateJobsSnap(totalJobsFound);
-    setRateAppsSnap(totalAppsSubmitted);
     setRateAppsScreenedSnap(totalAppsScreened);
     setRateTimer(0.0);
   }

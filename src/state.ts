@@ -7,7 +7,7 @@ export const state: GameState = {
   phase: 1,
   money: 1.00,
 
-  availableJobs: 0.0,
+  availableJobs: Math.floor(Math.random() * 11) + 10,
   applications: 0.0,
   unreadApplications: 0.0,
   appsThruScreening: 0.0,
@@ -16,12 +16,11 @@ export const state: GameState = {
   keywords: 0,
   prettinessLevel: 0,
   hasBegged: false,
-  hasUnlockedSubmission: false,
-  hasFoundJob: false,
+  hasUnlockedSubmission: true,
   hasSubmittedApp: false,
   hasScreenedApp: false,
+  jobSearchTier: 0,
 
-  openClawFinderLevel: 0,
   openClawSubmitLevel: 0,
   parentalTier: 1,
 
@@ -53,19 +52,13 @@ export let paperPriceTimer      = 0.0;
 export let cloudSaveTimer       = 0.0;
 export let warningThrottleTimer = 0.0;
 export let screeningCooldown    = 0.0;
-export let submitterCooldown    = 0.0;
 export let moneyDisplayTimer    = 0.0;
 export let displayedMoney       = state.money;
 
-export let totalJobsFound      = 0.0;
 export let totalAppsSubmitted  = 0.0;
 export let totalAppsScreened   = 0.0;
-export let rateJobsSnap        = 0.0;
-export let rateAppsSnap        = 0.0;
 export let rateAppsScreenedSnap = 0.0;
 export let rateTimer           = 0.0;
-export let jobsFoundRate       = 0.0;
-export let appsSubmittedRate   = 0.0;
 export let appsScreenedRate    = 0.0;
 
 export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
@@ -73,16 +66,10 @@ export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; 
 export function setCloudSaveTimer(v: number): void       { cloudSaveTimer = v; }
 export function setWarningThrottleTimer(v: number): void { warningThrottleTimer = v; }
 export function setScreeningCooldown(v: number): void    { screeningCooldown = v; }
-export function setSubmitterCooldown(v: number): void    { submitterCooldown = v; }
 export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
-export function addTotalJobsFound(v: number): void       { totalJobsFound += v; }
 export function addTotalAppsSubmitted(v: number): void   { totalAppsSubmitted += v; }
 export function addTotalAppsScreened(v: number): void    { totalAppsScreened += v; }
-export function setRateJobsSnap(v: number): void         { rateJobsSnap = v; }
-export function setRateAppsSnap(v: number): void         { rateAppsSnap = v; }
 export function setRateAppsScreenedSnap(v: number): void { rateAppsScreenedSnap = v; }
 export function setRateTimer(v: number): void            { rateTimer = v; }
-export function setJobsFoundRate(v: number): void        { jobsFoundRate = v; }
-export function setAppsSubmittedRate(v: number): void    { appsSubmittedRate = v; }
 export function setAppsScreenedRate(v: number): void     { appsScreenedRate = v; }
