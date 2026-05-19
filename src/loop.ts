@@ -30,10 +30,14 @@ export function transitionToPhase(target: Phase): void {
 }
 
 function tickPhase1(dt: number): void {
-  let providerRate = 0.0;
-  providerRate = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
-
-  const totalDrain = 0.01 + providerRate;
+  let baseRate = 0.01;
+  if (state.openClawSubmitLevel >= 1) {
+    if (state.selectedProvider === 'finite')        baseRate = 0.01 * state.finiteMultiplier;
+    else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
+    else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
+  }
+  const automationFlat = (state.openClawFinderLevel * 0.03) + (state.openClawSubmitLevel * 0.02);
+  const totalDrain = baseRate + automationFlat;
   state.money -= totalDrain * dt;
 
   if (state.money <= 0.0) {
