@@ -18,7 +18,7 @@ function renderPhase1(): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
+  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
   const totalDrain = baseRate + automationFlat;
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
@@ -59,15 +59,20 @@ function renderPhase1(): void {
     ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
     ui.submitterCostDisplay.innerText = formatComma(submitterCost);
     ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;
+
+    ui.upgradeEfficiencyRow.classList.remove('hidden');
+    ui.btnUpgradeEfficiency.disabled = state.efficiencyUnlocked || state.applications < 1000;
+    ui.btnUpgradeEfficiency.innerText = state.efficiencyUnlocked ? 'Efficiency: Active' : 'Unlock Efficiency Protocol';
   } else {
     ui.upgradeSubmitterRow.classList.add('hidden');
+    ui.upgradeEfficiencyRow.classList.add('hidden');
   }
 
   const isSubmitUnlocked = state.openClawSubmitLevel >= 1;
   if (isSubmitUnlocked) {
     ui.providerContainer.classList.remove('hidden');
 
-    const flat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
+    const flat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
     ui.rateFinite.innerText   = `$${(0.01 * state.finiteMultiplier   + flat).toFixed(2)}/s`;
     ui.rateWeeklink.innerText = `$${(0.01 * state.weeklinkMultiplier + flat).toFixed(2)}/s`;
     ui.rateBliply.innerText   = `$${(0.01 * state.bliplyMultiplier   + flat).toFixed(2)}/s`;
@@ -83,33 +88,7 @@ function renderPhase1(): void {
     ui.providerContainer.classList.add('hidden');
   }
 
-  let showParentBox = false;
-
-  if (state.maxAppsReached >= 200 && state.hasBegged && state.parentalTier === 1) {
-    ui.upgradeParentT2.classList.remove('hidden');
-    ui.btnUpgradeParentT2.disabled = state.applications < 2000;
-    showParentBox = true;
-  } else {
-    ui.upgradeParentT2.classList.add('hidden');
-  }
-
-  if (state.parentalTier === 2) {
-    ui.upgradeParentT3.classList.remove('hidden');
-    ui.btnUpgradeParentT3.disabled = state.applications < 4000;
-    showParentBox = true;
-  } else {
-    ui.upgradeParentT3.classList.add('hidden');
-  }
-
-  if (state.parentalTier === 3 && state.maxAppsReached >= 5000) {
-    ui.upgradeParentT4.classList.remove('hidden');
-    ui.btnUpgradeParentT4.disabled = state.applications < 50000;
-    showParentBox = true;
-  } else {
-    ui.upgradeParentT4.classList.add('hidden');
-  }
-
-  ui.parentalUpgradesContainer.classList.toggle('hidden', !showParentBox);
+  ui.parentalUpgradesContainer.classList.add('hidden');
 
   if (state.maxAppsReached >= 10000) {
     ui.jobCard.classList.remove('hidden');

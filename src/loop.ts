@@ -38,7 +38,7 @@ function tickPhase1(dt: number): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = (state.openClawFinderLevel + state.openClawSubmitLevel) * 0.01;
+  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
   const totalDrain = baseRate + automationFlat;
   state.money -= totalDrain * dt;
 
@@ -54,7 +54,8 @@ function tickPhase1(dt: number): void {
   const isBankrupt = state.money <= 0.0;
 
   if (!isBankrupt) {
-    const finderVolume = state.openClawFinderLevel;
+    const effMult = state.efficiencyUnlocked ? 2 : 1;
+    const finderVolume = state.openClawFinderLevel * effMult;
     const jobsGenerated = finderVolume * dt;
     state.availableJobs += jobsGenerated;
     if (jobsGenerated > 0) { addTotalJobsFound(jobsGenerated); state.hasFoundJob = true; }
@@ -64,7 +65,7 @@ function tickPhase1(dt: number): void {
       logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
     }
 
-    const submitterVolume = state.openClawSubmitLevel;
+    const submitterVolume = state.openClawSubmitLevel * effMult;
     const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
     if (actualSubmissions > 0) {
       state.availableJobs -= actualSubmissions;
@@ -77,7 +78,7 @@ function tickPhase1(dt: number): void {
     if (state.openClawSubmitLevel >= 1) {
       state.providerTimer -= dt;
       if (state.providerTimer <= 0.0) {
-        state.providerTimer = 20.0;
+        state.providerTimer = 60.0;
         state.contractLocked = false;
 
         state.providerPriceIndex = (state.providerPriceIndex + 1) % PROVIDER_PRICE_SETS.length;
