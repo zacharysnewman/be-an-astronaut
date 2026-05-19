@@ -1,4 +1,4 @@
-import { state } from './state';
+import { state, addTotalJobsFound, addTotalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { logMessage, formatMoney, getExponentialCost, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
@@ -38,6 +38,7 @@ export function registerEventListeners(): void {
   ui.btnFind.addEventListener('click', () => {
     if (state.money > 0) {
       state.availableJobs += 1.0;
+      addTotalJobsFound(1.0);
       if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
         state.hasUnlockedSubmission = true;
         logMessage('Application pipelines activated! Submit engine unlocked.', 'good');
@@ -51,6 +52,7 @@ export function registerEventListeners(): void {
       state.availableJobs -= 1.0;
       state.applications += 1.0;
       state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+      addTotalAppsSubmitted(1.0);
     }
     updateUI();
   });

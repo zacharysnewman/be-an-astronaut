@@ -1,4 +1,4 @@
-import { state } from './state';
+import { state, jobsFoundRate, appsSubmittedRate } from './state';
 import { ui } from './ui';
 import { formatMoney, getExponentialCost, getGeometricCost } from './utils';
 import {
@@ -31,18 +31,16 @@ function renderPhase1(): void {
   ui.availJobs.innerText = formatComma(state.availableJobs);
   ui.apps.innerText = formatComma(state.applications);
 
-  const finderOut = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
-  if (finderOut > 0) {
+  if (state.openClawFinderLevel > 0 || jobsFoundRate > 0) {
     ui.finderRateRow.classList.remove('hidden');
-    ui.finderRateDisplay.innerText = `+${finderOut}/s`;
+    ui.finderRateDisplay.innerText = `+${jobsFoundRate.toFixed(1)}/s`;
   } else {
     ui.finderRateRow.classList.add('hidden');
   }
 
-  const submitterOut = state.openClawSubmitLevel > 0 ? Math.pow(2, state.openClawSubmitLevel - 1) : 0;
-  if (submitterOut > 0) {
+  if (state.openClawSubmitLevel > 0 || appsSubmittedRate > 0) {
     ui.submitterRateRow.classList.remove('hidden');
-    ui.submitterRateDisplay.innerText = `+${submitterOut}/s`;
+    ui.submitterRateDisplay.innerText = `+${appsSubmittedRate.toFixed(1)}/s`;
   } else {
     ui.submitterRateRow.classList.add('hidden');
   }

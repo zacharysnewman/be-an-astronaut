@@ -2,7 +2,10 @@ import type { Phase } from './types';
 import { state } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
+  totalJobsFound, totalAppsSubmitted, rateJobsSnap, rateAppsSnap, rateTimer,
   setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
+  addTotalJobsFound, addTotalAppsSubmitted,
+  setRateJobsSnap, setRateAppsSnap, setRateTimer, setJobsFoundRate, setAppsSubmittedRate,
 } from './state';
 import { ui } from './ui';
 import { logMessage } from './utils';
@@ -54,7 +57,9 @@ function tickPhase1(dt: number): void {
 
   if (!isBankrupt) {
     const finderVolume = state.openClawFinderLevel > 0 ? Math.pow(3, state.openClawFinderLevel - 1) : 0;
-    state.availableJobs += finderVolume * dt;
+    const jobsGenerated = finderVolume * dt;
+    state.availableJobs += jobsGenerated;
+    if (jobsGenerated > 0) addTotalJobsFound(jobsGenerated);
 
     if (state.availableJobs >= 25 && !state.hasUnlockedSubmission) {
       state.hasUnlockedSubmission = true;
@@ -67,6 +72,7 @@ function tickPhase1(dt: number): void {
       state.availableJobs -= actualSubmissions;
       state.applications += actualSubmissions;
       state.maxAppsReached = Math.max(state.maxAppsReached, state.applications);
+      addTotalAppsSubmitted(actualSubmissions);
     }
 
     if (state.openClawSubmitLevel >= 1) {
@@ -127,6 +133,15 @@ export function mainLoop(timestamp: number): void {
 
   if (state.phase === 1) tickPhase1(dt);
   else if (state.phase === 2) tickPhase2(dt);
+
+  setRateTimer(rateTimer + dt);
+  if (rateTimer >= 1.0) {
+    setJobsFoundRate((totalJobsFound - rateJobsSnap) / rateTimer);
+    setAppsSubmittedRate((totalAppsSubmitted - rateAppsSnap) / rateTimer);
+    setRateJobsSnap(totalJobsFound);
+    setRateAppsSnap(totalAppsSubmitted);
+    setRateTimer(0.0);
+  }
 
   setPaperPriceTimer(paperPriceTimer + dt);
   if (paperPriceTimer >= 1.0) {

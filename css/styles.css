@@ -92,7 +92,7 @@ body {
 }
 
 #header-balance {
-    font-size: 1.1em;
+    font-size: 1.5em;
     font-weight: bold;
 }
 
@@ -132,7 +132,7 @@ h2.section-title {
     padding-bottom: 2px;
 }
 
-#phase1-container > h2.section-title:first-child {
+#phase1-container > h2.section-title:first-of-type {
     margin-top: 8px;
 }
 
