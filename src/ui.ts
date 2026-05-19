@@ -36,6 +36,8 @@ export const ui = {
   btnUpgradeSubmitter: el<HTMLButtonElement>('btn-upgrade-submitter'),
   submitterCostDisplay: el('submitter-cost-display'),
   upgradeSubmitterRow: el('upgrade-submitter-row'),
+  upgradeEfficiencyRow: el('upgrade-efficiency-row'),
+  btnUpgradeEfficiency: el<HTMLButtonElement>('btn-upgrade-efficiency'),
 
   providerContainer: el('provider-container'),
   btnFinite: el<HTMLButtonElement>('provider-finite'),

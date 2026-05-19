@@ -16,7 +16,7 @@ import {
 
 export function registerEventListeners(): void {
   ui.btnBeg.addEventListener('click', () => {
-    let pAmount = 6.00;
+    let pAmount = 5.00;
     if (state.parentalTier === 2) pAmount = 12.00;
     if (state.parentalTier >= 3)  pAmount = 18.00;
 
@@ -75,6 +75,15 @@ export function registerEventListeners(): void {
       state.applications -= cost;
       state.openClawSubmitLevel += 1;
       logMessage(`OpenClaw Auto-Submitter acquired. ${state.openClawSubmitLevel} active. Submitting +1 app/s.`, 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradeEfficiency.addEventListener('click', () => {
+    if (!state.efficiencyUnlocked && state.applications >= 1000) {
+      state.applications -= 1000;
+      state.efficiencyUnlocked = true;
+      logMessage('OpenClaw Efficiency Protocol engaged. All automation output doubled.', 'good');
     }
     updateUI();
   });

@@ -59,8 +59,13 @@ function renderPhase1(): void {
     ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
     ui.submitterCostDisplay.innerText = formatComma(submitterCost);
     ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;
+
+    ui.upgradeEfficiencyRow.classList.remove('hidden');
+    ui.btnUpgradeEfficiency.disabled = state.efficiencyUnlocked || state.applications < 1000;
+    ui.btnUpgradeEfficiency.innerText = state.efficiencyUnlocked ? 'Efficiency: Active' : 'Unlock Efficiency Protocol';
   } else {
     ui.upgradeSubmitterRow.classList.add('hidden');
+    ui.upgradeEfficiencyRow.classList.add('hidden');
   }
 
   const isSubmitUnlocked = state.openClawSubmitLevel >= 1;
@@ -83,33 +88,7 @@ function renderPhase1(): void {
     ui.providerContainer.classList.add('hidden');
   }
 
-  let showParentBox = false;
-
-  if (state.maxAppsReached >= 200 && state.hasBegged && state.parentalTier === 1) {
-    ui.upgradeParentT2.classList.remove('hidden');
-    ui.btnUpgradeParentT2.disabled = state.applications < 2000;
-    showParentBox = true;
-  } else {
-    ui.upgradeParentT2.classList.add('hidden');
-  }
-
-  if (state.parentalTier === 2) {
-    ui.upgradeParentT3.classList.remove('hidden');
-    ui.btnUpgradeParentT3.disabled = state.applications < 4000;
-    showParentBox = true;
-  } else {
-    ui.upgradeParentT3.classList.add('hidden');
-  }
-
-  if (state.parentalTier === 3 && state.maxAppsReached >= 5000) {
-    ui.upgradeParentT4.classList.remove('hidden');
-    ui.btnUpgradeParentT4.disabled = state.applications < 50000;
-    showParentBox = true;
-  } else {
-    ui.upgradeParentT4.classList.add('hidden');
-  }
-
-  ui.parentalUpgradesContainer.classList.toggle('hidden', !showParentBox);
+  ui.parentalUpgradesContainer.classList.add('hidden');
 
   if (state.maxAppsReached >= 10000) {
     ui.jobCard.classList.remove('hidden');
