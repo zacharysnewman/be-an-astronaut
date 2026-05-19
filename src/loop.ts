@@ -38,7 +38,7 @@ function tickPhase1(dt: number): void {
     else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
     else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
   }
-  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 25) / 10000;
+  const automationFlat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
   const totalDrain = baseRate + automationFlat;
   state.money -= totalDrain * dt;
 
