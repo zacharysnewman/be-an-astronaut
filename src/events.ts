@@ -37,7 +37,8 @@ export function registerEventListeners(): void {
   });
 
   ui.btnFind.addEventListener('click', () => {
-    if (state.money > 0) {
+    if (state.money >= 1.00) {
+      state.money -= 1.00;
       const mult = Math.pow(10, state.jobSearchTier);
       state.availableJobs = (Math.floor(Math.random() * 11) + 10) * mult;
     }

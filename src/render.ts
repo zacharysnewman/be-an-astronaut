@@ -53,7 +53,7 @@ function renderPhase1(): void {
     ui.screeningRateRow.classList.add('hidden');
   }
 
-  ui.btnFind.disabled = state.money <= 0;
+  ui.btnFind.disabled = state.money < 1.00;
   ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
 
   ui.inlineAppRow.classList.toggle('hidden', !state.hasUnlockedSubmission);
