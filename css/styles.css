@@ -380,39 +380,51 @@ button:disabled {
     margin-top: 8px;
 }
 
-.goal-item {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 16px;
+.notepad {
+    border: 1px solid #c0b060;
+    border-left: 4px solid #cc6666;
+    background-color: #fefde8;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 31px,
+        #a8c4d8 31px,
+        #a8c4d8 32px
+    );
     font-size: 16px;
+    line-height: 32px;
+    padding: 0 14px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.notepad-section {
+    font-size: 10px;
+    font-family: Arial, sans-serif;
+    color: #999999;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    height: 32px;
+    line-height: 32px;
+}
+
+.notepad-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 32px;
+    line-height: 32px;
 }
 
 .goal-check {
     flex-shrink: 0;
-    width: 1.2em;
 }
 
-.goal-body {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
+.notepad-line.goal-done .goal-check {
+    color: #44aa66;
 }
 
-.goal-text {
-    flex: 1;
-}
-
-.goal-tag {
-    font-size: 11px;
-    color: #777777;
-    font-style: italic;
-    white-space: nowrap;
-}
-
-.goal-item.goal-done .goal-text {
+.notepad-line.goal-done span:not(.goal-check) {
     text-decoration: line-through;
-    color: #999999;
+    color: #aaaaaa;
 }
