@@ -7,9 +7,16 @@ import {
   BASE_TYPIST_COST,
   BASE_COURIER_COST,
   PROCURE_FIXED_COST,
+  EFFICIENCY_TIER_COSTS,
 } from './constants';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
+
+// An upgrade row is shown when the player has ever reached 25% of its cost,
+// and hidden once the upgrade has been purchased.
+function shouldShowUpgrade(maxResource: number, cost: number, purchased: boolean): boolean {
+  return !purchased && maxResource >= cost * 0.25;
+}
 
 function renderPhase1(): void {
   let baseRate = 0.01;
@@ -49,7 +56,7 @@ function renderPhase1(): void {
 
   ui.inlineAppRow.classList.toggle('hidden', !state.hasUnlockedSubmission);
 
-  ui.automationCardP1.classList.toggle('hidden', state.maxAppsReached < (0.10 * BASE_FINDER_COST));
+  ui.automationCardP1.classList.toggle('hidden', state.maxAppsReached < (0.25 * BASE_FINDER_COST));
 
   const finderCost = getLinearCost(BASE_FINDER_COST, state.openClawFinderLevel);
   ui.finderBadge.innerText = String(state.openClawFinderLevel);
@@ -63,12 +70,22 @@ function renderPhase1(): void {
     ui.submitterCostDisplay.innerText = formatComma(submitterCost);
     ui.btnUpgradeSubmitter.disabled = state.applications < submitterCost;
 
-    ui.upgradeEfficiencyRow.classList.remove('hidden');
-    ui.btnUpgradeEfficiency.disabled = state.efficiencyUnlocked || state.applications < 1000;
-    ui.btnUpgradeEfficiency.innerText = state.efficiencyUnlocked ? 'Efficiency: Active' : 'Unlock Efficiency Protocol';
+    const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
+    ui.upgradeEfficiencyT1Row.classList.toggle('hidden',
+      !shouldShowUpgrade(state.maxAppsReached, t1Cost, state.efficiencyTier >= 1));
+    ui.upgradeEfficiencyT2Row.classList.toggle('hidden',
+      !shouldShowUpgrade(state.maxAppsReached, t2Cost, state.efficiencyTier >= 2));
+    ui.upgradeEfficiencyT3Row.classList.toggle('hidden',
+      !shouldShowUpgrade(state.maxAppsReached, t3Cost, state.efficiencyTier >= 3));
+
+    ui.btnUpgradeEfficiencyT1.disabled = state.applications < t1Cost;
+    ui.btnUpgradeEfficiencyT2.disabled = state.applications < t2Cost;
+    ui.btnUpgradeEfficiencyT3.disabled = state.applications < t3Cost;
   } else {
     ui.upgradeSubmitterRow.classList.add('hidden');
-    ui.upgradeEfficiencyRow.classList.add('hidden');
+    ui.upgradeEfficiencyT1Row.classList.add('hidden');
+    ui.upgradeEfficiencyT2Row.classList.add('hidden');
+    ui.upgradeEfficiencyT3Row.classList.add('hidden');
   }
 
   // Service provider section is disabled for now

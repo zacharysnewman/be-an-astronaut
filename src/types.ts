@@ -31,7 +31,7 @@ export interface GameState {
   typistLevel:          number;
   courierLevel:         number;
   procurementUnlocked:  boolean;
-  efficiencyUnlocked:   boolean;
+  efficiencyTier:       number;
   currentPaperPrice:    number;
   lastComplimentTime:   number | null;
 }

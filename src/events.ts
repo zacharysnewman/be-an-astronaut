@@ -11,6 +11,7 @@ import {
   BASE_TYPIST_COST,
   BASE_COURIER_COST,
   PROCURE_FIXED_COST,
+  EFFICIENCY_TIER_COSTS,
   SAVE_STORAGE_KEY,
 } from './constants';
 
@@ -79,11 +80,31 @@ export function registerEventListeners(): void {
     updateUI();
   });
 
-  ui.btnUpgradeEfficiency.addEventListener('click', () => {
-    if (!state.efficiencyUnlocked && state.applications >= 1000) {
-      state.applications -= 1000;
-      state.efficiencyUnlocked = true;
-      logMessage('OpenClaw Efficiency Protocol engaged. All automation output doubled.', 'good');
+  const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
+
+  ui.btnUpgradeEfficiencyT1.addEventListener('click', () => {
+    if (state.efficiencyTier === 0 && state.applications >= t1Cost) {
+      state.applications -= t1Cost;
+      state.efficiencyTier = 1;
+      logMessage('OpenClaw Efficiency Protocol Tier 1 engaged. Automation output doubled (+100%).', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradeEfficiencyT2.addEventListener('click', () => {
+    if (state.efficiencyTier === 1 && state.applications >= t2Cost) {
+      state.applications -= t2Cost;
+      state.efficiencyTier = 2;
+      logMessage('OpenClaw Efficiency Protocol Tier 2 engaged. Automation output at +150%.', 'good');
+    }
+    updateUI();
+  });
+
+  ui.btnUpgradeEfficiencyT3.addEventListener('click', () => {
+    if (state.efficiencyTier === 2 && state.applications >= t3Cost) {
+      state.applications -= t3Cost;
+      state.efficiencyTier = 3;
+      logMessage('OpenClaw Efficiency Protocol Tier 3 engaged. Automation output at +300%.', 'good');
     }
     updateUI();
   });
