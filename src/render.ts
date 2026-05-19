@@ -79,7 +79,7 @@ function renderPhase1(): void {
   ui.finderCostDisplay.innerText = formatComma(finderCost);
   ui.btnUpgradeFinder.disabled = state.appsThruScreening < finderCost;
 
-  ui.upgradeSubmitterRow.classList.toggle('hidden', state.peakAppsSubmitted < 50);
+  ui.upgradeSubmitterRow.classList.toggle('hidden', state.openClawFinderLevel < 1);
   const submitterCost = BASE_SUBMITTER_COST * state.openClawSubmitLevel;
   ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
   ui.submitterCostDisplay.innerText = formatComma(submitterCost);
@@ -87,11 +87,11 @@ function renderPhase1(): void {
 
   const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
   ui.upgradeEfficiencyT1Row.classList.toggle('hidden',
-    !shouldShowUpgrade(state.maxAppsReached, t1Cost, state.efficiencyTier >= 1));
+    state.openClawSubmitLevel < 1 || !shouldShowUpgrade(state.maxAppsReached, t1Cost, state.efficiencyTier >= 1));
   ui.upgradeEfficiencyT2Row.classList.toggle('hidden',
-    !shouldShowUpgrade(state.maxAppsReached, t2Cost, state.efficiencyTier >= 2));
+    state.efficiencyTier < 1 || !shouldShowUpgrade(state.maxAppsReached, t2Cost, state.efficiencyTier >= 2));
   ui.upgradeEfficiencyT3Row.classList.toggle('hidden',
-    !shouldShowUpgrade(state.maxAppsReached, t3Cost, state.efficiencyTier >= 3));
+    state.efficiencyTier < 2 || !shouldShowUpgrade(state.maxAppsReached, t3Cost, state.efficiencyTier >= 3));
 
   ui.btnUpgradeEfficiencyT1.disabled = state.appsThruScreening < t1Cost;
   ui.btnUpgradeEfficiencyT2.disabled = state.appsThruScreening < t2Cost;

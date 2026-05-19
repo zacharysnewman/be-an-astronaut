@@ -67,6 +67,7 @@
                     <circle cx="12" cy="20" r="0.75" fill="#ff0000"></circle>
                 </svg>
                 <div id="header-beg">
+                    <div><b>Card Declined</b></div>
                     <button id="btn-beg" class="btn-inline">Beg Parents for Money</button>
                 </div>
             </div>
@@ -117,27 +118,18 @@
                 </div>
             </div>
 
-            <!-- Job Search section -->
-            <h2 class="section-title">Indebt.com</h2>
+            <!-- Total Read and Submit rows (above ATS Screening, outside any section) -->
             <div id="total-read-row" class="stat-row hidden">Total Applications Read: <span id="total-read-display" class="bold">0</span></div>
-
-            <!-- Inline Compact Discovery Rows -->
-            <div id="inline-job-row" class="stat-row">
-                <button id="btn-find" class="btn-inline">Find</button>
-                <b>Jobs:</b> <span id="avail-jobs-display" class="bold">0</span>
-            </div>
-            <div id="finder-rate-row" class="stat-row hidden">Jobs Found per second: <span id="finder-rate-display" class="good"></span></div>
-
             <div id="inline-app-row" class="stat-row hidden">
                 <button id="btn-apply" class="btn-inline" disabled>Submit Application</button>
             </div>
             <div id="submitter-rate-row" class="stat-row hidden">Submitted per second: <span id="submitter-rate-display" class="good"></span></div>
 
-            <!-- ATS Keyword Control -->
+            <!-- ATS Keyword Control (at top of page) -->
             <div id="keywords-section" class="hidden">
                 <h2 class="section-title">ATS Screening</h2>
-                <div class="stat-row">Unread Applications: <span id="unread-apps-display" class="bold">0</span></div>
                 <div id="apps-thru-screening-row" class="stat-row">Apps Through Screening: <span id="apps-thru-screening-display" class="bold good">0</span></div>
+                <div class="stat-row">Unread Applications: <span id="unread-apps-display" class="bold">0</span></div>
                 <div class="stat-row">
                     Resume Keywords:
                     <button id="btn-keywords-down" class="btn-inline">-</button>
@@ -146,6 +138,16 @@
                 </div>
                 <div id="screening-rate-row" class="stat-row hidden">Screened per second: <span id="screening-rate-display" class="good"></span></div>
             </div>
+
+            <!-- Job Search section -->
+            <h2 class="section-title">Job Search</h2>
+
+            <!-- Inline Compact Discovery Rows -->
+            <div id="inline-job-row" class="stat-row">
+                <button id="btn-find" class="btn-inline">Find</button>
+                <b>Jobs:</b> <span id="avail-jobs-display" class="bold">0</span>
+            </div>
+            <div id="finder-rate-row" class="stat-row hidden">Jobs Found per second: <span id="finder-rate-display" class="good"></span></div>
 
             <!-- OpenClaw Automations Section -->
             <div id="automation-p1-card" class="hidden">
@@ -264,7 +266,7 @@
     <!-- Bottom Tab Bar -->
     <nav id="tab-bar">
         <button class="tab-btn" id="tab-goals">Personal Goals</button>
-        <button class="tab-btn tab-active" id="tab-job-search">Job Search</button>
+        <button class="tab-btn tab-active" id="tab-job-search">Indebt.com</button>
         <button class="tab-btn hidden" id="tab-macrofirm">Macrofirm Job</button>
     </nav>
 
