@@ -3,11 +3,13 @@ import { EFFICIENCY_TIER_MULTS } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
-  totalJobsFound, totalAppsSubmitted, rateJobsSnap, rateAppsSnap, rateTimer,
+  totalJobsFound, totalAppsSubmitted, totalAppsScreened,
+  rateJobsSnap, rateAppsSnap, rateAppsScreenedSnap, rateTimer,
   moneyDisplayTimer,
   setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
-  addTotalJobsFound, addTotalAppsSubmitted,
-  setRateJobsSnap, setRateAppsSnap, setRateTimer, setJobsFoundRate, setAppsSubmittedRate,
+  addTotalJobsFound, addTotalAppsSubmitted, addTotalAppsScreened,
+  setRateJobsSnap, setRateAppsSnap, setRateAppsScreenedSnap,
+  setRateTimer, setJobsFoundRate, setAppsSubmittedRate, setAppsScreenedRate,
   setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
 import { ui } from './ui';
@@ -84,6 +86,8 @@ function tickPhase1(dt: number): void {
     if (realizedOutflow > 0) {
       state.unreadApplications -= realizedOutflow;
       state.appsThruScreening += realizedOutflow;
+      addTotalAppsScreened(realizedOutflow);
+      state.hasScreenedApp = true;
     }
 
     if (state.openClawSubmitLevel >= 1) {
@@ -151,8 +155,10 @@ export function mainLoop(timestamp: number): void {
   if (rateTimer >= 1.0) {
     setJobsFoundRate((totalJobsFound - rateJobsSnap) / rateTimer);
     setAppsSubmittedRate((totalAppsSubmitted - rateAppsSnap) / rateTimer);
+    setAppsScreenedRate((totalAppsScreened - rateAppsScreenedSnap) / rateTimer);
     setRateJobsSnap(totalJobsFound);
     setRateAppsSnap(totalAppsSubmitted);
+    setRateAppsScreenedSnap(totalAppsScreened);
     setRateTimer(0.0);
   }
 

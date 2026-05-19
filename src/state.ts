@@ -18,6 +18,7 @@ export const state: GameState = {
   hasUnlockedSubmission: false,
   hasFoundJob: false,
   hasSubmittedApp: false,
+  hasScreenedApp: false,
 
   openClawFinderLevel: 0,
   openClawSubmitLevel: 0,
@@ -53,13 +54,16 @@ export let warningThrottleTimer = 0.0;
 export let moneyDisplayTimer    = 0.0;
 export let displayedMoney       = state.money;
 
-export let totalJobsFound     = 0.0;
+export let totalJobsFound      = 0.0;
 export let totalAppsSubmitted  = 0.0;
-export let rateJobsSnap       = 0.0;
-export let rateAppsSnap       = 0.0;
-export let rateTimer          = 0.0;
-export let jobsFoundRate      = 0.0;
-export let appsSubmittedRate  = 0.0;
+export let totalAppsScreened   = 0.0;
+export let rateJobsSnap        = 0.0;
+export let rateAppsSnap        = 0.0;
+export let rateAppsScreenedSnap = 0.0;
+export let rateTimer           = 0.0;
+export let jobsFoundRate       = 0.0;
+export let appsSubmittedRate   = 0.0;
+export let appsScreenedRate    = 0.0;
 
 export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
 export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; }
@@ -69,8 +73,11 @@ export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
 export function addTotalJobsFound(v: number): void       { totalJobsFound += v; }
 export function addTotalAppsSubmitted(v: number): void   { totalAppsSubmitted += v; }
+export function addTotalAppsScreened(v: number): void    { totalAppsScreened += v; }
 export function setRateJobsSnap(v: number): void         { rateJobsSnap = v; }
 export function setRateAppsSnap(v: number): void         { rateAppsSnap = v; }
+export function setRateAppsScreenedSnap(v: number): void { rateAppsScreenedSnap = v; }
 export function setRateTimer(v: number): void            { rateTimer = v; }
 export function setJobsFoundRate(v: number): void        { jobsFoundRate = v; }
 export function setAppsSubmittedRate(v: number): void    { appsSubmittedRate = v; }
+export function setAppsScreenedRate(v: number): void     { appsScreenedRate = v; }
