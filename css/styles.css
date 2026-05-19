@@ -84,9 +84,9 @@ body {
     border-bottom: 2px solid #000000;
     z-index: 115;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     padding: 6px 15px;
     padding-left: max(15px, env(safe-area-inset-left, 0px));
     padding-right: max(15px, env(safe-area-inset-right, 0px));
@@ -97,6 +97,11 @@ body {
 
 #header-balance {
     font-size: 1.5em;
+    font-weight: bold;
+}
+
+#header-fees {
+    font-size: 1.1em;
     font-weight: bold;
 }
 

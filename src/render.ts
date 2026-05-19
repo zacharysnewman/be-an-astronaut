@@ -23,6 +23,8 @@ function renderPhase1(): void {
   ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
   ui.income.classList.add('bad');
   ui.income.classList.remove('good');
+  ui.headerFees.innerText = ui.income.innerText;
+  ui.headerFees.className = 'bad';
 
   ui.totalAppsDisplay.innerText = formatComma(totalAppsSubmitted);
   ui.availJobs.innerText = formatComma(state.availableJobs);
@@ -91,6 +93,8 @@ function renderPhase2(): void {
   ui.income.innerText = `+${formatMoney(hourlySalary)}/s`;
   ui.income.classList.remove('bad');
   ui.income.classList.add('good');
+  ui.headerFees.innerText = ui.income.innerText;
+  ui.headerFees.className = 'good';
 
   ui.level.innerText   = String(state.level);
   ui.appr.innerText    = state.approval.toFixed(0);

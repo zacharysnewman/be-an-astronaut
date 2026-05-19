@@ -24,6 +24,7 @@
     <!-- Sticky Header Row outside Bankruptcy Shroud -->
     <div id="header-row">
         <div id="header-balance">Account Balance: <span id="money-display">$1.00</span></div>
+        <div id="header-fees" class="bad">-$0.01/s</div>
     </div>
 
     <div class="content-container">
@@ -89,9 +90,11 @@
 
         <!-- Job Search (Phase 1) -->
         <div id="phase1-container">
-            <!-- Internet Service section (always visible) -->
-            <h2 class="section-title">Internet Service</h2>
-            <div class="stat-row">Internet Fees: <span id="income-display" class="bad">-$0.01/s</span></div>
+            <!-- Internet Service section (hidden — value shown in header) -->
+            <div class="hidden">
+                <h2 class="section-title">Internet Service</h2>
+                <div class="stat-row">Internet Fees: <span id="income-display" class="bad">-$0.01/s</span></div>
+            </div>
 
             <!-- Dynamic Internet Provider & Contract Selector Gated Box -->
             <div id="provider-container" class="retro-box hidden">
