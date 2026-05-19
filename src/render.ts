@@ -9,7 +9,6 @@ import {
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
   PRETTIFY_TIER_COSTS,
-  BASE_DESIRABILITY,
   PRETTINESS_BOOST,
   KEYWORD_PENALTY,
 } from './constants';
@@ -51,7 +50,9 @@ function renderPhase1(): void {
   ui.keywordsDisplay.innerText = String(state.keywords);
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
 
-  const rawDesirability = BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY;
+  const rawFindability = state.keywords * KEYWORD_PENALTY + state.prettinessLevel * PRETTINESS_BOOST;
+  const rawDesirability = Math.max(0, 1.0 - state.keywords * KEYWORD_PENALTY);
+  ui.findabilityDisplay.innerText = `${Math.round(rawFindability * 100)}%`;
   ui.desirabilityDisplay.innerText = `${Math.round(rawDesirability * 100)}%`;
 
   ui.rejectedAppsRow.classList.toggle('hidden', state.appsScreenedOut <= 0);
