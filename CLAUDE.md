@@ -15,3 +15,7 @@ All inline content buttons (any button that appears inside a stat row, card, or 
 Exceptions — these have their own sizing classes and must NOT get `btn-inline`:
 - `.tab-btn` — bottom nav tabs
 - `.provider-tab` — ISP provider grid buttons
+
+# Service provider section
+
+The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state/logic in `loop.ts` remains intact, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.

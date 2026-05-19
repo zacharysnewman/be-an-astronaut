@@ -79,7 +79,7 @@ body {
     top: calc(90px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
-    height: 90px;
+    height: 54px;
     background-color: #ffffff;
     border-bottom: 2px solid #000000;
     z-index: 115;
@@ -87,7 +87,7 @@ body {
     flex-direction: column;
     justify-content: center;
     gap: 4px;
-    padding: 8px 15px;
+    padding: 6px 15px;
     padding-left: max(15px, env(safe-area-inset-left, 0px));
     padding-right: max(15px, env(safe-area-inset-right, 0px));
     max-width: 650px;
@@ -105,7 +105,7 @@ body {
 }
 
 .content-container {
-    margin-top: calc(182px + env(safe-area-inset-top, 0px));
+    margin-top: calc(146px + env(safe-area-inset-top, 0px));
 }
 
 .clearfix {

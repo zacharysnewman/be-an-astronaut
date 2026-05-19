@@ -1,4 +1,4 @@
-import { state, jobsFoundRate, appsSubmittedRate, displayedMoney } from './state';
+import { state, jobsFoundRate, appsSubmittedRate, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { formatMoney, getLinearCost, getGeometricCost } from './utils';
 import {
@@ -24,6 +24,7 @@ function renderPhase1(): void {
   ui.income.classList.add('bad');
   ui.income.classList.remove('good');
 
+  ui.totalAppsDisplay.innerText = formatComma(totalAppsSubmitted);
   ui.availJobs.innerText = formatComma(state.availableJobs);
   ui.apps.innerText = formatComma(state.applications);
 
@@ -68,25 +69,8 @@ function renderPhase1(): void {
     ui.upgradeEfficiencyRow.classList.add('hidden');
   }
 
-  const isSubmitUnlocked = state.openClawSubmitLevel >= 1;
-  if (isSubmitUnlocked) {
-    ui.providerContainer.classList.remove('hidden');
-
-    const flat = Math.floor((state.openClawFinderLevel + state.openClawSubmitLevel) * 0.0025 * 100) / 100;
-    ui.rateFinite.innerText   = `$${(0.01 * state.finiteMultiplier   + flat).toFixed(2)}/s`;
-    ui.rateWeeklink.innerText = `$${(0.01 * state.weeklinkMultiplier + flat).toFixed(2)}/s`;
-    ui.rateBliply.innerText   = `$${(0.01 * state.bliplyMultiplier   + flat).toFixed(2)}/s`;
-
-    ui.btnFinite.disabled   = state.contractLocked;
-    ui.btnWeeklink.disabled = state.contractLocked;
-    ui.btnBliply.disabled   = state.contractLocked;
-
-    ui.btnFinite.style.backgroundColor   = state.selectedProvider === 'finite'   ? '#bbb' : '#efefef';
-    ui.btnWeeklink.style.backgroundColor = state.selectedProvider === 'weeklink' ? '#bbb' : '#efefef';
-    ui.btnBliply.style.backgroundColor   = state.selectedProvider === 'bliply'   ? '#bbb' : '#efefef';
-  } else {
-    ui.providerContainer.classList.add('hidden');
-  }
+  // Service provider section is disabled for now
+  ui.providerContainer.classList.add('hidden');
 
   ui.parentalUpgradesContainer.classList.add('hidden');
 
