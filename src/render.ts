@@ -51,10 +51,8 @@ function renderPhase1(): void {
   ui.keywordsDisplay.innerText = String(state.keywords);
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
 
-  const desirability = Math.max(0, Math.min(1,
-    BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY
-  ));
-  ui.desirabilityDisplay.innerText = `${Math.round(desirability * 100)}%`;
+  const rawDesirability = BASE_DESIRABILITY + state.prettinessLevel * PRETTINESS_BOOST - state.keywords * KEYWORD_PENALTY;
+  ui.desirabilityDisplay.innerText = `${Math.round(rawDesirability * 100)}%`;
 
   ui.rejectedAppsRow.classList.toggle('hidden', state.appsScreenedOut <= 0);
   ui.rejectedAppsDisplay.innerText = formatComma(state.appsScreenedOut);
