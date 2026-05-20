@@ -34,6 +34,24 @@ This app is unreleased. Do not write save migration code, legacy key fallbacks, 
 
 Commit descriptions (the body, not the subject line) should be a brief, bulleted summary of changes — one bullet per logical change, no prose paragraphs.
 
+# Adding new HTML pages
+
+This is a Vite multi-page app. Every new `.html` file at the project root must be registered in `vite.config.ts` under `build.rollupOptions.input`, otherwise Vite will not include it in the build and it will never be deployed.
+
+```ts
+// vite.config.ts
+build: {
+  rollupOptions: {
+    input: {
+      main: resolve(__dirname, 'index.html'),
+      tune: resolve(__dirname, 'tune.html'), // ← add new pages here
+    },
+  },
+},
+```
+
+Also note: the deployed base path is `/be-an-astronaut/`. Internal links between pages must use relative paths (e.g. `./index.html`) — not absolute paths like `/` or `/index.html`.
+
 # Service provider section
 
 The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state/logic in `loop.ts` remains intact, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.
