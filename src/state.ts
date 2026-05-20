@@ -9,21 +9,14 @@ export const state: GameState = {
 
   availableJobs: Math.floor(Math.random() * 101) + 100,
   applications: 0.0,
-  unreadApplications: 0.0,
-  appsThruScreening: 0.0,
-  appsScreenedOut: 0.0,
-  maxAppsReached: 0.0,
-  peakAppsSubmitted: 0.0,
-  keywords: 0,
-  prettinessLevel: 0,
-  hasBegged: false,
+  applyCredits: 0.0,
+  maxACReached: 0.0,
   hasUnlockedSubmission: true,
   hasSubmittedApp: false,
-  hasScreenedApp: false,
   jobSearchTier: 0,
 
   openClawSubmitLevel: 0,
-  parentalTier: 1,
+  efficiencyTier: 0,
 
   selectedProvider: 'finite',
   contractLocked: false,
@@ -42,7 +35,6 @@ export const state: GameState = {
   typistLevel: 0,
   courierLevel: 0,
   procurementUnlocked: false,
-  efficiencyTier: 0,
 
   currentPaperPrice: 0.30,
   lastComplimentTime: null,
@@ -52,35 +44,14 @@ export let lastTimestamp        = performance.now();
 export let paperPriceTimer      = 0.0;
 export let cloudSaveTimer       = 0.0;
 export let warningThrottleTimer = 0.0;
-export let screeningCooldown    = 0.0;
-export let screeningProgress    = 0.0;  // accumulates fractional app progress; only whole apps are processed
-export let screeningCredit      = 0.0;  // Bresenham-style credit for deterministic pass/fail distribution
 export let moneyDisplayTimer    = 0.0;
 export let displayedMoney       = state.money;
-
 export let totalAppsSubmitted   = 0.0;
-export let totalAppsScreened    = 0.0;
-export let totalAppsRejected    = 0.0;
-export let rateAppsScreenedSnap = 0.0;
-export let rateAppsRejectedSnap = 0.0;
-export let rateTimer            = 0.0;
-export let appsScreenedRate     = 0.0;
-export let appsRejectedRate     = 0.0;
 
 export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
 export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; }
 export function setCloudSaveTimer(v: number): void       { cloudSaveTimer = v; }
 export function setWarningThrottleTimer(v: number): void { warningThrottleTimer = v; }
-export function setScreeningCooldown(v: number): void    { screeningCooldown = v; }
-export function setScreeningProgress(v: number): void    { screeningProgress = v; }
-export function setScreeningCredit(v: number): void      { screeningCredit = v; }
 export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
-export function addTotalAppsSubmitted(v: number): void    { totalAppsSubmitted += v; }
-export function addTotalAppsScreened(v: number): void    { totalAppsScreened += v; }
-export function addTotalAppsRejected(v: number): void    { totalAppsRejected += v; }
-export function setRateAppsScreenedSnap(v: number): void { rateAppsScreenedSnap = v; }
-export function setRateAppsRejectedSnap(v: number): void { rateAppsRejectedSnap = v; }
-export function setRateTimer(v: number): void            { rateTimer = v; }
-export function setAppsScreenedRate(v: number): void     { appsScreenedRate = v; }
-export function setAppsRejectedRate(v: number): void     { appsRejectedRate = v; }
+export function addTotalAppsSubmitted(v: number): void   { totalAppsSubmitted += v; }

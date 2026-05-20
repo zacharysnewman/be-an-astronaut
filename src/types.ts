@@ -1,27 +1,19 @@
-export type Phase        = 1 | 2;
-export type Provider     = 'finite' | 'weeklink' | 'bliply';
-export type ParentalTier = 1 | 2 | 3 | 4;
-export type LogType      = 'bad' | 'good' | 'promo' | 'system' | '';
+export type Phase    = 1 | 2;
+export type Provider = 'finite' | 'weeklink' | 'bliply';
+export type LogType  = 'bad' | 'good' | 'promo' | 'system' | '';
 
 export interface GameState {
   phase:                Phase;
   money:                number;
   availableJobs:        number;
-  applications:         number;  // Applications total (cumulative submitted count)
-  unreadApplications:   number;  // ATS buffer: fills with submissions, drains to appsThruScreening
-  appsThruScreening:    number;  // Screened apps — the spendable currency/score
-  appsScreenedOut:      number;  // Cumulative rejected apps (screened out, never passed)
-  maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
-  peakAppsSubmitted:    number;  // Historical peak of applications submitted (for submitter reveal thresholds)
-  keywords:             number;  // Player-controlled ATS keyword count
-  prettinessLevel:      number;  // Upgrade modifier: each level adds PRETTINESS_QUALITY_BOOST to screening pass fraction
-  hasBegged:            boolean;
+  applications:         number;   // Cumulative total apps submitted (never decreases)
+  applyCredits:         number;   // Apply Credits (AC) — spendable currency earned 1:1 per submission
+  maxACReached:         number;   // Historical peak of applyCredits (for upgrade reveal)
   hasUnlockedSubmission: boolean;
   hasSubmittedApp:      boolean;
-  hasScreenedApp:       boolean;
-  jobSearchTier:        number;  // 0-3: multiplies Find Jobs result by 10^tier
+  jobSearchTier:        number;   // 0-3: multiplies Find Jobs result by 10^tier
   openClawSubmitLevel:  number;
-  parentalTier:         ParentalTier;
+  efficiencyTier:       number;
   selectedProvider:     Provider;
   contractLocked:       boolean;
   providerTimer:        number;
@@ -37,7 +29,6 @@ export interface GameState {
   typistLevel:          number;
   courierLevel:         number;
   procurementUnlocked:  boolean;
-  efficiencyTier:       number;
   currentPaperPrice:    number;
   lastComplimentTime:   number | null;
 }

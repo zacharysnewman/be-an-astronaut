@@ -22,7 +22,7 @@ This game follows a 90s web page aesthetic: white background, serif body font (T
 
 # Upgrade visibility rule
 
-Upgrade rows follow the "25% reveal" rule: a row becomes visible once the player has **ever** held 25% of its cost (tracked via `maxAppsReached` or equivalent peak-resource fields — rows never re-hide due to spending). One-time upgrades (efficiency tiers, parental trust tiers) are **hidden after purchase**. Level-based upgrades (Auto-Finder, Auto-Submitter) remain visible permanently once revealed.
+Upgrade rows follow the "25% reveal" rule: a row becomes visible once the player has **ever** held 25% of its cost (tracked via `maxACReached` or equivalent peak-resource fields — rows never re-hide due to spending). One-time upgrades (efficiency tiers, Actions buttons) are **hidden after purchase**. Level-based upgrades (Auto-Submitter) remain visible permanently once revealed.
 
 The helper `shouldShowUpgrade(maxResource, cost, purchased)` in `render.ts` encodes this rule — use it for all new one-time upgrade rows.
 
@@ -44,7 +44,7 @@ build: {
   rollupOptions: {
     input: {
       main: resolve(__dirname, 'index.html'),
-      tune: resolve(__dirname, 'tune.html'), // ← add new pages here
+      // ← add new pages here
     },
   },
 },
@@ -54,4 +54,6 @@ Also note: the deployed base path is `/be-an-astronaut/`. Internal links between
 
 # Service provider section
 
-The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state/logic in `loop.ts` remains intact, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.
+The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state variables remain in `state.ts` for future use, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.
+
+Internet fees are a **flat $0.01/s** always — provider multipliers and automation flat fees have been removed from `loop.ts`. Do NOT add provider-based or automation-based fee scaling. If re-enabling providers, this must be revisited.

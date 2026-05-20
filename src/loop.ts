@@ -1,16 +1,11 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S } from './constants';
-import { tuning } from './tuning';
-import { state, PROVIDER_PRICE_SETS } from './state';
+import { EFFICIENCY_TIER_MULTS } from './constants';
+import { state } from './state';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress, screeningCredit,
-  totalAppsScreened, totalAppsRejected,
-  rateAppsScreenedSnap, rateAppsRejectedSnap, rateTimer,
+  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown, setScreeningProgress, setScreeningCredit,
-  addTotalAppsSubmitted, addTotalAppsScreened, addTotalAppsRejected,
-  setRateAppsScreenedSnap, setRateAppsRejectedSnap,
-  setRateTimer, setAppsScreenedRate, setAppsRejectedRate,
+  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
+  addTotalAppsSubmitted,
   setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
 import { ui } from './ui';
@@ -36,94 +31,22 @@ export function transitionToPhase(target: Phase): void {
 }
 
 function tickPhase1(dt: number): void {
-  let baseRate = 0.01;
-  if (state.openClawSubmitLevel >= 1) {
-    if (state.selectedProvider === 'finite')        baseRate = 0.01 * state.finiteMultiplier;
-    else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
-    else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
-  }
-  const automationFlat = Math.floor(state.openClawSubmitLevel * 0.0025 * 100) / 100;
-  const totalDrain = baseRate + automationFlat;
-  state.money -= totalDrain * dt;
-
-  if (state.money <= 0.0) {
-    state.money = 0.0;
-    if (state.parentalTier === 4) {
-      state.money += 18.00;
-      state.hasBegged = true;
-      logMessage('Automated Script: Direct trust wire injection completed. Directing +$18.00.', 'system');
-    }
-  }
+  state.money -= 0.01 * dt;
+  if (state.money < 0.0) state.money = 0.0;
 
   const isBankrupt = state.money <= 0.0;
 
   if (!isBankrupt) {
     const effMult = EFFICIENCY_TIER_MULTS[state.efficiencyTier];
-
     const submitterVolume = state.openClawSubmitLevel * effMult;
     const actualSubmissions = Math.min(submitterVolume * dt, state.availableJobs);
     if (actualSubmissions > 0) {
       state.availableJobs -= actualSubmissions;
       state.applications += actualSubmissions;
-      state.unreadApplications += actualSubmissions;
-      state.peakAppsSubmitted = Math.max(state.peakAppsSubmitted, state.applications);
+      state.applyCredits += actualSubmissions;
+      state.maxACReached = Math.max(state.maxACReached, state.applyCredits);
       addTotalAppsSubmitted(actualSubmissions);
       state.hasSubmittedApp = true;
-    }
-
-    // ATS screening: findability (keywords) drives speed; quality (prettiness) drives pass fraction.
-    // Only whole applications are processed — fractional progress accumulates each tick.
-    if (screeningCooldown > 0) {
-      setScreeningCooldown(screeningCooldown - dt);
-    } else {
-      const findability = state.keywords * tuning.keywordPenalty;
-      const desirability = tuning.qualityBase + state.prettinessLevel * tuning.prettinessQualityBoost;
-      setScreeningProgress(screeningProgress + tuning.screeningRateBase * findability * dt);
-      const wholeApps = Math.floor(screeningProgress);
-      if (wholeApps > 0) {
-        setScreeningProgress(screeningProgress - wholeApps);
-        const processable = Math.min(wholeApps, Math.floor(state.unreadApplications));
-        if (processable > 0) {
-          state.unreadApplications -= processable;
-          let passThrough = 0;
-          let credit = screeningCredit;
-          for (let i = 0; i < processable; i++) {
-            credit += desirability;
-            if (credit >= 1.0) { passThrough++; credit -= 1.0; }
-          }
-          setScreeningCredit(credit);
-          const screenedOut = processable - passThrough;
-          if (passThrough > 0) {
-            state.appsThruScreening += passThrough;
-            state.maxAppsReached = Math.max(state.maxAppsReached, state.appsThruScreening);
-            addTotalAppsScreened(passThrough);
-            state.hasScreenedApp = true;
-          }
-          if (screenedOut > 0) {
-            state.appsScreenedOut += screenedOut;
-            addTotalAppsRejected(screenedOut);
-          }
-        }
-      }
-      if (state.unreadApplications <= 0) {
-        setScreeningCooldown(PROCESSOR_COOLDOWN_S);
-      }
-    }
-
-    if (state.openClawSubmitLevel >= 1) {
-      state.providerTimer -= dt;
-      if (state.providerTimer <= 0.0) {
-        state.providerTimer = 60.0;
-        state.contractLocked = false;
-
-        state.providerPriceIndex = (state.providerPriceIndex + 1) % PROVIDER_PRICE_SETS.length;
-        const priceSet = PROVIDER_PRICE_SETS[state.providerPriceIndex];
-        state.finiteMultiplier   = priceSet.finite;
-        state.weeklinkMultiplier = priceSet.weeklink;
-        state.bliplyMultiplier   = priceSet.bliply;
-
-        logMessage('Billing contract window reset. Provider tariffs adjusted.', 'system');
-      }
     }
   }
 }
@@ -170,15 +93,6 @@ export function mainLoop(timestamp: number): void {
 
   if (state.phase === 1) tickPhase1(dt);
   else if (state.phase === 2) tickPhase2(dt);
-
-  setRateTimer(rateTimer + dt);
-  if (rateTimer >= 1.0) {
-    setAppsScreenedRate((totalAppsScreened - rateAppsScreenedSnap) / rateTimer);
-    setAppsRejectedRate((totalAppsRejected - rateAppsRejectedSnap) / rateTimer);
-    setRateAppsScreenedSnap(totalAppsScreened);
-    setRateAppsRejectedSnap(totalAppsRejected);
-    setRateTimer(0.0);
-  }
 
   setPaperPriceTimer(paperPriceTimer + dt);
   if (paperPriceTimer >= 1.0) {
