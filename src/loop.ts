@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, KEYWORD_PENALTY, QUALITY_BASE, PRETTINESS_QUALITY_BOOST } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress, screeningCredit,
@@ -70,13 +70,13 @@ function tickPhase1(dt: number): void {
       state.hasSubmittedApp = true;
     }
 
-    // ATS screening: findability drives speed, desirability is pass/fail rate.
+    // ATS screening: findability (keywords) drives speed; quality (prettiness) drives pass fraction.
     // Only whole applications are processed — fractional progress accumulates each tick.
     if (screeningCooldown > 0) {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
-      const findability = state.keywords * KEYWORD_PENALTY + state.prettinessLevel * PRETTINESS_BOOST;
-      const desirability = Math.max(0, 1.0 - findability * 0.5);
+      const findability = state.keywords * KEYWORD_PENALTY;
+      const desirability = QUALITY_BASE + state.prettinessLevel * PRETTINESS_QUALITY_BOOST;
       setScreeningProgress(screeningProgress + SCREENING_RATE_BASE * findability * dt);
       const wholeApps = Math.floor(screeningProgress);
       if (wholeApps > 0) {
