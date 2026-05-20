@@ -14,7 +14,7 @@ export interface GameState {
   maxAppsReached:       number;  // Historical peak of appsThruScreening (for upgrade reveal)
   peakAppsSubmitted:    number;  // Historical peak of applications submitted (for submitter reveal thresholds)
   keywords:             number;  // Player-controlled ATS keyword count
-  prettinessLevel:      number;  // Upgrade modifier: each level adds PRETTINESS_BOOST to resume desirability
+  prettinessLevel:      number;  // Upgrade modifier: each level adds PRETTINESS_QUALITY_BOOST to screening pass fraction
   hasBegged:            boolean;
   hasUnlockedSubmission: boolean;
   hasSubmittedApp:      boolean;

@@ -1,4 +1,4 @@
-export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v11';
+export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v12';
 export const BASE_SUBMITTER_COST = 50;
 export const BASE_TYPIST_COST    = 125;
 export const BASE_COURIER_COST   = 150;
@@ -13,7 +13,9 @@ export const SCREENING_RATE_BASE    = 2.0;
 // Boost multipliers: tier 1 = +100% (2x), tier 2 = +150% (2.5x), tier 3 = +300% (4x)
 export const EFFICIENCY_TIER_MULTS  = [1, 2, 2.5, 4] as const;
 
-// Findability = keywords * KEYWORD_PENALTY + prettiness * PRETTINESS_BOOST (can exceed 100%)
-// Desirability = clamp(1 - findability * 0.5, 0, 1): 0% findable → 100% desirable, 100% findable → 50% desirable
-export const KEYWORD_PENALTY  = 0.05;  // per keyword: findability gain
-export const PRETTINESS_BOOST = 0.1;   // each tier adds 10% findability
+// Findability = keywords * KEYWORD_PENALTY (controls screening speed; monotonically increases passes/s)
+// Quality     = QUALITY_BASE + prettiness * PRETTINESS_QUALITY_BOOST (controls pass fraction within each batch)
+// More keywords → faster screening → more passes AND rejects. More prettiness → fewer rejects per pass.
+export const KEYWORD_PENALTY           = 0.05;  // per keyword: findability gain
+export const QUALITY_BASE              = 0.5;   // base pass fraction (1 pass per 2 apps at 0 prettiness)
+export const PRETTINESS_QUALITY_BOOST  = 0.1;   // each tier adds 10% to pass fraction
