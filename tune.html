@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screening Tuner</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #1a1a1a; color: #e0e0e0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+  header { background: #111; padding: 8px 14px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #444; flex-shrink: 0; }
+  header h1 { font-size: 14px; color: #aaa; font-weight: normal; letter-spacing: 1px; text-transform: uppercase; }
+  header a { color: #66aaff; font-size: 12px; text-decoration: none; }
+  header a:hover { text-decoration: underline; }
+
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── Left controls panel ── */
+  .controls { width: 320px; flex-shrink: 0; background: #222; border-right: 1px solid #444; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+
+  .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 6px; }
+
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .row label { width: 130px; flex-shrink: 0; color: #ccc; }
+  .row input[type=range] { flex: 1; cursor: pointer; accent-color: #4caf50; }
+  .row input[type=number] { width: 60px; background: #333; border: 1px solid #555; color: #fff; padding: 2px 4px; border-radius: 3px; text-align: right; }
+  .row input[type=number]:focus { outline: 1px solid #4caf50; }
+
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-box { background: #2a2a2a; border: 1px solid #444; border-radius: 4px; padding: 6px 10px; }
+  .stat-box .val { font-size: 18px; font-weight: bold; color: #fff; }
+  .stat-box .lbl { font-size: 10px; color: #888; margin-top: 1px; }
+  .stat-box.good .val { color: #4caf50; }
+  .stat-box.bad  .val { color: #e05050; }
+  .stat-box.info .val { color: #66aaff; }
+
+  .tier-btns { display: flex; gap: 6px; }
+  .tier-btn { flex: 1; padding: 5px; background: #333; border: 1px solid #555; color: #ccc; border-radius: 3px; cursor: pointer; font-size: 12px; }
+  .tier-btn.active { background: #4caf50; border-color: #4caf50; color: #fff; font-weight: bold; }
+
+  #btn-copy { width: 100%; padding: 8px; background: #334; border: 1px solid #446; color: #99ccff; cursor: pointer; border-radius: 3px; font-size: 13px; }
+  #btn-copy:hover { background: #445; }
+  #btn-copy.copied { background: #243; border-color: #4caf50; color: #4caf50; }
+
+  #btn-clear { background: none; border: none; color: #666; font-size: 11px; cursor: pointer; padding: 0; }
+  #btn-clear:hover { color: #aaa; }
+
+  /* ── Right feed panel ── */
+  .feed-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .feed-header { padding: 8px 14px; background: #1e1e1e; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; font-size: 12px; color: #777; }
+  #feed { flex: 1; overflow-y: auto; padding: 8px 14px; font-family: 'Courier New', monospace; font-size: 12px; display: flex; flex-direction: column; }
+  .feed-empty { color: #444; font-style: italic; align-self: center; margin: auto; }
+
+  .evt { padding: 2px 0; border-bottom: 1px solid #2a2a2a; display: flex; align-items: center; gap: 10px; }
+  .evt .ts { color: #555; width: 54px; flex-shrink: 0; }
+  .evt .label { font-weight: bold; width: 60px; }
+  .evt.pass .label { color: #4caf50; }
+  .evt.reject .label { color: #e05050; }
+  .evt .bar { height: 10px; border-radius: 2px; }
+  .evt.pass .bar { background: #4caf50; }
+  .evt.reject .bar { background: #e05050; }
+
+  .divider { font-size: 10px; color: #444; padding: 4px 0; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Screening Tuner</h1>
+  <a href="/">← Back to Game</a>
+</header>
+
+<div class="main">
+
+  <!-- Controls -->
+  <div class="controls">
+
+    <div>
+      <div class="section-label">Formula Constants</div>
+
+      <div class="row">
+        <label>Rate Base</label>
+        <input type="range" id="r-rate-base" min="0.1" max="20" step="0.1" value="2">
+        <input type="number" id="n-rate-base" min="0.1" max="100" step="0.1" value="2">
+      </div>
+      <div class="row">
+        <label>Keyword Penalty</label>
+        <input type="range" id="r-kw-penalty" min="0.001" max="0.3" step="0.001" value="0.05">
+        <input type="number" id="n-kw-penalty" min="0.001" max="1" step="0.001" value="0.05">
+      </div>
+      <div class="row">
+        <label>Quality Base</label>
+        <input type="range" id="r-quality-base" min="0" max="1" step="0.01" value="0.5">
+        <input type="number" id="n-quality-base" min="0" max="1" step="0.01" value="0.5">
+      </div>
+      <div class="row">
+        <label>Prettiness Boost</label>
+        <input type="range" id="r-pretty-boost" min="0" max="0.5" step="0.01" value="0.1">
+        <input type="number" id="n-pretty-boost" min="0" max="1" step="0.01" value="0.1">
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Simulation State</div>
+
+      <div class="row">
+        <label>Keywords</label>
+        <input type="range" id="r-keywords" min="0" max="30" step="1" value="1">
+        <input type="number" id="n-keywords" min="0" max="100" step="1" value="1">
+      </div>
+
+      <div style="margin-bottom:8px">
+        <div style="color:#ccc;margin-bottom:6px">Prettiness Tier</div>
+        <div class="tier-btns">
+          <button class="tier-btn active" data-tier="0">P0</button>
+          <button class="tier-btn" data-tier="1">P1</button>
+          <button class="tier-btn" data-tier="2">P2</button>
+          <button class="tier-btn" data-tier="3">P3</button>
+          <button class="tier-btn" data-tier="4">P4</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Live Stats</div>
+      <div class="stat-grid">
+        <div class="stat-box info">
+          <div class="val" id="stat-speed">0.00</div>
+          <div class="lbl">apps/s screened</div>
+        </div>
+        <div class="stat-box info">
+          <div class="val" id="stat-quality">0%</div>
+          <div class="lbl">quality (pass%)</div>
+        </div>
+        <div class="stat-box good">
+          <div class="val" id="stat-pass-rate">0.00</div>
+          <div class="lbl">passes/s (5s avg)</div>
+        </div>
+        <div class="stat-box bad">
+          <div class="val" id="stat-reject-rate">0.00</div>
+          <div class="lbl">rejects/s (5s avg)</div>
+        </div>
+        <div class="stat-box" style="grid-column:1/-1">
+          <div class="val" id="stat-wait" style="font-size:15px">—</div>
+          <div class="lbl">avg wait per pass</div>
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-copy">Copy Formula</button>
+
+  </div>
+
+  <!-- Live Feed -->
+  <div class="feed-panel">
+    <div class="feed-header">
+      <span>Live Feed</span>
+      <button id="btn-clear">Clear</button>
+    </div>
+    <div id="feed">
+      <div class="feed-empty" id="feed-empty">Waiting for first app…</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Simulation state ──
+  const sim = {
+    keywords: 1,
+    prettiness: 0,
+    progress: 0,
+    credit: 0,
+  };
+
+  // ── Formula (mirrors tuning.ts defaults) ──
+  const f = {
+    rateBase: 2,
+    kwPenalty: 0.05,
+    qualityBase: 0.5,
+    prettyBoost: 0.1,
+  };
+
+  // ── History for rolling rate ──
+  const history = [];   // { t, pass }
+  const WINDOW_S = 5;
+
+  // ── Sync paired range + number inputs ──
+  function pairInputs(rangeId, numberId, key) {
+    const r = document.getElementById(rangeId);
+    const n = document.getElementById(numberId);
+    const sync = (src, dst) => {
+      const v = parseFloat(src.value);
+      if (!isNaN(v)) { dst.value = v; f[key] = v; }
+    };
+    r.addEventListener('input', () => sync(r, n));
+    n.addEventListener('input', () => sync(n, r));
+  }
+  pairInputs('r-rate-base',    'n-rate-base',    'rateBase');
+  pairInputs('r-kw-penalty',   'n-kw-penalty',   'kwPenalty');
+  pairInputs('r-quality-base', 'n-quality-base', 'qualityBase');
+  pairInputs('r-pretty-boost', 'n-pretty-boost', 'prettyBoost');
+
+  // ── Keywords slider ──
+  const rKw = document.getElementById('r-keywords');
+  const nKw = document.getElementById('n-keywords');
+  rKw.addEventListener('input', () => { nKw.value = rKw.value; sim.keywords = +rKw.value; });
+  nKw.addEventListener('input', () => { rKw.value = nKw.value; sim.keywords = +nKw.value; });
+
+  // ── Prettiness tier buttons ──
+  document.querySelectorAll('.tier-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sim.prettiness = parseInt(btn.dataset.tier);
+    });
+  });
+
+  // ── Feed ──
+  const feed = document.getElementById('feed');
+  const feedEmpty = document.getElementById('feed-empty');
+  let feedStarted = false;
+  let lastFeedTime = 0;
+  const MAX_ROWS = 200;
+  const MAX_FEED_HZ = 30; // cap DOM writes to 30 events/s
+
+  function addFeedEvent(pass, now) {
+    if (!feedStarted) {
+      feedEmpty.style.display = 'none';
+      feedStarted = true;
+    }
+
+    // Throttle DOM if rate is very high
+    if (pass === null) {
+      // batch divider — always add
+    } else if ((now - lastFeedTime) < (1000 / MAX_FEED_HZ)) {
+      return;
+    }
+    lastFeedTime = now;
+
+    const elapsed = (now / 1000).toFixed(1);
+    const el = document.createElement('div');
+    if (pass === null) {
+      el.className = 'divider';
+      el.textContent = '— — —';
+    } else {
+      el.className = `evt ${pass ? 'pass' : 'reject'}`;
+      const barW = Math.min(120, 20 + (pass ? 80 : 30));
+      el.innerHTML = `<span class="ts">${elapsed}s</span><span class="label">${pass ? '✓ PASS' : '✗ REJECT'}</span><span class="bar" style="width:${barW}px"></span>`;
+    }
+    feed.appendChild(el);
+
+    // Trim old rows
+    while (feed.children.length > MAX_ROWS + 1) {
+      feed.removeChild(feed.children[1]); // keep feed-empty at index 0
+    }
+
+    // Auto-scroll
+    feed.scrollTop = feed.scrollHeight;
+  }
+
+  // ── Stats ──
+  function updateStats(now) {
+    const speed = f.rateBase * sim.keywords * f.kwPenalty;
+    const quality = Math.min(1, Math.max(0, f.qualityBase + sim.prettiness * f.prettyBoost));
+    document.getElementById('stat-speed').textContent = speed.toFixed(3);
+    document.getElementById('stat-quality').textContent = Math.round(quality * 100) + '%';
+
+    // Prune history
+    const cutoff = now / 1000 - WINDOW_S;
+    while (history.length && history[0].t < cutoff) history.shift();
+
+    const passes  = history.filter(e => e.pass).length;
+    const rejects = history.filter(e => !e.pass).length;
+    const passRate   = passes  / WINDOW_S;
+    const rejectRate = rejects / WINDOW_S;
+
+    document.getElementById('stat-pass-rate').textContent   = passRate.toFixed(2);
+    document.getElementById('stat-reject-rate').textContent = rejectRate.toFixed(2);
+
+    const waitEl = document.getElementById('stat-wait');
+    if (speed > 0 && quality > 0) {
+      const wait = 1 / (speed * quality);
+      waitEl.textContent = wait < 1 ? (wait * 1000).toFixed(0) + 'ms' : wait.toFixed(1) + 's';
+    } else {
+      waitEl.textContent = '∞';
+    }
+  }
+
+  // ── Main loop ──
+  let lastTs = null;
+  function tick(now) {
+    const dt = lastTs != null ? Math.min((now - lastTs) / 1000, 0.1) : 0;
+    lastTs = now;
+
+    const speed = f.rateBase * sim.keywords * f.kwPenalty;
+    const quality = Math.min(1, Math.max(0, f.qualityBase + sim.prettiness * f.prettyBoost));
+
+    sim.progress += speed * dt;
+    const whole = Math.min(Math.floor(sim.progress), 50); // cap per-tick to avoid burst
+    if (whole > 0) {
+      sim.progress -= whole;
+      for (let i = 0; i < whole; i++) {
+        sim.credit += quality;
+        const pass = sim.credit >= 1;
+        if (pass) sim.credit -= 1;
+        history.push({ t: now / 1000, pass });
+        addFeedEvent(pass, now);
+      }
+    }
+
+    updateStats(now);
+    requestAnimationFrame(tick);
+  }
+
+  // ── Controls ──
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    feed.innerHTML = '';
+    feed.appendChild(feedEmpty);
+    feedEmpty.style.display = '';
+    feedStarted = false;
+    lastFeedTime = 0;
+    history.length = 0;
+    sim.progress = 0;
+    sim.credit = 0;
+  });
+
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    const text = [
+      `SCREENING_RATE_BASE = ${f.rateBase}`,
+      `KEYWORD_PENALTY = ${f.kwPenalty}`,
+      `QUALITY_BASE = ${f.qualityBase}`,
+      `PRETTINESS_QUALITY_BOOST = ${f.prettyBoost}`,
+    ].join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('btn-copy');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Formula'; btn.classList.remove('copied'); }, 1500);
+    });
+  });
+
+  requestAnimationFrame(tick);
+</script>
+</body>
+</html>
