@@ -2,11 +2,11 @@ import type { Phase } from './types';
 import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, PRETTINESS_BOOST, KEYWORD_PENALTY, DESIRABILITY_KEYWORD_PENALTY } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress,
+  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress, screeningCredit,
   totalAppsScreened, totalAppsRejected,
   rateAppsScreenedSnap, rateAppsRejectedSnap, rateTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown, setScreeningProgress,
+  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer, setScreeningCooldown, setScreeningProgress, setScreeningCredit,
   addTotalAppsSubmitted, addTotalAppsScreened, addTotalAppsRejected,
   setRateAppsScreenedSnap, setRateAppsRejectedSnap,
   setRateTimer, setAppsScreenedRate, setAppsRejectedRate,
@@ -84,7 +84,13 @@ function tickPhase1(dt: number): void {
         const processable = Math.min(wholeApps, Math.floor(state.unreadApplications));
         if (processable > 0) {
           state.unreadApplications -= processable;
-          const passThrough = Math.round(processable * desirability);
+          let passThrough = 0;
+          let credit = screeningCredit;
+          for (let i = 0; i < processable; i++) {
+            credit += desirability;
+            if (credit >= 1.0) { passThrough++; credit -= 1.0; }
+          }
+          setScreeningCredit(credit);
           const screenedOut = processable - passThrough;
           if (passThrough > 0) {
             state.appsThruScreening += passThrough;
