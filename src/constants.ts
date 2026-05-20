@@ -6,5 +6,5 @@ export const PROCURE_FIXED_COST  = 100;
 
 export const EFFICIENCY_TIER_COSTS  = [500, 1000, 1500] as const;
 export const JOB_SEARCH_TIER_COSTS  = [100, 1000, 10000] as const;
-// Output multipliers per efficiency tier: 1x, 2x, 2.5x, 4x
-export const EFFICIENCY_TIER_MULTS  = [1, 2, 2.5, 4] as const;
+// Output multipliers per efficiency tier: 1x, 2x, 5x, 10x (additive tiers)
+export const EFFICIENCY_TIER_MULTS  = [1, 2, 5, 10] as const;
