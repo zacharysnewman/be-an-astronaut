@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, PRETTINESS_BOOST, KEYWORD_PENALTY, DESIRABILITY_KEYWORD_PENALTY } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, PRETTINESS_BOOST, KEYWORD_PENALTY } from './constants';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress, screeningCredit,
@@ -76,7 +76,7 @@ function tickPhase1(dt: number): void {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
       const findability = state.keywords * KEYWORD_PENALTY + state.prettinessLevel * PRETTINESS_BOOST;
-      const desirability = Math.max(0, 1.0 - state.keywords * DESIRABILITY_KEYWORD_PENALTY);
+      const desirability = Math.max(0, 1.0 - findability * 0.5);
       setScreeningProgress(screeningProgress + SCREENING_RATE_BASE * findability * dt);
       const wholeApps = Math.floor(screeningProgress);
       if (wholeApps > 0) {

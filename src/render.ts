@@ -1,4 +1,4 @@
-import { state, appsScreenedRate, appsRejectedRate, displayedMoney, totalAppsSubmitted } from './state';
+import { state, appsScreenedRate, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { formatMoney, getGeometricCost } from './utils';
 import {
@@ -11,7 +11,7 @@ import {
   PRETTIFY_TIER_COSTS,
   PRETTINESS_BOOST,
   KEYWORD_PENALTY,
-  DESIRABILITY_KEYWORD_PENALTY,
+
 } from './constants';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
@@ -52,27 +52,27 @@ function renderPhase1(): void {
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
 
   const rawFindability = state.keywords * KEYWORD_PENALTY + state.prettinessLevel * PRETTINESS_BOOST;
-  const rawDesirability = Math.max(0, 1.0 - state.keywords * DESIRABILITY_KEYWORD_PENALTY);
-  ui.findabilityDisplay.innerText = `${Math.round(rawFindability * 100)}%`;
-  ui.desirabilityDisplay.innerText = `${Math.round(rawDesirability * 100)}%`;
+  const rawDesirability = Math.max(0, 1.0 - rawFindability * 0.5);
+  const qualityText = `${Math.round(rawDesirability * 100)}%`;
+  document.querySelectorAll<HTMLElement>('.quality-display').forEach(el => { el.innerText = qualityText; });
 
   ui.rejectedAppsRow.classList.toggle('hidden', state.appsScreenedOut <= 0);
   ui.rejectedAppsDisplay.innerText = formatComma(state.appsScreenedOut);
 
   const showRate = state.hasScreenedApp || state.appsScreenedOut > 0;
   ui.screeningRateRow.classList.toggle('hidden', !showRate);
-  ui.screeningRatePassDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
-  ui.screeningRateRejectDisplay.innerText = appsRejectedRate.toFixed(1);
+  ui.screeningRateDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
 
   const [p1Cost, p2Cost, p3Cost, p4Cost] = PRETTIFY_TIER_COSTS;
-  ui.upgradePrettifyT1Row.classList.toggle('hidden',
-    !shouldShowUpgrade(state.maxAppsReached, p1Cost, state.prettinessLevel >= 1));
-  ui.upgradePrettifyT2Row.classList.toggle('hidden',
-    state.prettinessLevel < 1 || !shouldShowUpgrade(state.maxAppsReached, p2Cost, state.prettinessLevel >= 2));
-  ui.upgradePrettifyT3Row.classList.toggle('hidden',
-    state.prettinessLevel < 2 || !shouldShowUpgrade(state.maxAppsReached, p3Cost, state.prettinessLevel >= 3));
-  ui.upgradePrettifyT4Row.classList.toggle('hidden',
-    state.prettinessLevel < 3 || !shouldShowUpgrade(state.maxAppsReached, p4Cost, state.prettinessLevel >= 4));
+  const t1Visible = shouldShowUpgrade(state.maxAppsReached, p1Cost, state.prettinessLevel >= 1);
+  const t2Visible = state.prettinessLevel >= 1 && shouldShowUpgrade(state.maxAppsReached, p2Cost, state.prettinessLevel >= 2);
+  const t3Visible = state.prettinessLevel >= 2 && shouldShowUpgrade(state.maxAppsReached, p3Cost, state.prettinessLevel >= 3);
+  const t4Visible = state.prettinessLevel >= 3 && shouldShowUpgrade(state.maxAppsReached, p4Cost, state.prettinessLevel >= 4);
+  ui.upgradePrettifyT1Row.classList.toggle('hidden', !t1Visible);
+  ui.upgradePrettifyT2Row.classList.toggle('hidden', !t2Visible);
+  ui.upgradePrettifyT3Row.classList.toggle('hidden', !t3Visible);
+  ui.upgradePrettifyT4Row.classList.toggle('hidden', !t4Visible);
+  ui.qualityRow.classList.toggle('hidden', !showScreening || t1Visible || t2Visible || t3Visible || t4Visible);
   ui.btnUpgradePrettifyT1.disabled = state.appsThruScreening < p1Cost;
   ui.btnUpgradePrettifyT2.disabled = state.appsThruScreening < p2Cost;
   ui.btnUpgradePrettifyT3.disabled = state.appsThruScreening < p3Cost;

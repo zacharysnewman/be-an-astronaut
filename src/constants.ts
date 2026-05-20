@@ -14,8 +14,6 @@ export const SCREENING_RATE_BASE    = 2.0;
 export const EFFICIENCY_TIER_MULTS  = [1, 2, 2.5, 4] as const;
 
 // Findability = keywords * KEYWORD_PENALTY + prettiness * PRETTINESS_BOOST (can exceed 100%)
-// Desirability = clamp(1 - keywords * DESIRABILITY_KEYWORD_PENALTY, 0, 1) (always 0-100%)
-// Asymmetric coefficients push the passRate peak to keywords=20 (instead of 10 with equal coefficients).
-export const KEYWORD_PENALTY              = 0.05;   // per keyword: findability gain
-export const DESIRABILITY_KEYWORD_PENALTY = 0.025;  // per keyword: desirability cost (half of findability)
-export const PRETTINESS_BOOST             = 0.1;    // each tier adds 10% findability
+// Desirability = clamp(1 - findability * 0.5, 0, 1): 0% findable → 100% desirable, 100% findable → 50% desirable
+export const KEYWORD_PENALTY  = 0.05;  // per keyword: findability gain
+export const PRETTINESS_BOOST = 0.1;   // each tier adds 10% findability
