@@ -31,7 +31,7 @@ function renderPhase1(): void {
   ui.btnFind.disabled = state.money < 1.00;
   ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
 
-  ui.totalReadRow.classList.toggle('hidden', state.openClawSubmitLevel < 1);
+  ui.totalReadRow.classList.toggle('hidden', !state.hasSubmittedApp);
   ui.totalReadDisplay.innerText = formatComma(totalAppsSubmitted);
 
   // Job Search tier upgrades

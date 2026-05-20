@@ -89,7 +89,7 @@ export function registerEventListeners(): void {
     if (state.efficiencyTier === 0 && state.applyCredits >= t1Cost) {
       state.applyCredits -= t1Cost;
       state.efficiencyTier = 1;
-      logMessage('WiFi antennas realigned. Auto-Submitter output doubled (+100%).', 'good');
+      logMessage('WiFi router repositioned. Auto-Submitter output at ×2.', 'good');
     }
     updateUI();
   });
@@ -98,7 +98,7 @@ export function registerEventListeners(): void {
     if (state.efficiencyTier === 1 && state.applyCredits >= t2Cost) {
       state.applyCredits -= t2Cost;
       state.efficiencyTier = 2;
-      logMessage('Ethernet cable plugged in. Auto-Submitter output at ×2.5.', 'good');
+      logMessage('WiFi antennas aimed directly at computer. Auto-Submitter output at ×5.', 'good');
     }
     updateUI();
   });
@@ -107,7 +107,7 @@ export function registerEventListeners(): void {
     if (state.efficiencyTier === 2 && state.applyCredits >= t3Cost) {
       state.applyCredits -= t3Cost;
       state.efficiencyTier = 3;
-      logMessage('Gigabit Ethernet online. Auto-Submitter output at ×4.', 'good');
+      logMessage('Ethernet cable plugged in. Auto-Submitter output at ×10.', 'good');
     }
     updateUI();
   });
