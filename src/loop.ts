@@ -1,5 +1,6 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S, SCREENING_RATE_BASE, KEYWORD_PENALTY, QUALITY_BASE, PRETTINESS_QUALITY_BOOST } from './constants';
+import { EFFICIENCY_TIER_MULTS, PROCESSOR_COOLDOWN_S } from './constants';
+import { tuning } from './tuning';
 import { state, PROVIDER_PRICE_SETS } from './state';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer, screeningCooldown, screeningProgress, screeningCredit,
@@ -75,9 +76,9 @@ function tickPhase1(dt: number): void {
     if (screeningCooldown > 0) {
       setScreeningCooldown(screeningCooldown - dt);
     } else {
-      const findability = state.keywords * KEYWORD_PENALTY;
-      const desirability = QUALITY_BASE + state.prettinessLevel * PRETTINESS_QUALITY_BOOST;
-      setScreeningProgress(screeningProgress + SCREENING_RATE_BASE * findability * dt);
+      const findability = state.keywords * tuning.keywordPenalty;
+      const desirability = tuning.qualityBase + state.prettinessLevel * tuning.prettinessQualityBoost;
+      setScreeningProgress(screeningProgress + tuning.screeningRateBase * findability * dt);
       const wholeApps = Math.floor(screeningProgress);
       if (wholeApps > 0) {
         setScreeningProgress(screeningProgress - wholeApps);

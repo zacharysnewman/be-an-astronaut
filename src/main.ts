@@ -1,6 +1,7 @@
 import { loadCloudState } from './storage';
 import { transitionToPhase, mainLoop } from './loop';
 import { registerEventListeners } from './events';
+import { initTunePanel } from './tune';
 import { state } from './state';
 
 document.addEventListener('contextmenu', e => e.preventDefault());
@@ -9,6 +10,7 @@ document.addEventListener('touchmove', (e: TouchEvent) => {
 }, { passive: false });
 
 registerEventListeners();
+initTunePanel();
 
 window.addEventListener('load', () => {
   loadCloudState();
