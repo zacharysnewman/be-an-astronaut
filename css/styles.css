@@ -333,37 +333,44 @@ body.overlay-active {
     margin-top: 5px;
 }
 
-/* Formula Tuner Panel */
-#tune-panel {
-    background-color: #e8f4e8;
-    border: 1px solid #006600;
-    padding: 10px;
-    margin-bottom: 20px;
+/* Action Buttons (full-width, for Actions section) */
+.btn-action {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    min-height: 0;
+    border: 2px solid #767676;
+    box-sizing: border-box;
+    margin-right: 0;
+}
+
+.btn-action:active {
+    background-color: #e5e5e5;
+    border-color: #444;
+}
+
+.btn-action:disabled {
+    pointer-events: none;
+}
+
+.action-name {
+    display: block;
+    font-weight: bold;
     font-family: Arial, sans-serif;
-    font-size: 12px;
 }
 
-#tune-panel button {
-    margin-right: 6px;
-    margin-bottom: 4px;
+.action-meta {
+    display: block;
+    font-size: 13px;
+    color: #333333;
+    margin-top: 3px;
 }
 
-#tune-preview-table {
-    border-collapse: collapse;
-    font-size: 11px;
-    margin-top: 6px;
-}
-
-#tune-preview-table td, #tune-preview-table th {
-    padding: 2px 8px;
-    border: 1px solid #aaccaa;
-    text-align: right;
-    white-space: nowrap;
-}
-
-#tune-preview-table th {
-    background-color: #c8e8c8;
-    text-align: center;
+button:disabled .action-meta {
+    color: #888888;
 }
 
 /* Bottom Tab Bar */

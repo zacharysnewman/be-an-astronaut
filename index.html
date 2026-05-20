@@ -47,40 +47,10 @@
             <br><br>
             <i>Instant Resources Injection:</i><br>
             <button id="btn-debug-inject-money">+$1,000 Cash</button>
-            <button id="btn-debug-inject-apps">+1,000 Screened Apps</button>
-            <button id="btn-debug-inject-unread">+1,000 Unread Apps</button>
+            <button id="btn-debug-inject-apps">+1,000 Apply Credits</button>
+            <button id="btn-debug-inject-unread">+1,000 Applications</button>
             <button id="btn-debug-inject-creds">+500 Creds</button>
             <button id="btn-debug-inject-paper">+100 Paper Sheets</button>
-        </div>
-
-        <!-- Formula Tuner (visible when ?tune in URL) -->
-        <div id="tune-panel" class="hidden">
-            <b>SCREENING FORMULA TUNER</b><br><br>
-            <table style="border-collapse:collapse;font-size:12px">
-                <tr>
-                    <td>Screening Rate Base:</td>
-                    <td><input id="tune-rate-base" type="number" step="0.1" min="0" style="width:70px"></td>
-                    <td>&nbsp;&nbsp;Keyword Penalty:</td>
-                    <td><input id="tune-keyword-penalty" type="number" step="0.005" min="0" style="width:70px"></td>
-                </tr>
-                <tr>
-                    <td>Quality Base:</td>
-                    <td><input id="tune-quality-base" type="number" step="0.05" min="0" max="1" style="width:70px"></td>
-                    <td>&nbsp;&nbsp;Prettiness Boost:</td>
-                    <td><input id="tune-prettiness-boost" type="number" step="0.05" min="0" max="1" style="width:70px"></td>
-                </tr>
-            </table>
-            <br>
-            <button id="btn-tune-apply">Apply to Game</button>
-            <button id="btn-tune-copy">Copy Formula</button>
-            <br><br>
-            <i>passes/s + rejects/s at keywords × prettiness tier:</i><br>
-            <table id="tune-preview-table">
-                <thead>
-                    <tr><th></th><th>P0</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th></tr>
-                </thead>
-                <tbody id="tune-preview-body"></tbody>
-            </table>
         </div>
 
         <!-- Visual Bankruptcy Shroud Overlay -->
@@ -128,7 +98,7 @@
                 <div class="stat-row">Internet Fees: <span id="income-display" class="bad">-$0.01/s</span></div>
             </div>
 
-            <!-- Dynamic Internet Provider & Contract Selector Gated Box -->
+            <!-- Dynamic Internet Provider & Contract Selector (disabled, kept for future use) -->
             <div id="provider-container" class="retro-box hidden">
                 <b>Internet Providers</b>
 
@@ -148,52 +118,9 @@
                 </div>
             </div>
 
-            <!-- Total Applications Submitted row (above Job Applications section) -->
-            <div id="total-read-row" class="stat-row hidden">Total Applications Submitted: <span id="total-read-display" class="bold">0</span></div>
-            <div id="inline-app-row" class="stat-row hidden">
-                <button id="btn-apply" class="btn-inline" disabled>Submit Application</button>
-            </div>
-
-            <!-- Job Applications (ATS Screening) -->
-            <div id="keywords-section" class="hidden">
-                <h2 class="section-title">Job Applications</h2>
-                <div id="apps-thru-screening-row" class="stat-row">Apps Through Screening: <span id="apps-thru-screening-display" class="bold good">0</span></div>
-                <div id="rejected-apps-row" class="stat-row hidden">Screened Out Apps: <span id="rejected-apps-display" class="bold bad">0</span></div>
-                <div class="stat-row">Unread Applications: <span id="unread-apps-display" class="bold">0</span></div>
-                <div class="stat-row">
-                    Resume Keywords:
-                    <button id="btn-keywords-down" class="btn-inline">-</button>
-                    <span id="keywords-display" class="bold">0</span>
-                    <button id="btn-keywords-up" class="btn-inline">+</button>
-                </div>
-                <div id="screening-rate-row" class="stat-row hidden">Screening rate: <span id="screening-rate-display" class="good"></span>/s</div>
-                <div id="upgrade-prettify-t1-row" class="stat-row hidden">
-                    <button id="btn-upgrade-prettify-t1" class="btn-inline">Prettify Resume</button>
-                    Quality: <span class="quality-display bold">100%</span><br>
-                    Cost: <span class="bold">75 Screened</span>
-                </div>
-                <div id="upgrade-prettify-t2-row" class="stat-row hidden">
-                    <button id="btn-upgrade-prettify-t2" class="btn-inline">Prettify Resume</button>
-                    Quality: <span class="quality-display bold">100%</span><br>
-                    Cost: <span class="bold">250 Screened</span>
-                </div>
-                <div id="upgrade-prettify-t3-row" class="stat-row hidden">
-                    <button id="btn-upgrade-prettify-t3" class="btn-inline">Prettify Resume</button>
-                    Quality: <span class="quality-display bold">100%</span><br>
-                    Cost: <span class="bold">800 Screened</span>
-                </div>
-                <div id="upgrade-prettify-t4-row" class="stat-row hidden">
-                    <button id="btn-upgrade-prettify-t4" class="btn-inline">Prettify Resume</button>
-                    Quality: <span class="quality-display bold">100%</span><br>
-                    Cost: <span class="bold">2,500 Screened</span>
-                </div>
-                <div id="quality-row" class="stat-row hidden">Quality: <span class="quality-display bold">100%</span></div>
-            </div>
-
             <!-- Job Search section -->
             <h2 class="section-title">Job Search</h2>
 
-            <!-- Inline Compact Discovery Rows -->
             <div id="inline-job-row" class="stat-row">
                 <button id="btn-find" class="btn-inline">Find Jobs</button>
                 <b>Available:</b> <span id="avail-jobs-display" class="bold">0</span>
@@ -203,57 +130,61 @@
             <!-- Job Search Algorithm Upgrades -->
             <div id="upgrade-job-search-t1-row" class="stat-row hidden">
                 <button id="btn-upgrade-job-search-t1" class="btn-inline">Upgrade Job Search</button>
-                10x jobs per search | Cost: <span class="bold">100 Screened</span>
+                10x jobs per search | Cost: <span class="bold">100 AC</span>
             </div>
             <div id="upgrade-job-search-t2-row" class="stat-row hidden">
                 <button id="btn-upgrade-job-search-t2" class="btn-inline">Upgrade Job Search</button>
-                100x jobs per search | Cost: <span class="bold">1,000 Screened</span>
+                100x jobs per search | Cost: <span class="bold">1,000 AC</span>
             </div>
             <div id="upgrade-job-search-t3-row" class="stat-row hidden">
                 <button id="btn-upgrade-job-search-t3" class="btn-inline">Upgrade Job Search</button>
-                1,000x jobs per search | Cost: <span class="bold">10,000 Screened</span>
+                1,000x jobs per search | Cost: <span class="bold">10,000 AC</span>
             </div>
 
-            <!-- OpenClaw Automations Section -->
-            <div id="automation-p1-card" class="hidden">
-                <h2 class="section-title">OpenClaw Automations</h2>
-
-                <div id="upgrade-submitter-row" class="stat-row">
-                    <button id="btn-upgrade-submitter" class="btn-inline">Buy Auto-Submitter</button>
-                    Count: <span id="submitter-level-badge">0</span> | Cost: <span id="submitter-cost-display">0</span> Screened
-                </div>
-
-                <div id="upgrade-efficiency-t1-row" class="stat-row hidden">
-                    <button id="btn-upgrade-efficiency-t1" class="btn-inline">Unlock Efficiency Protocol</button>
-                    +100% output boost | Cost: 500 Screened
-                </div>
-                <div id="upgrade-efficiency-t2-row" class="stat-row hidden">
-                    <button id="btn-upgrade-efficiency-t2" class="btn-inline">Upgrade Efficiency Protocol</button>
-                    +150% output boost | Cost: 1,000 Screened
-                </div>
-                <div id="upgrade-efficiency-t3-row" class="stat-row hidden">
-                    <button id="btn-upgrade-efficiency-t3" class="btn-inline">Upgrade Efficiency Protocol</button>
-                    +300% output boost | Cost: 1,500 Screened
-                </div>
+            <!-- Apply Credits display -->
+            <div id="apply-credits-row" class="stat-row hidden">
+                Apply Credits (AC): <span id="apply-credits-display" class="bold good">0</span>
             </div>
 
-            <!-- Parental Support Progression Upgrades Box -->
-            <div id="parental-upgrades-container" class="retro-box hidden">
-                <b>Parental Trust Optimizations</b>
+            <!-- Submit Application button -->
+            <div id="inline-app-row" class="stat-row">
+                <button id="btn-apply" class="btn-inline" disabled>Submit Application</button>
+            </div>
 
-                <div id="upgrade-parental-t2" class="stat-row hidden">
-                    <button id="btn-upgrade-parent-t2" class="btn-inline">Acquire Optimization</button>
-                    Wires <span class="bold">$12.00</span> | Cost: <span class="bold">2,000 Apps</span>
+            <!-- Total Applications Submitted -->
+            <div id="total-read-row" class="stat-row hidden">
+                Total Applications Submitted: <span id="total-read-display" class="bold">0</span>
+            </div>
+
+            <!-- Auto-Submitter (moved into job search section) -->
+            <div id="upgrade-submitter-row" class="stat-row hidden">
+                <button id="btn-upgrade-submitter" class="btn-inline">Buy Auto-Submitter</button>
+                Count: <span id="submitter-level-badge">0</span> | Cost: <span id="submitter-cost-display">0</span> AC
+            </div>
+
+            <!-- Actions Section -->
+            <div id="actions-section" class="hidden">
+                <h2 class="section-title">Actions</h2>
+
+                <div id="action-wifi-row" class="hidden">
+                    <button id="btn-action-wifi" class="btn-action">
+                        <span class="action-name">Aim WiFi Antennas Directly at Computer</span>
+                        <span class="action-meta">Auto-Submitter &times;2 output &nbsp;&mdash;&nbsp; Cost: <b>500 AC</b></span>
+                    </button>
                 </div>
 
-                <div id="upgrade-parental-t3" class="stat-row hidden">
-                    <button id="btn-upgrade-parent-t3" class="btn-inline">Authorize Elite Trust</button>
-                    Wires <span class="bold">$18.00</span> | Cost: <span class="bold">4,000 Apps</span>
+                <div id="action-ethernet-row" class="hidden">
+                    <button id="btn-action-ethernet" class="btn-action">
+                        <span class="action-name">Plug in Ethernet Cable</span>
+                        <span class="action-meta">Auto-Submitter &times;2.5 output &nbsp;&mdash;&nbsp; Cost: <b>1,000 AC</b></span>
+                    </button>
                 </div>
 
-                <div id="upgrade-parental-t4" class="stat-row hidden">
-                    <button id="btn-upgrade-parent-t4" class="btn-inline">Install Automatic Script</button>
-                    Wires <span class="bold">$18.00</span> Auto | Cost: <span class="bold">50,000 Apps</span>
+                <div id="action-gigabit-row" class="hidden">
+                    <button id="btn-action-gigabit" class="btn-action">
+                        <span class="action-name">Upgrade to Gigabit Ethernet</span>
+                        <span class="action-meta">Auto-Submitter &times;4 output &nbsp;&mdash;&nbsp; Cost: <b>1,500 AC</b></span>
+                    </button>
                 </div>
             </div>
 
@@ -262,7 +193,7 @@
                 <h3>*** CAREER OFFER FOUND ***</h3>
                 <p>Macrofirm Human Resources has verified your submitted applications and opened an office space slot.</p>
                 <button id="btn-interview" class="btn-inline">Enter Macrofirm Office</button>
-                <div class="italic">Requires: 100,000 Applications</div>
+                <div class="italic">Requires: 100,000 AC</div>
             </div>
         </div>
 

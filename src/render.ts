@@ -1,4 +1,4 @@
-import { state, appsScreenedRate, displayedMoney, totalAppsSubmitted } from './state';
+import { state, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
 import { formatMoney, getGeometricCost } from './utils';
 import {
@@ -8,117 +8,71 @@ import {
   PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
-  PRETTIFY_TIER_COSTS,
 } from './constants';
-import { tuning } from './tuning';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
 
-// An upgrade row is shown when the player has ever reached 25% of its cost,
-// and hidden once the upgrade has been purchased.
 function shouldShowUpgrade(maxResource: number, cost: number, purchased: boolean): boolean {
   return !purchased && maxResource >= cost * 0.25;
 }
 
 function renderPhase1(): void {
-  let baseRate = 0.01;
-  if (state.openClawSubmitLevel >= 1) {
-    if (state.selectedProvider === 'finite')        baseRate = 0.01 * state.finiteMultiplier;
-    else if (state.selectedProvider === 'weeklink') baseRate = 0.01 * state.weeklinkMultiplier;
-    else if (state.selectedProvider === 'bliply')   baseRate = 0.01 * state.bliplyMultiplier;
-  }
-  const automationFlat = Math.floor(state.openClawSubmitLevel * 0.0025 * 100) / 100;
-  const totalDrain = baseRate + automationFlat;
-  ui.income.innerText = `${formatMoney(-totalDrain)}/s`;
+  ui.income.innerText = '-$0.01/s';
   ui.income.classList.add('bad');
   ui.income.classList.remove('good');
-  ui.headerFees.innerText = ui.income.innerText;
+  ui.headerFees.innerText = '-$0.01/s';
   ui.headerFees.className = 'bad';
 
-  // Job Applications section — visible once the player owns at least one Auto-Submitter
-  const showScreening = state.openClawSubmitLevel >= 1;
-
-  ui.totalReadRow.classList.toggle('hidden', !showScreening);
-  ui.totalReadDisplay.innerText = formatComma(totalAppsSubmitted);
   ui.availJobs.innerText = formatComma(state.availableJobs);
-  ui.unreadAppsDisplay.innerText = formatComma(state.unreadApplications);
-  ui.appsThruScreeningDisplay.innerText = formatComma(state.appsThruScreening);
 
-  ui.keywordsSection.classList.toggle('hidden', !showScreening);
-
-  ui.keywordsDisplay.innerText = String(state.keywords);
-  ui.btnKeywordsDown.disabled = state.keywords <= 0;
-
-  const rawQuality = tuning.qualityBase + state.prettinessLevel * tuning.prettinessQualityBoost;
-  const qualityText = `${Math.round(rawQuality * 100)}%`;
-  document.querySelectorAll<HTMLElement>('.quality-display').forEach(el => { el.innerText = qualityText; });
-
-  ui.rejectedAppsRow.classList.toggle('hidden', state.appsScreenedOut <= 0);
-  ui.rejectedAppsDisplay.innerText = formatComma(state.appsScreenedOut);
-
-  const showRate = state.hasScreenedApp || state.appsScreenedOut > 0;
-  ui.screeningRateRow.classList.toggle('hidden', !showRate);
-  ui.screeningRateDisplay.innerText = `+${appsScreenedRate.toFixed(1)}`;
-
-  const [p1Cost, p2Cost, p3Cost, p4Cost] = PRETTIFY_TIER_COSTS;
-  const t1Visible = shouldShowUpgrade(state.maxAppsReached, p1Cost, state.prettinessLevel >= 1);
-  const t2Visible = state.prettinessLevel >= 1 && shouldShowUpgrade(state.maxAppsReached, p2Cost, state.prettinessLevel >= 2);
-  const t3Visible = state.prettinessLevel >= 2 && shouldShowUpgrade(state.maxAppsReached, p3Cost, state.prettinessLevel >= 3);
-  const t4Visible = state.prettinessLevel >= 3 && shouldShowUpgrade(state.maxAppsReached, p4Cost, state.prettinessLevel >= 4);
-  ui.upgradePrettifyT1Row.classList.toggle('hidden', !t1Visible);
-  ui.upgradePrettifyT2Row.classList.toggle('hidden', !t2Visible);
-  ui.upgradePrettifyT3Row.classList.toggle('hidden', !t3Visible);
-  ui.upgradePrettifyT4Row.classList.toggle('hidden', !t4Visible);
-  ui.qualityRow.classList.toggle('hidden', !showScreening || t1Visible || t2Visible || t3Visible || t4Visible);
-  ui.btnUpgradePrettifyT1.disabled = state.appsThruScreening < p1Cost;
-  ui.btnUpgradePrettifyT2.disabled = state.appsThruScreening < p2Cost;
-  ui.btnUpgradePrettifyT3.disabled = state.appsThruScreening < p3Cost;
-  ui.btnUpgradePrettifyT4.disabled = state.appsThruScreening < p4Cost;
+  ui.applyCreditsDisplay.innerText = formatComma(state.applyCredits);
+  ui.applyCreditsRow.classList.toggle('hidden', !state.hasSubmittedApp);
 
   ui.btnFind.disabled = state.money < 1.00;
   ui.btnApply.disabled = state.money <= 0 || state.availableJobs < 1;
 
-  ui.inlineAppRow.classList.toggle('hidden', !state.hasUnlockedSubmission);
+  ui.totalReadRow.classList.toggle('hidden', state.openClawSubmitLevel < 1);
+  ui.totalReadDisplay.innerText = formatComma(totalAppsSubmitted);
 
   // Job Search tier upgrades
   const [js1Cost, js2Cost, js3Cost] = JOB_SEARCH_TIER_COSTS;
   ui.upgradeJobSearchT1Row.classList.toggle('hidden',
-    !shouldShowUpgrade(state.maxAppsReached, js1Cost, state.jobSearchTier >= 1));
+    !shouldShowUpgrade(state.maxACReached, js1Cost, state.jobSearchTier >= 1));
   ui.upgradeJobSearchT2Row.classList.toggle('hidden',
-    state.jobSearchTier < 1 || !shouldShowUpgrade(state.maxAppsReached, js2Cost, state.jobSearchTier >= 2));
+    state.jobSearchTier < 1 || !shouldShowUpgrade(state.maxACReached, js2Cost, state.jobSearchTier >= 2));
   ui.upgradeJobSearchT3Row.classList.toggle('hidden',
-    state.jobSearchTier < 2 || !shouldShowUpgrade(state.maxAppsReached, js3Cost, state.jobSearchTier >= 3));
-  ui.btnUpgradeJobSearchT1.disabled = state.appsThruScreening < js1Cost;
-  ui.btnUpgradeJobSearchT2.disabled = state.appsThruScreening < js2Cost;
-  ui.btnUpgradeJobSearchT3.disabled = state.appsThruScreening < js3Cost;
+    state.jobSearchTier < 2 || !shouldShowUpgrade(state.maxACReached, js3Cost, state.jobSearchTier >= 3));
+  ui.btnUpgradeJobSearchT1.disabled = state.applyCredits < js1Cost;
+  ui.btnUpgradeJobSearchT2.disabled = state.applyCredits < js2Cost;
+  ui.btnUpgradeJobSearchT3.disabled = state.applyCredits < js3Cost;
 
-  ui.automationCardP1.classList.toggle('hidden', state.peakAppsSubmitted < 25);
-
+  // Auto-Submitter row (in job search section)
+  ui.upgradeSubmitterRow.classList.toggle('hidden', state.applications < 25);
   const submitterCost = BASE_SUBMITTER_COST * state.openClawSubmitLevel;
   ui.submitterBadge.innerText = String(state.openClawSubmitLevel);
   ui.submitterCostDisplay.innerText = formatComma(submitterCost);
-  ui.btnUpgradeSubmitter.disabled = state.appsThruScreening < submitterCost;
+  ui.btnUpgradeSubmitter.disabled = state.applyCredits < submitterCost;
+
+  // Actions section (automation upgrades)
+  ui.actionsSection.classList.toggle('hidden', state.openClawSubmitLevel < 1);
 
   const [t1Cost, t2Cost, t3Cost] = EFFICIENCY_TIER_COSTS;
-  ui.upgradeEfficiencyT1Row.classList.toggle('hidden',
-    state.openClawSubmitLevel < 1 || !shouldShowUpgrade(state.maxAppsReached, t1Cost, state.efficiencyTier >= 1));
-  ui.upgradeEfficiencyT2Row.classList.toggle('hidden',
-    state.efficiencyTier < 1 || !shouldShowUpgrade(state.maxAppsReached, t2Cost, state.efficiencyTier >= 2));
-  ui.upgradeEfficiencyT3Row.classList.toggle('hidden',
-    state.efficiencyTier < 2 || !shouldShowUpgrade(state.maxAppsReached, t3Cost, state.efficiencyTier >= 3));
+  ui.actionWifiRow.classList.toggle('hidden',
+    !shouldShowUpgrade(state.maxACReached, t1Cost, state.efficiencyTier >= 1));
+  ui.actionEthernetRow.classList.toggle('hidden',
+    state.efficiencyTier < 1 || !shouldShowUpgrade(state.maxACReached, t2Cost, state.efficiencyTier >= 2));
+  ui.actionGigabitRow.classList.toggle('hidden',
+    state.efficiencyTier < 2 || !shouldShowUpgrade(state.maxACReached, t3Cost, state.efficiencyTier >= 3));
+  ui.btnActionWifi.disabled    = state.applyCredits < t1Cost;
+  ui.btnActionEthernet.disabled = state.applyCredits < t2Cost;
+  ui.btnActionGigabit.disabled  = state.applyCredits < t3Cost;
 
-  ui.btnUpgradeEfficiencyT1.disabled = state.appsThruScreening < t1Cost;
-  ui.btnUpgradeEfficiencyT2.disabled = state.appsThruScreening < t2Cost;
-  ui.btnUpgradeEfficiencyT3.disabled = state.appsThruScreening < t3Cost;
-
-  // Service provider section is disabled for now
+  // Service provider section is disabled
   ui.providerContainer.classList.add('hidden');
 
-  ui.parentalUpgradesContainer.classList.add('hidden');
-
-  if (state.maxAppsReached >= 10000) {
+  if (state.maxACReached >= 10000) {
     ui.jobCard.classList.remove('hidden');
-    ui.btnInterview.disabled = state.appsThruScreening < 100000;
+    ui.btnInterview.disabled = state.applyCredits < 100000;
   } else {
     ui.jobCard.classList.add('hidden');
   }
@@ -174,10 +128,10 @@ function renderPhase2(): void {
   ui.btnUpgradeCourier.disabled   = state.credibility < courierCost;
 
   if (state.procurementUnlocked) {
-    ui.btnUpgradeProcurement.disabled   = true;
+    ui.btnUpgradeProcurement.disabled    = true;
     ui.procurementStatusDisplay.innerText = 'Integrated';
   } else {
-    ui.btnUpgradeProcurement.disabled   = state.credibility < PROCURE_FIXED_COST;
+    ui.btnUpgradeProcurement.disabled    = state.credibility < PROCURE_FIXED_COST;
     ui.procurementStatusDisplay.innerText = 'Cost: 100 Creds';
   }
 }
@@ -204,11 +158,7 @@ export function updateUI(): void {
     document.body.classList.remove('overlay-active');
   }
 
-  if (state.money <= 0.0) {
-    ui.btnBeg.disabled = false;
-  } else {
-    ui.btnBeg.disabled = state.appsThruScreening < 50;
-  }
+  ui.btnBeg.disabled = !isBankrupt;
 
   renderGoals();
   if (state.phase === 1) renderPhase1();
