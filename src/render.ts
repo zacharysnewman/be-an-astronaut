@@ -9,10 +9,8 @@ import {
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
   PRETTIFY_TIER_COSTS,
-  QUALITY_BASE,
-  PRETTINESS_QUALITY_BOOST,
-
 } from './constants';
+import { tuning } from './tuning';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
 
@@ -51,7 +49,7 @@ function renderPhase1(): void {
   ui.keywordsDisplay.innerText = String(state.keywords);
   ui.btnKeywordsDown.disabled = state.keywords <= 0;
 
-  const rawQuality = QUALITY_BASE + state.prettinessLevel * PRETTINESS_QUALITY_BOOST;
+  const rawQuality = tuning.qualityBase + state.prettinessLevel * tuning.prettinessQualityBoost;
   const qualityText = `${Math.round(rawQuality * 100)}%`;
   document.querySelectorAll<HTMLElement>('.quality-display').forEach(el => { el.innerText = qualityText; });
 

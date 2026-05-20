@@ -53,6 +53,36 @@
             <button id="btn-debug-inject-paper">+100 Paper Sheets</button>
         </div>
 
+        <!-- Formula Tuner (visible when ?tune in URL) -->
+        <div id="tune-panel" class="hidden">
+            <b>SCREENING FORMULA TUNER</b><br><br>
+            <table style="border-collapse:collapse;font-size:12px">
+                <tr>
+                    <td>Screening Rate Base:</td>
+                    <td><input id="tune-rate-base" type="number" step="0.1" min="0" style="width:70px"></td>
+                    <td>&nbsp;&nbsp;Keyword Penalty:</td>
+                    <td><input id="tune-keyword-penalty" type="number" step="0.005" min="0" style="width:70px"></td>
+                </tr>
+                <tr>
+                    <td>Quality Base:</td>
+                    <td><input id="tune-quality-base" type="number" step="0.05" min="0" max="1" style="width:70px"></td>
+                    <td>&nbsp;&nbsp;Prettiness Boost:</td>
+                    <td><input id="tune-prettiness-boost" type="number" step="0.05" min="0" max="1" style="width:70px"></td>
+                </tr>
+            </table>
+            <br>
+            <button id="btn-tune-apply">Apply to Game</button>
+            <button id="btn-tune-copy">Copy Formula</button>
+            <br><br>
+            <i>passes/s + rejects/s at keywords × prettiness tier:</i><br>
+            <table id="tune-preview-table">
+                <thead>
+                    <tr><th></th><th>P0</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th></tr>
+                </thead>
+                <tbody id="tune-preview-body"></tbody>
+            </table>
+        </div>
+
         <!-- Visual Bankruptcy Shroud Overlay -->
         <div id="bankruptcy-overlay" class="hidden">
             <div class="wifi-shroud-center">
