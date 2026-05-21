@@ -1,3 +1,14 @@
+# UI metaphor
+
+The game UI represents a **web browser**. Each bottom tab is a website the player is visiting:
+
+- **Mail.com** — the player's email inbox
+- **Indebt.com** — the job search portal
+- **Macrofirm.com** — the corporate intranet (unlocked in Phase 2)
+- **Notes.com** — the player's personal notes / goals
+
+Tab labels must follow this `.com` naming convention. New tabs should be named like websites.
+
 # Button sizing
 
 All inline content buttons (any button that appears inside a stat row, card, or overlay — i.e. not tab-bar buttons or provider-tab grid buttons) must carry `class="btn-inline"`. This matches the sizing of the Find and Submit buttons.

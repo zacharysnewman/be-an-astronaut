@@ -160,7 +160,7 @@ function renderGoals(): void {
 
 function renderEmail(): void {
   const unreadCount = state.emails.filter(e => !e.read).length;
-  ui.tabEmail.textContent = unreadCount > 0 ? `Email (${unreadCount})` : 'Email';
+  ui.tabEmail.textContent = unreadCount > 0 ? `Mail.com (${unreadCount})` : 'Mail.com';
 
   if (ui.emailContainer.classList.contains('hidden')) return;
 
