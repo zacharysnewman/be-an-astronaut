@@ -100,6 +100,7 @@
 
         <!-- Job Search (Phase 1) -->
         <div id="phase1-container">
+            <h2 class="section-title">Indebt.com</h2>
             <!-- Internet Service section (hidden — value shown in header) -->
             <div class="hidden">
                 <h2 class="section-title">Internet Service</h2>
@@ -127,7 +128,7 @@
             </div>
 
             <!-- Total Applications Submitted + Submit button (above Job Search) -->
-            <div id="total-read-row" class="stat-row hidden">
+            <div id="total-read-row" class="stat-row">
                 Total Applications Submitted: <span id="total-read-display" class="bold">0</span>
             </div>
             <div id="inline-app-row" class="stat-row">
@@ -158,7 +159,7 @@
             </div>
 
             <!-- Apply Credits display -->
-            <div id="apply-credits-row" class="stat-row hidden">
+            <div id="apply-credits-row" class="stat-row">
                 Apply Credits (AC): <span id="apply-credits-display" class="bold good">0</span>
             </div>
 
@@ -298,10 +299,22 @@
     <!-- Bottom Tab Bar -->
     <nav id="tab-bar">
         <button class="tab-btn" id="tab-email">Mail.com</button>
+        <button class="tab-btn" id="tab-goals">Notes.com</button>
         <button class="tab-btn tab-active" id="tab-job-search">Indebt.com</button>
         <button class="tab-btn hidden" id="tab-macrofirm">Macrofirm.com</button>
-        <button class="tab-btn" id="tab-goals">Notes.com</button>
     </nav>
+
+    <!-- Win95 App Window Chrome (decorative, pointer-events:none) -->
+    <div id="app-titlebar" aria-hidden="true">
+        <span class="win-icon">&#9632;</span>
+        Internet Excursion
+        <div class="win-btns">
+            <span class="win-btn">&#x2014;</span>
+            <span class="win-btn">&#9633;</span>
+            <span class="win-btn win-btn-close">&#215;</span>
+        </div>
+    </div>
+    <div id="app-chrome" aria-hidden="true"></div>
 
     <!-- Internet Excursion Loading Screen -->
     <div id="loading-overlay">

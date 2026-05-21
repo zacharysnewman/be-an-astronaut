@@ -17,7 +17,7 @@ html {
 
 body {
     font-family: 'Times New Roman', Times, serif;
-    background-color: #ffffff;
+    background-color: #000000;
     color: #000000;
     max-width: 650px;
     margin: 0 auto;
@@ -38,7 +38,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: calc(90px + env(safe-area-inset-top, 0px));
+    height: calc(62px + env(safe-area-inset-top, 0px));
     padding-top: env(safe-area-inset-top, 0px);
     background-color: #000000;
     color: #ffffff;
@@ -76,7 +76,7 @@ body {
 /* Unrestricted Sticky Header Row */
 #header-row {
     position: fixed;
-    top: calc(90px + env(safe-area-inset-top, 0px));
+    top: calc(88px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
     height: 54px;
@@ -109,7 +109,8 @@ body {
 }
 
 .content-container {
-    margin-top: calc(146px + env(safe-area-inset-top, 0px));
+    margin-top: calc(144px + env(safe-area-inset-top, 0px));
+    background-color: #ffffff;
 }
 
 .clearfix {
@@ -618,6 +619,78 @@ button:disabled .action-meta {
 
 #email-detail-actions {
     margin-top: 8px;
+}
+
+/* Win95 App Window Chrome */
+#app-titlebar {
+    position: fixed;
+    top: calc(62px + env(safe-area-inset-top, 0px));
+    left: 0;
+    right: 0;
+    max-width: 650px;
+    margin: 0 auto;
+    height: 26px;
+    z-index: 116;
+    background: linear-gradient(to right, #000080 60%, #1a5fb4);
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    padding: 0 2px 0 6px;
+    gap: 6px;
+    pointer-events: none;
+    border-top: 2px solid #dfdfdf;
+    border-left: 2px solid #dfdfdf;
+    border-right: 2px solid #808080;
+}
+
+.win-icon {
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.win-btns {
+    margin-left: auto;
+    display: flex;
+    gap: 2px;
+}
+
+.win-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: #c0c0c0;
+    color: #000000;
+    font-size: 11px;
+    font-weight: bold;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    cursor: default;
+}
+
+.win-btn-close {
+    color: #000000;
+}
+
+#app-chrome {
+    position: fixed;
+    top: calc(62px + env(safe-area-inset-top, 0px));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 650px;
+    margin: 0 auto;
+    pointer-events: none;
+    z-index: 107;
+    border-left: 2px solid #dfdfdf;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
 }
 
 /* Internet Excursion Loading Screen */
