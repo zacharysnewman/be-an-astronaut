@@ -347,6 +347,12 @@ body.overlay-active {
     flex-wrap: wrap;
 }
 
+#btn-interview {
+    background-color: #2557a7;
+    color: #ffffff;
+    border-color: #1a4080;
+}
+
 /* Utilities */
 .hidden { display: none !important; }
 .bad { color: #b30000; }

@@ -534,6 +534,14 @@
       height: 32px;
       line-height: 32px;
     }
+
+    .gp .btn-apply {
+      background: #2557a7;
+      color: #fff;
+      border-color: #1a4080;
+    }
+
+    .gp .btn-apply:hover { background: #1a4080; }
   </style>
 </head>
 <body>
@@ -585,7 +593,7 @@
                 <span class="job-badge-tag" id="prev-tag2" style="display:inline-block">Inflexible Schedule</span>
               </div>
               <div class="job-card-footer">
-                <button class="btn-inline">Enter Macrofirm Office</button>
+                <button class="btn-inline btn-apply" id="prev-btn">Apply</button>
                 <span class="italic">Requires: 100,000 AC</span>
               </div>
             </div>
@@ -599,11 +607,11 @@
             <div class="panel-body">
               <div class="ctrl-field">
                 <label class="ctrl-label" for="ctrl-status">Status Badge</label>
-                <input class="ctrl-input" id="ctrl-status" value="Multiple openings">
+                <input class="ctrl-input" id="ctrl-status" value="Sponsored">
               </div>
               <div class="ctrl-field">
                 <label class="ctrl-label" for="ctrl-title">Job Title</label>
-                <input class="ctrl-input" id="ctrl-title" value="Form Submitter">
+                <input class="ctrl-input" id="ctrl-title" value="Specialist">
               </div>
               <div class="ctrl-field">
                 <label class="ctrl-label" for="ctrl-company">Company</label>
@@ -619,11 +627,15 @@
               </div>
               <div class="ctrl-field">
                 <label class="ctrl-label" for="ctrl-tag1">Tag 1</label>
-                <input class="ctrl-input" id="ctrl-tag1" value="Contract">
+                <input class="ctrl-input" id="ctrl-tag1" value="Entry-level">
               </div>
               <div class="ctrl-field">
                 <label class="ctrl-label" for="ctrl-tag2">Tag 2</label>
                 <input class="ctrl-input" id="ctrl-tag2" value="Inflexible Schedule">
+              </div>
+              <div class="ctrl-field">
+                <label class="ctrl-label" for="ctrl-btn">Button Text</label>
+                <input class="ctrl-input" id="ctrl-btn" value="Apply">
               </div>
             </div>
           </div>
@@ -852,6 +864,7 @@
       pay:      { input: document.getElementById('ctrl-pay'),      preview: document.getElementById('prev-pay')      },
       tag1:     { input: document.getElementById('ctrl-tag1'),     preview: document.getElementById('prev-tag1')     },
       tag2:     { input: document.getElementById('ctrl-tag2'),     preview: document.getElementById('prev-tag2')     },
+      btn:      { input: document.getElementById('ctrl-btn'),      preview: document.getElementById('prev-btn')      },
     };
 
     function updatePreview() {
@@ -864,6 +877,7 @@
       fields.tag1.preview.style.display   = fields.tag1.input.value.trim() ? 'inline-block' : 'none';
       fields.tag2.preview.textContent     = fields.tag2.input.value;
       fields.tag2.preview.style.display   = fields.tag2.input.value.trim() ? 'inline-block' : 'none';
+      fields.btn.preview.textContent      = fields.btn.input.value || 'Apply';
       updateJSON();
     }
 
@@ -874,7 +888,8 @@
         company:      fields.company.input.value,
         location:     fields.location.input.value,
         compensation: fields.pay.input.value,
-        tags: [fields.tag1.input.value, fields.tag2.input.value].filter(t => t.trim()),
+        tags:         [fields.tag1.input.value, fields.tag2.input.value].filter(t => t.trim()),
+        buttonText:   fields.btn.input.value,
         requiresAC:   100000,
       };
       document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
