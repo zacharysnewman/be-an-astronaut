@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Library — Cubicle Chronicles</title>
+  <style>
+    /* ── SHELL ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, Arial, sans-serif;
+      background: #f6f9fc;
+      color: #333;
+      font-size: 14px;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sb-brand {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .sb-brand-sub {
+      display: block;
+      font-size: 10px;
+      font-weight: bold;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 2px;
+    }
+
+    .sb-brand strong {
+      font-size: 14px;
+      color: #111;
+    }
+
+    .sb-category {
+      padding: 14px 16px 4px;
+      font-size: 10px;
+      font-weight: bold;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .sb-link {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 7px 16px 7px 26px;
+      background: none;
+      border: none;
+      border-radius: 0;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
+      margin: 0;
+      min-height: 0;
+      font-family: inherit;
+    }
+
+    .sb-link:hover { background: #f0f4f8; color: #111; }
+    .sb-link.active { background: #e8f0fe; color: #1a56db; font-weight: bold; }
+
+    .sb-footer {
+      margin-top: auto;
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+      font-size: 12px;
+    }
+
+    .sb-footer a { color: #666; text-decoration: none; }
+    .sb-footer a:hover { color: #111; text-decoration: underline; }
+
+    /* ── MAIN ── */
+    #main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #toolbar {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0 20px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    #breadcrumb {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .crumb-name { color: #111; font-weight: bold; }
+
+    #content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 28px 60px;
+    }
+
+    /* ── STORIES ── */
+    .story { display: none; }
+    .story.active { display: block; }
+
+    .story-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0 0 6px;
+      color: #111;
+    }
+
+    .story-desc {
+      color: #666;
+      margin: 0 0 22px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Preview frame */
+    .preview-frame {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    /* Two-column layout for job card */
+    .story-split {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Controls panel */
+    .controls-panel {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 9px 14px;
+      background: #f8f8f8;
+      border-bottom: 1px solid #ddd;
+      font-size: 11px;
+      font-weight: bold;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .panel-body { padding: 14px; }
+
+    .ctrl-field { margin-bottom: 10px; }
+    .ctrl-field:last-child { margin-bottom: 0; }
+
+    .ctrl-label {
+      display: block;
+      font-size: 10px;
+      font-weight: bold;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 3px;
+    }
+
+    .ctrl-input {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid #ccc;
+      font-size: 12px;
+      font-family: inherit;
+      border-radius: 2px;
+      outline: none;
+      color: #333;
+    }
+
+    .ctrl-input:focus { border-color: #4a6cf7; box-shadow: 0 0 0 2px rgba(74,108,247,0.15); }
+
+    /* JSON panel */
+    .json-panel {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .json-header {
+      padding: 9px 14px;
+      background: #f8f8f8;
+      border-bottom: 1px solid #ddd;
+      font-size: 11px;
+      font-weight: bold;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-copy {
+      padding: 2px 10px;
+      background: #1a56db;
+      color: #fff;
+      border: none;
+      border-radius: 2px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      min-height: 0;
+      margin: 0;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-copy:hover { background: #1649b5; }
+    .btn-copy.copied { background: #137333; }
+
+    .json-body { padding: 12px 14px; }
+
+    #json-output {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #333;
+      white-space: pre;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Component grid (for buttons/badges) */
+    .comp-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .comp-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .comp-label {
+      font-size: 10px;
+      color: #aaa;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.03em;
+    }
+
+    .comp-section {
+      margin-top: 24px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+    }
+
+    /* ── GAME COMPONENT STYLES (scoped to .gp) ── */
+
+    .gp {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 16px;
+      color: #000;
+      line-height: 1.5;
+    }
+
+    /* Job card */
+    .gp .job-card-demo,
+    .gp #job-card {
+      border: 2px solid #000;
+      padding: 14px;
+      background: #fff;
+      max-width: 420px;
+    }
+
+    .gp .job-card-status-badge {
+      display: inline-block;
+      background-color: #fff0f5;
+      border: 1px solid #990055;
+      color: #660033;
+      font-size: 11px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+      padding: 1px 7px;
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+
+    .gp .job-card-title {
+      margin: 0 0 6px 0;
+      font-size: 1.15em;
+      color: #0000cc;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    .gp .job-card-meta {
+      color: #444;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .gp .job-card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .gp .job-badge-pay {
+      display: inline-block;
+      background-color: #e6f4ea;
+      border: 1px solid #137333;
+      color: #137333;
+      font-size: 12px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+      padding: 1px 7px;
+    }
+
+    .gp .job-badge-tag {
+      display: inline-block;
+      background-color: #f0f0f0;
+      border: 1px solid #aaaaaa;
+      color: #333333;
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+      padding: 1px 7px;
+    }
+
+    .gp .job-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .gp button {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      padding: 8px 12px;
+      cursor: pointer;
+      background: #efefef;
+      border: 1px solid #767676;
+      border-radius: 2px;
+      color: #000;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .gp button:active { background: #e5e5e5; border-color: #444; }
+
+    .gp button:disabled {
+      background: #f8f8f8;
+      color: #888;
+      border-color: #d3d3d3;
+      cursor: not-allowed;
+    }
+
+    .gp .btn-inline {
+      padding: 1px 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      vertical-align: baseline;
+    }
+
+    .gp .btn-action {
+      display: block;
+      width: 260px;
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 2px solid #767676;
+      border-radius: 0;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .gp .action-name {
+      display: block;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+    }
+
+    .gp .action-meta {
+      display: block;
+      font-size: 13px;
+      color: #333;
+      margin-top: 3px;
+    }
+
+    .gp .tab-btn {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      border-radius: 0;
+      background: #f0f0f0;
+      color: #777;
+      cursor: pointer;
+      padding: 6px 18px;
+      margin: 0 2px 0 0;
+      min-height: 0;
+    }
+
+    .gp .tab-btn.tab-active {
+      background: #fff;
+      color: #000;
+      border-top: 3px solid #000;
+    }
+
+    /* Text utilities */
+    .gp .bad { color: #b30000; font-weight: bold; }
+    .gp .good { color: #008000; font-weight: bold; }
+    .gp .promo { color: #0000ff; font-weight: bold; }
+    .gp .system { color: #6600cc; }
+    .gp .italic { font-style: italic; color: #555; font-size: 0.9em; }
+    .gp .bold { font-weight: bold; }
+
+    /* Layout */
+    .gp .retro-box {
+      border: 1px solid #000;
+      padding: 12px;
+      background: #fff;
+      max-width: 380px;
+    }
+
+    .gp h2.section-title {
+      font-family: Arial, sans-serif;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-bottom: 1px solid #000;
+      margin-top: 0;
+      margin-bottom: 10px;
+      padding-bottom: 2px;
+    }
+
+    .gp .stat-row {
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .gp .notepad {
+      border: 1px solid #c0b060;
+      border-left: 4px solid #cc6666;
+      background-color: #fefde8;
+      background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 31px, #a8c4d8 31px, #a8c4d8 32px);
+      font-size: 16px;
+      line-height: 32px;
+      padding: 0 14px;
+      overflow: hidden;
+      max-width: 340px;
+    }
+
+    .gp .notepad-section {
+      font-size: 10px;
+      font-family: Arial, sans-serif;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      height: 32px;
+      line-height: 32px;
+    }
+
+    .gp .notepad-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 32px;
+      line-height: 32px;
+    }
+  </style>
+</head>
+<body>
+
+  <aside id="sidebar">
+    <div class="sb-brand">
+      <span class="sb-brand-sub">Cubicle Chronicles</span>
+      <strong>Component Library</strong>
+    </div>
+    <div class="sb-category">Game Components</div>
+    <button class="sb-link active" data-story="job-card">Job Card</button>
+    <button class="sb-link" data-story="buttons">Buttons</button>
+    <button class="sb-link" data-story="badges">Badges &amp; Labels</button>
+    <button class="sb-link" data-story="layout">Layout</button>
+    <div class="sb-footer">
+      <a href="./index.html">&#8592; Back to game</a>
+    </div>
+  </aside>
+
+  <div id="main">
+    <div id="toolbar">
+      <div id="breadcrumb">Game Components &nbsp;/&nbsp; <span class="crumb-name" id="sb-story-name">Job Card</span></div>
+    </div>
+    <div id="content">
+
+      <!-- ── JOB CARD ── -->
+      <div id="story-job-card" class="story active">
+        <h1 class="story-title">Job Card</h1>
+        <p class="story-desc">
+          Shown in Phase 1 when <code>maxACReached &ge; 10,000</code>. Clicking
+          <em>Enter Macrofirm Office</em> costs 100,000 AC and transitions to Phase 2.
+          Job search continues running in the background after transition.
+        </p>
+
+        <div class="story-split">
+          <!-- Live preview -->
+          <div>
+            <div class="preview-frame">
+              <div class="gp">
+                <div class="job-card-demo">
+                  <div class="job-card-status-badge" id="prev-status">Multiple openings</div>
+                  <h3 class="job-card-title" id="prev-title">Form Submitter</h3>
+                  <div class="job-card-meta">
+                    <div id="prev-company">Macrofirm</div>
+                    <div id="prev-location">Remote</div>
+                  </div>
+                  <div class="job-card-badges">
+                    <span class="job-badge-pay" id="prev-pay">&#10003; $0.60 &ndash; $1.20 an hour</span>
+                    <span class="job-badge-tag" id="prev-tag1">Contract</span>
+                    <span class="job-badge-tag" id="prev-tag2" style="display:inline-block">Inflexible Schedule</span>
+                  </div>
+                  <div class="job-card-footer">
+                    <button class="btn-inline">Enter Macrofirm Office</button>
+                    <span class="italic">Requires: 100,000 AC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls + JSON -->
+          <div>
+            <div class="controls-panel">
+              <div class="panel-header">Controls</div>
+              <div class="panel-body">
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-status">Status Badge</label>
+                  <input class="ctrl-input" id="ctrl-status" value="Multiple openings">
+                </div>
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-title">Job Title</label>
+                  <input class="ctrl-input" id="ctrl-title" value="Form Submitter">
+                </div>
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-company">Company</label>
+                  <input class="ctrl-input" id="ctrl-company" value="Macrofirm">
+                </div>
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-location">Location</label>
+                  <input class="ctrl-input" id="ctrl-location" value="Remote">
+                </div>
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-pay">Compensation</label>
+                  <input class="ctrl-input" id="ctrl-pay" value="$0.60 - $1.20 an hour">
+                </div>
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-tag1">Tag 1</label>
+                  <input class="ctrl-input" id="ctrl-tag1" value="Contract">
+                </div>
+                <div class="ctrl-field">
+                  <label class="ctrl-label" for="ctrl-tag2">Tag 2</label>
+                  <input class="ctrl-input" id="ctrl-tag2" value="Inflexible Schedule">
+                </div>
+              </div>
+            </div>
+
+            <div class="json-panel">
+              <div class="json-header">
+                <span>JSON Data</span>
+                <button class="btn-copy" id="btn-copy-json">Copy</button>
+              </div>
+              <div class="json-body">
+                <pre id="json-output"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BUTTONS ── -->
+      <div id="story-buttons" class="story">
+        <h1 class="story-title">Buttons</h1>
+        <p class="story-desc">All button variants used in the game. Follows the 90s web aesthetic — gray fills, 1–2px borders, no border-radius.</p>
+
+        <div class="comp-section">Standard</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="comp-grid">
+              <div class="comp-item">
+                <span class="comp-label">button (default)</span>
+                <button>Find Jobs</button>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">button:disabled</span>
+                <button disabled>Find Jobs</button>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.btn-inline</span>
+                <button class="btn-inline">Buy Auto-Submitter</button>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.btn-inline:disabled</span>
+                <button class="btn-inline" disabled>Buy Auto-Submitter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Action Buttons</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="comp-grid">
+              <div class="comp-item">
+                <span class="comp-label">.btn-action</span>
+                <button class="btn-action">
+                  <span class="action-name">Move WiFi Router Closer</span>
+                  <span class="action-meta">Auto-Submitter &times;2 output &mdash; Cost: <b>500 AC</b></span>
+                </button>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.btn-action:disabled</span>
+                <button class="btn-action" disabled>
+                  <span class="action-name">Plug in Ethernet Cable</span>
+                  <span class="action-meta">Auto-Submitter &times;10 output &mdash; Cost: <b>1,500 AC</b></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Navigation</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="comp-grid">
+              <div class="comp-item">
+                <span class="comp-label">.tab-btn</span>
+                <button class="tab-btn">Personal Goals</button>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.tab-btn.tab-active</span>
+                <button class="tab-btn tab-active">Indebt.com</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BADGES & LABELS ── -->
+      <div id="story-badges" class="story">
+        <h1 class="story-title">Badges &amp; Labels</h1>
+        <p class="story-desc">Inline badges, status labels, and utility text classes. Used throughout the game for contextual coloring and job card metadata.</p>
+
+        <div class="comp-section">Job Card Badges</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="comp-grid">
+              <div class="comp-item">
+                <span class="comp-label">.job-card-status-badge</span>
+                <span class="job-card-status-badge">Multiple openings</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.job-badge-pay</span>
+                <span class="job-badge-pay">&#10003; $0.60 &ndash; $1.20 an hour</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.job-badge-tag</span>
+                <span class="job-badge-tag">Contract</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.job-badge-tag</span>
+                <span class="job-badge-tag">Inflexible Schedule</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Text Utilities</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="comp-grid">
+              <div class="comp-item">
+                <span class="comp-label">.good</span>
+                <span class="good">+$0.01/s</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.bad</span>
+                <span class="bad">-$0.01/s</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.promo</span>
+                <span class="promo">Promoted to Grade Level 2.</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.system</span>
+                <span class="system">Wired parental bailout capital.</span>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.italic</span>
+                <span class="italic">Requires: 100,000 AC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LAYOUT ── -->
+      <div id="story-layout" class="story">
+        <h1 class="story-title">Layout</h1>
+        <p class="story-desc">Structural components: section headers, stat rows, bordered containers, and the notepad panel.</p>
+
+        <div class="comp-section">Section Title</div>
+        <div class="preview-frame">
+          <div class="gp" style="max-width:400px">
+            <h2 class="section-title">Job Search</h2>
+            <div class="stat-row">
+              <button class="btn-inline">Find Jobs</button>
+              <b>Available:</b> <span class="bold">1,234</span>
+            </div>
+            <div class="stat-row">Cost: $1.00</div>
+          </div>
+        </div>
+
+        <div class="comp-section">Retro Box</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="retro-box">
+              <b>Internet Providers</b>
+              <div style="margin-top:8px;font-family:Arial,sans-serif;font-size:14px;color:#555">
+                Provider selection coming soon.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Notepad</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="notepad">
+              <div class="notepad-section">Long Term</div>
+              <div class="notepad-line">
+                <span>&#9634;</span>
+                <span>Go to the Moon</span>
+              </div>
+              <div class="notepad-section">Short Term</div>
+              <div class="notepad-line">
+                <span>&#9634;</span>
+                <span>Get a Job</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- #content -->
+  </div><!-- #main -->
+
+  <script>
+    // ── Story router ──
+    const links = document.querySelectorAll('.sb-link');
+    const stories = document.querySelectorAll('.story');
+    const storyName = document.getElementById('sb-story-name');
+
+    links.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.story;
+        links.forEach(l => l.classList.remove('active'));
+        stories.forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('story-' + id).classList.add('active');
+        storyName.textContent = btn.textContent;
+      });
+    });
+
+    // ── Job card live preview ──
+    const fields = {
+      status:   { input: document.getElementById('ctrl-status'),   preview: document.getElementById('prev-status')   },
+      title:    { input: document.getElementById('ctrl-title'),    preview: document.getElementById('prev-title')    },
+      company:  { input: document.getElementById('ctrl-company'),  preview: document.getElementById('prev-company')  },
+      location: { input: document.getElementById('ctrl-location'), preview: document.getElementById('prev-location') },
+      pay:      { input: document.getElementById('ctrl-pay'),      preview: document.getElementById('prev-pay')      },
+      tag1:     { input: document.getElementById('ctrl-tag1'),     preview: document.getElementById('prev-tag1')     },
+      tag2:     { input: document.getElementById('ctrl-tag2'),     preview: document.getElementById('prev-tag2')     },
+    };
+
+    function updatePreview() {
+      fields.status.preview.textContent   = fields.status.input.value || 'Status';
+      fields.title.preview.textContent    = fields.title.input.value  || 'Job Title';
+      fields.company.preview.textContent  = fields.company.input.value || 'Company';
+      fields.location.preview.textContent = fields.location.input.value || 'Location';
+      fields.pay.preview.textContent      = '✓ ' + (fields.pay.input.value || 'Compensation');
+      fields.tag1.preview.textContent     = fields.tag1.input.value;
+      fields.tag1.preview.style.display   = fields.tag1.input.value.trim() ? 'inline-block' : 'none';
+      fields.tag2.preview.textContent     = fields.tag2.input.value;
+      fields.tag2.preview.style.display   = fields.tag2.input.value.trim() ? 'inline-block' : 'none';
+      updateJSON();
+    }
+
+    function updateJSON() {
+      const data = {
+        status:       fields.status.input.value,
+        title:        fields.title.input.value,
+        company:      fields.company.input.value,
+        location:     fields.location.input.value,
+        compensation: fields.pay.input.value,
+        tags: [fields.tag1.input.value, fields.tag2.input.value].filter(t => t.trim()),
+        requiresAC:   100000,
+      };
+      document.getElementById('json-output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    Object.values(fields).forEach(({ input }) => {
+      input.addEventListener('input', updatePreview);
+    });
+
+    // ── Copy JSON ──
+    const btnCopy = document.getElementById('btn-copy-json');
+    btnCopy.addEventListener('click', () => {
+      const text = document.getElementById('json-output').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btnCopy.textContent = 'Copied!';
+        btnCopy.classList.add('copied');
+        setTimeout(() => {
+          btnCopy.textContent = 'Copy';
+          btnCopy.classList.remove('copied');
+        }, 1800);
+      });
+    });
+
+    updatePreview();
+  </script>
+</body>
+</html>

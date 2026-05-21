@@ -83,12 +83,14 @@ function renderPhase1(): void {
 }
 
 function renderPhase2(): void {
-  const hourlySalary = state.level * 0.01;
-  ui.income.innerText = `+${formatMoney(hourlySalary)}/s`;
-  ui.income.classList.remove('bad');
-  ui.income.classList.add('good');
-  ui.headerFees.innerText = ui.income.innerText;
-  ui.headerFees.className = 'good';
+  const salary = state.level * 0.01;
+  const net = salary - 0.01;
+  const netStr = net >= 0 ? `+${formatMoney(net)}/s` : `${formatMoney(net)}/s`;
+  ui.income.innerText = netStr;
+  ui.income.classList.toggle('bad', net < 0);
+  ui.income.classList.toggle('good', net >= 0);
+  ui.headerFees.innerText = netStr;
+  ui.headerFees.className = net >= 0 ? 'good' : 'bad';
 
   ui.level.innerText   = String(state.level);
   ui.appr.innerText    = state.approval.toFixed(0);
@@ -161,6 +163,6 @@ export function updateUI(): void {
   ui.btnBeg.disabled = !isBankrupt;
 
   renderGoals();
-  if (state.phase === 1) renderPhase1();
-  else if (state.phase === 2) renderPhase2();
+  renderPhase1();
+  if (state.phase >= 2) renderPhase2();
 }
