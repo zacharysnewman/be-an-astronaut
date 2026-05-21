@@ -63,3 +63,5 @@ Internet fees are a **flat $0.01/s** always — provider multipliers and automat
 Every new game component and every distinct UI state of an existing component must be represented in `design.html` (accessible at `?design`). This includes new card layouts, overlays, upgrade rows, and interactive states like disabled, active, or locked.
 
 Add a story or variant to the relevant section in `design.html`. The disabled state of a button is as important to document as the enabled state.
+
+**No CSS duplication.** `design.html` imports `css/styles.css` directly — do NOT copy game styles into `design.html`. All component styles belong in `css/styles.css` only. The `.gp` wrapper in `design.html` exists solely to restore `font-family: 'Times New Roman'` (overridden at the shell level); it is not a styling namespace.
