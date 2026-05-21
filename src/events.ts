@@ -261,20 +261,15 @@ export function registerEventListeners(): void {
     }
   });
 
-  // Email: action buttons (e.g. Accept Offer)
-  ui.emailDetailActions.addEventListener('click', (e) => {
-    const btn = (e.target as Element).closest('[data-action-id]') as HTMLElement | null;
-    if (!btn?.dataset.actionId) return;
-
-    if (btn.dataset.actionId === 'accept-macrofirm-offer') {
-      const email = state.emails.find(em => em.id === 'macrofirm-offer');
-      if (email) {
-        const action = email.actions.find(a => a.id === 'accept-macrofirm-offer');
-        if (action) action.executed = true;
-      }
-      setOpenEmailId(null);
-      transitionToPhase(2);
+  // Email: Accept Offer button (static element, direct listener)
+  ui.btnAcceptOffer.addEventListener('click', () => {
+    const email = state.emails.find(em => em.id === 'macrofirm-offer');
+    if (email) {
+      const action = email.actions.find(a => a.id === 'accept-macrofirm-offer');
+      if (action) action.executed = true;
     }
+    setOpenEmailId(null);
+    transitionToPhase(2);
   });
 
   // Debug panel
