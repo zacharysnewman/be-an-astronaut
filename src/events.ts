@@ -13,12 +13,16 @@ import {
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
   SAVE_STORAGE_KEY,
+  MACROFIRM,
 } from './constants';
+import { createMacrofirmOfferEmail, createZenmoParentalEmail } from './emails';
 
 export function registerEventListeners(): void {
   ui.btnBeg.addEventListener('click', () => {
     if (state.money <= 0.0) {
-      state.money += 5.00;
+      const amount = 5.00;
+      state.money += amount;
+      state.emails.push(createZenmoParentalEmail(amount));
       logMessage('Wired parental bailout capital. Bank balance credited with +$5.00.', 'system');
     }
     updateUI();
@@ -131,21 +135,11 @@ export function registerEventListeners(): void {
       state.applyCredits -= 100000;
       state.macrofirmApplied = true;
 
-      state.emails.push({
-        id: 'macrofirm-offer',
-        from: 'HR@Macrofirm.com',
-        subject: 'Job Offer — Specialist, Macrofirm',
-        bodyHtml: `<p>Dear Applicant,</p>
-<p>Thank you for your interest in the <b>Specialist</b> position at <b>Macrofirm</b>. After a thorough review of your application materials, we are pleased to extend a formal offer of employment.</p>
-<p>You will be assigned to <b>Desk 4B</b>, effective immediately upon acceptance. Compensation is structured at a rate of <b>$0.60&ndash;$1.20/hr</b>, commensurate with corporate grade level.</p>
-<p>Please review these terms and click below to confirm your acceptance.</p>`,
-        read: false,
-        actions: [{ id: 'accept-macrofirm-offer', label: 'Accept Offer', executed: false }],
-      });
+      state.emails.push(createMacrofirmOfferEmail());
 
       setJobCardFading(true);
       ui.jobCard.classList.add('fading-out');
-      logMessage('Macrofirm application submitted. Check your Email tab for an offer.', 'promo');
+      logMessage(`${MACROFIRM} application submitted. Check your Email tab for an offer.`, 'promo');
       updateUI();
 
       setTimeout(() => {

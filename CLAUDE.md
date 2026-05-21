@@ -58,6 +58,14 @@ The Internet Service provider selection UI (`#provider-container`) is **hardcode
 
 Internet fees are a **flat $0.01/s** always — provider multipliers and automation flat fees have been removed from `loop.ts`. Do NOT add provider-based or automation-based fee scaling. If re-enabling providers, this must be revisited.
 
+# Fictional business names
+
+All fictional brand/company names used in game copy, emails, log messages, and UI strings must be defined as named string constants in `src/constants.ts`. Never hardcode them as string literals in game logic, email factories, or `events.ts`.
+
+Current constants: `MACROFIRM`, `INDEBT`, `ZENMO`.
+
+When adding a new fictional brand, define its constant in `src/constants.ts` first, then reference it everywhere.
+
 # Design library
 
 Every new game component and every distinct UI state of an existing component must be represented in `design.html` (accessible at `?design`). This includes new card layouts, overlays, upgrade rows, and interactive states like disabled, active, or locked.
