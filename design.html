@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Component Library — Cubicle Chronicles</title>
+  <link rel="stylesheet" href="./css/styles.css">
   <style>
-    /* ── SHELL ── */
+    /* ── SHELL OVERRIDES (after game CSS import) ── */
+    :root { user-select: auto; -webkit-user-select: auto; }
+
     *, *::before, *::after { box-sizing: border-box; }
 
     body {
@@ -13,6 +16,7 @@
       padding: 0;
       font-family: 'Segoe UI', -apple-system, Arial, sans-serif;
       background: #f6f9fc;
+      max-width: none;
       color: #333;
       font-size: 14px;
       display: flex;
@@ -316,239 +320,15 @@
       padding-bottom: 6px;
     }
 
-    /* ── GAME COMPONENT STYLES (scoped to .gp) ── */
+    /* ── GAME COMPONENT STYLES ── */
+    /* Imported via css/styles.css above — no duplication here.
+       .gp re-establishes the game font context since body is overridden for the shell. */
 
     .gp {
       font-family: 'Times New Roman', Times, serif;
       font-size: 16px;
       color: #000;
       line-height: 1.5;
-    }
-
-    /* Job card */
-    .gp .job-card-demo,
-    .gp #job-card {
-      border: 2px solid #000;
-      padding: 14px;
-      background: #fff;
-      max-width: 420px;
-    }
-
-    .gp .job-card-status-badge {
-      display: inline-block;
-      background-color: #fff0f5;
-      border: 1px solid #990055;
-      color: #660033;
-      font-size: 11px;
-      font-weight: bold;
-      font-family: Arial, sans-serif;
-      padding: 1px 7px;
-      margin-bottom: 8px;
-      letter-spacing: 0.03em;
-    }
-
-    .gp .job-card-title {
-      margin: 0 0 6px 0;
-      font-size: 1.15em;
-      color: #0000cc;
-      text-decoration: underline;
-      font-weight: bold;
-    }
-
-    .gp .job-card-meta {
-      color: #444;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    .gp .job-card-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 12px;
-      align-items: center;
-    }
-
-    .gp .job-badge-pay {
-      display: inline-block;
-      background-color: #e6f4ea;
-      border: 1px solid #137333;
-      color: #137333;
-      font-size: 12px;
-      font-weight: bold;
-      font-family: Arial, sans-serif;
-      padding: 1px 7px;
-    }
-
-    .gp .job-badge-tag {
-      display: inline-block;
-      background-color: #f0f0f0;
-      border: 1px solid #aaaaaa;
-      color: #333333;
-      font-size: 12px;
-      font-family: Arial, sans-serif;
-      padding: 1px 7px;
-    }
-
-    .gp .job-card-footer {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    /* Buttons */
-    .gp button {
-      font-family: Arial, sans-serif;
-      font-size: 13px;
-      padding: 8px 12px;
-      cursor: pointer;
-      background: #efefef;
-      border: 1px solid #767676;
-      border-radius: 2px;
-      color: #000;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    .gp button:active { background: #e5e5e5; border-color: #444; }
-
-    .gp button:disabled {
-      background: #f8f8f8;
-      color: #888;
-      border-color: #d3d3d3;
-      cursor: not-allowed;
-    }
-
-    .gp .btn-inline {
-      padding: 1px 8px;
-      font-size: 14px;
-      line-height: 1.5;
-      vertical-align: baseline;
-    }
-
-    .gp .btn-action {
-      display: block;
-      width: 260px;
-      text-align: left;
-      padding: 12px 14px;
-      font-size: 15px;
-      border: 2px solid #767676;
-      border-radius: 0;
-      box-sizing: border-box;
-      margin: 0;
-    }
-
-    .gp .action-name {
-      display: block;
-      font-weight: bold;
-      font-family: Arial, sans-serif;
-    }
-
-    .gp .action-meta {
-      display: block;
-      font-size: 13px;
-      color: #333;
-      margin-top: 3px;
-    }
-
-    .gp .tab-btn {
-      font-family: Arial, sans-serif;
-      font-size: 11px;
-      font-weight: bold;
-      border: 1px solid #ccc;
-      border-radius: 0;
-      background: #f0f0f0;
-      color: #777;
-      cursor: pointer;
-      padding: 6px 18px;
-      margin: 0 2px 0 0;
-      min-height: 0;
-    }
-
-    .gp .tab-btn.tab-active {
-      background: #fff;
-      color: #000;
-      border-top: 3px solid #000;
-    }
-
-    /* Text utilities */
-    .gp .bad { color: #b30000; font-weight: bold; }
-    .gp .good { color: #008000; font-weight: bold; }
-    .gp .promo { color: #0000ff; font-weight: bold; }
-    .gp .system { color: #6600cc; }
-    .gp .italic { font-style: italic; color: #555; font-size: 0.9em; }
-    .gp .bold { font-weight: bold; }
-
-    /* Layout */
-    .gp .retro-box {
-      border: 1px solid #000;
-      padding: 12px;
-      background: #fff;
-      max-width: 380px;
-    }
-
-    .gp h2.section-title {
-      font-family: Arial, sans-serif;
-      font-size: 1.1em;
-      font-weight: bold;
-      border-bottom: 1px solid #000;
-      margin-top: 0;
-      margin-bottom: 10px;
-      padding-bottom: 2px;
-    }
-
-    .gp .stat-row {
-      margin-bottom: 12px;
-      font-size: 16px;
-    }
-
-    .gp .notepad {
-      border: 1px solid #c0b060;
-      border-left: 4px solid #cc6666;
-      background-color: #fefde8;
-      background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 31px, #a8c4d8 31px, #a8c4d8 32px);
-      font-size: 16px;
-      line-height: 32px;
-      padding: 0 14px;
-      overflow: hidden;
-      max-width: 340px;
-    }
-
-    .gp .notepad-section {
-      font-size: 10px;
-      font-family: Arial, sans-serif;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      height: 32px;
-      line-height: 32px;
-    }
-
-    .gp .notepad-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      height: 32px;
-      line-height: 32px;
-    }
-
-    .gp .btn-apply {
-      background: #2557a7;
-      color: #fff;
-      border-color: #1a4080;
-    }
-
-    .gp .btn-apply:hover { background: #1a4080; }
-
-    .gp .btn-apply:disabled,
-    .gp .btn-apply.btn-apply-disabled {
-      background: #2557a7;
-      color: #fff;
-      border-color: #1a4080;
-      opacity: 0.45;
     }
   </style>
 </head>
@@ -581,14 +361,14 @@
         <h1 class="story-title">Job Card</h1>
         <p class="story-desc">
           Shown in Phase 1 when <code>maxACReached &ge; 10,000</code>. Clicking
-          <em>Enter Macrofirm Office</em> costs 100,000 AC and transitions to Phase 2.
+          <em>Apply</em> costs 100,000 AC and transitions to Phase 2.
           Job search continues running in the background after transition.
         </p>
 
         <!-- Full-width preview -->
         <div class="preview-frame">
           <div class="gp">
-            <div class="job-card-demo">
+            <div id="job-card">
               <div class="job-card-status-badge" id="prev-status">Multiple openings</div>
               <h3 class="job-card-title" id="prev-title">Form Submitter</h3>
               <div class="job-card-meta">
@@ -721,7 +501,7 @@
               </div>
               <div class="comp-item">
                 <span class="comp-label">.btn-inline.btn-apply:disabled</span>
-                <button class="btn-inline btn-apply btn-apply-disabled" disabled>Apply</button>
+                <button class="btn-inline btn-apply" disabled>Apply</button>
               </div>
             </div>
           </div>

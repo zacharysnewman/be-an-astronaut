@@ -347,13 +347,15 @@ body.overlay-active {
     flex-wrap: wrap;
 }
 
-#btn-interview {
+#btn-interview,
+.btn-apply {
     background-color: #2557a7;
     color: #ffffff;
     border-color: #1a4080;
 }
 
-#btn-interview:disabled {
+#btn-interview:disabled,
+.btn-apply:disabled {
     background-color: #2557a7;
     color: #ffffff;
     border-color: #1a4080;
