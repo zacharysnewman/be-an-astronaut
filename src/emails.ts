@@ -16,14 +16,17 @@ export function createMacrofirmOfferEmail(): Email {
   };
 }
 
-export function createZenmoParentalEmail(amount: number): Email {
+export function createZenmoParentalEmail(amount: number, note?: string): Email {
+  const noteHtml = note
+    ? `<p><b>Note:</b> &ldquo;${note}&rdquo;</p>`
+    : '';
   return {
     id: `zenmo-parental-${Date.now()}`,
     from: `no-reply@${ZENMO}.com`,
     subject: `Mom sent you ${formatMoney(amount)}`,
     bodyHtml: `<p>Hi!</p>
 <p>Your mom sent you <b>${formatMoney(amount)}</b> via <b>${ZENMO}</b>.</p>
-<p>Funds have been deposited to your account.</p>
+${noteHtml}<p>Funds have been deposited to your account.</p>
 <p style="color:#888;font-size:0.85em;">— The ${ZENMO} Team</p>`,
     read: false,
     actions: [],
