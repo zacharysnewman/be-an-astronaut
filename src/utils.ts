@@ -1,5 +1,3 @@
-import type { LogType } from './types';
-import { ui } from './ui';
 
 function mulberry32(seed: number): () => number {
   let a = seed;
@@ -18,16 +16,6 @@ export function generateProviderPriceSets(count: number): Array<{ finite: number
     weeklink: parseFloat((0.5 + rng() * 3.0).toFixed(2)),
     bliply:   parseFloat((0.5 + rng() * 3.0).toFixed(2)),
   }));
-}
-
-export function logMessage(msg: string, type: LogType = ''): void {
-  let colorStyle = '';
-  if (type === 'bad')    colorStyle = 'color: #ff5555; font-weight: bold;';
-  if (type === 'good')   colorStyle = 'color: #55ff55; font-weight: bold;';
-  if (type === 'promo')  colorStyle = 'color: #55aaff; font-weight: bold;';
-  if (type === 'system') colorStyle = 'color: #d284fc;';
-
-  ui.log.innerHTML += `<div style="${colorStyle}">${msg}</div>`;
 }
 
 export function formatMoney(amount: number): string {

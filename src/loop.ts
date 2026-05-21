@@ -1,5 +1,5 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS, INDEBT } from './constants';
+import { EFFICIENCY_TIER_MULTS } from './constants';
 import { state } from './state';
 import { createIndebtPromoEmail } from './emails';
 import {
@@ -10,7 +10,6 @@ import {
   setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
 import { ui } from './ui';
-import { logMessage } from './utils';
 import { triggerCloudSave } from './storage';
 import { updateUI } from './render';
 import { switchTab } from './tabs';
@@ -20,12 +19,10 @@ export function transitionToPhase(target: Phase): void {
     state.phase = 2;
     state.approval = 50.0;
     ui.bankruptcyOverlay.classList.add('hidden');
-    logMessage('Macrofirm Interview successfully completed. Assigned Desk 4B. Get to work.', 'promo');
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     switchTab('macrofirm');
   } else {
     state.phase = 1;
-    logMessage('Corporate connection severed. Returned to Indebt Jobseeker directory.', 'system');
     switchTab('job-search');
   }
   updateUI();
@@ -56,7 +53,6 @@ function tickPhase1(dt: number): void {
   } else if (!state.indebtPromoSent && state.money < 1.0) {
     state.indebtPromoSent = true;
     state.emails.push(createIndebtPromoEmail());
-    logMessage(`New promotional offer from ${INDEBT}. Check your Email tab.`, 'promo');
   }
 }
 
@@ -70,7 +66,6 @@ function tickPhase2(dt: number): void {
     state.reports += possibleDrafts;
   } else if (state.paper <= 0 && state.typistLevel > 0) {
     if (warningThrottleTimer <= 0) {
-      logMessage('Operations Alert: Out of printing paper! Subcontracted typists idling.', 'bad');
       setWarningThrottleTimer(4.0);
     }
   }
