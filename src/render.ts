@@ -24,6 +24,9 @@ export function setJobCardFading(v: boolean): void { jobCardFading = v; }
 let openEmailId: string | null = null;
 export function setOpenEmailId(id: string | null): void { openEmailId = id; }
 
+// Tracks last email rendered in detail view to skip redundant innerHTML writes
+let lastDetailEmailId: string | null = null;
+
 function renderPhase1(): void {
   ui.income.innerText = '-$0.01/s';
   ui.income.classList.add('bad');
@@ -168,23 +171,23 @@ function renderEmail(): void {
     } else {
       ui.emailListView.classList.add('hidden');
       ui.emailDetailView.classList.remove('hidden');
-      ui.emailDetailFrom.textContent = `From: ${email.from}`;
-      ui.emailDetailSubject.textContent = email.subject;
-      ui.emailDetailBody.innerHTML = email.bodyHtml;
 
-      ui.emailDetailActions.innerHTML = '';
-      for (const action of email.actions) {
-        if (!action.executed) {
-          const btn = document.createElement('button');
-          btn.className = 'btn-inline btn-apply';
-          btn.dataset.actionId = action.id;
-          btn.textContent = action.label;
-          ui.emailDetailActions.appendChild(btn);
-        }
+      // Only write to the DOM when the email actually changes
+      if (lastDetailEmailId !== email.id) {
+        ui.emailDetailFrom.textContent = `From: ${email.from}`;
+        ui.emailDetailSubject.textContent = email.subject;
+        ui.emailDetailBody.innerHTML = email.bodyHtml;
+        lastDetailEmailId = email.id;
       }
+
+      // Show/hide the static Accept Offer button based on action state
+      const offerAction = email.actions.find(a => a.id === 'accept-macrofirm-offer');
+      ui.btnAcceptOffer.classList.toggle('hidden', !offerAction || offerAction.executed);
       return;
     }
   }
+
+  lastDetailEmailId = null;
 
   // List view
   ui.emailListView.classList.remove('hidden');
