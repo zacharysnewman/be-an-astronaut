@@ -9,6 +9,7 @@
     <meta name="theme-color" content="#000000">
     <meta name="format-detection" content="telephone=no">
     <title>The Cubicle Chronicles: Indebt Edition</title>
+    <script>if(new URLSearchParams(location.search).has('design'))location.replace('./design.html');</script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -186,12 +187,23 @@
                 </div>
             </div>
 
-            <!-- Rendered Vector "Job Found" Link Card -->
+            <!-- Job Card -->
             <div id="job-card" class="hidden">
-                <h3>*** CAREER OFFER FOUND ***</h3>
-                <p>Macrofirm Human Resources has verified your submitted applications and opened an office space slot.</p>
-                <button id="btn-interview" class="btn-inline">Enter Macrofirm Office</button>
-                <div class="italic">Requires: 100,000 AC</div>
+                <div class="job-card-status-badge">Multiple openings</div>
+                <h3 class="job-card-title">Form Submitter</h3>
+                <div class="job-card-meta">
+                    <div>Macrofirm</div>
+                    <div>Remote</div>
+                </div>
+                <div class="job-card-badges">
+                    <span class="job-badge-pay">&#10003; $0.60 &ndash; $1.20 an hour</span>
+                    <span class="job-badge-tag">Contract</span>
+                    <span class="job-badge-tag">Inflexible Schedule</span>
+                </div>
+                <div class="job-card-footer">
+                    <button id="btn-interview" class="btn-inline">Enter Macrofirm Office</button>
+                    <span class="italic">Requires: 100,000 AC</span>
+                </div>
             </div>
         </div>
 

@@ -52,7 +52,7 @@ function tickPhase1(dt: number): void {
 }
 
 function tickPhase2(dt: number): void {
-  state.money += (state.level * 0.01) * dt;
+  state.money += (state.level * 0.02) * dt;
 
   const typistDraftRate = state.typistLevel * 2.0;
   const possibleDrafts = Math.min(typistDraftRate * dt, state.paper);
@@ -91,8 +91,8 @@ export function mainLoop(timestamp: number): void {
   if (dt > 1.0) dt = 1.0;
   setLastTimestamp(timestamp);
 
-  if (state.phase === 1) tickPhase1(dt);
-  else if (state.phase === 2) tickPhase2(dt);
+  tickPhase1(dt);
+  if (state.phase >= 2) tickPhase2(dt);
 
   setPaperPriceTimer(paperPriceTimer + dt);
   if (paperPriceTimer >= 1.0) {
