@@ -21,9 +21,9 @@ body {
     color: #000000;
     max-width: 650px;
     margin: 0 auto;
-    padding: 0 14px 40px 14px;
-    padding-left: max(14px, env(safe-area-inset-left, 0px));
-    padding-right: max(14px, env(safe-area-inset-right, 0px));
+    padding: 0 7px 40px 7px;
+    padding-left: max(7px, env(safe-area-inset-left, 0px));
+    padding-right: max(7px, env(safe-area-inset-right, 0px));
     padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     font-size: 16px;
     line-height: 1.5;
@@ -73,12 +73,10 @@ body {
 .log-init { color: #aaaaaa; }
 .log-error { color: #ff5555; font-weight: bold; }
 
-/* Unrestricted Sticky Header Row */
+/* Account Balance Row (sticky within page chrome) */
 #header-row {
-    position: fixed;
+    position: sticky;
     top: calc(88px + env(safe-area-inset-top, 0px));
-    left: 0;
-    right: 0;
     height: 54px;
     background-color: #ffffff;
     z-index: 115;
@@ -86,12 +84,9 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 16px;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
-    max-width: 650px;
-    margin: 0 auto;
+    padding: 6px 0;
     overflow: hidden;
+    border-bottom: 1px solid #cccccc;
 }
 
 #header-balance {
@@ -109,8 +104,9 @@ body {
 }
 
 .content-container {
-    margin-top: calc(144px + env(safe-area-inset-top, 0px));
+    margin-top: calc(88px + env(safe-area-inset-top, 0px));
     background-color: #ffffff;
+    padding: 0 8px;
 }
 
 .clearfix {
