@@ -341,6 +341,7 @@
     </div>
     <div class="sb-category">Game Components</div>
     <button class="sb-link active" data-story="job-card">Job Card</button>
+    <button class="sb-link" data-story="email">Email</button>
     <button class="sb-link" data-story="buttons">Buttons</button>
     <button class="sb-link" data-story="badges">Badges &amp; Labels</button>
     <button class="sb-link" data-story="layout">Layout</button>
@@ -435,6 +436,77 @@
             </div>
             <div class="json-body">
               <pre id="json-output"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EMAIL ── -->
+      <div id="story-email" class="story">
+        <h1 class="story-title">Email</h1>
+        <p class="story-desc">
+          The Email tab is always visible. Unread count appears in the tab label.
+          Clicking a row opens the detail view; action buttons (e.g. Accept Offer) live inside the email body.
+        </p>
+
+        <div class="comp-section">Email List — with unread</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <h2 class="section-title" style="margin-top:0">Email</h2>
+            <div>
+              <div class="email-row email-row-unread">
+                <span class="email-from">HR@Macrofirm.com</span>
+                <span class="email-row-subject">Job Offer — Specialist, Macrofirm</span>
+              </div>
+              <div class="email-row">
+                <span class="email-from">notifications@indebt.com</span>
+                <span class="email-row-subject">Your weekly job digest is ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Email List — empty state</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <h2 class="section-title" style="margin-top:0">Email</h2>
+            <p class="italic">No messages.</p>
+          </div>
+        </div>
+
+        <div class="comp-section">Email Detail — with Accept Offer action</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <h2 class="section-title" style="margin-top:0">Email</h2>
+            <div class="stat-row">
+              <button class="btn-inline">&#8592; Back to Inbox</button>
+            </div>
+            <div class="email-meta-line">From: HR@Macrofirm.com</div>
+            <div class="email-meta-line email-subject-line">Job Offer — Specialist, Macrofirm</div>
+            <div class="email-body-area">
+              <p>Dear Applicant,</p>
+              <p>Thank you for your interest in the <b>Specialist</b> position at <b>Macrofirm</b>. After a thorough review of your application materials, we are pleased to extend a formal offer of employment.</p>
+              <p>You will be assigned to <b>Desk 4B</b>, effective immediately upon acceptance. Compensation is structured at a rate of <b>$0.60&ndash;$1.20/hr</b>, commensurate with corporate grade level.</p>
+              <p>Please review these terms and click below to confirm your acceptance.</p>
+            </div>
+            <div>
+              <button class="btn-inline btn-apply">Accept Offer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Email Detail — action executed (no action button)</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <h2 class="section-title" style="margin-top:0">Email</h2>
+            <div class="stat-row">
+              <button class="btn-inline">&#8592; Back to Inbox</button>
+            </div>
+            <div class="email-meta-line">From: HR@Macrofirm.com</div>
+            <div class="email-meta-line email-subject-line">Job Offer — Specialist, Macrofirm</div>
+            <div class="email-body-area">
+              <p>Dear Applicant,</p>
+              <p>We are pleased to extend a formal offer of employment. You will be assigned to <b>Desk 4B</b>, effective immediately upon acceptance.</p>
             </div>
           </div>
         </div>

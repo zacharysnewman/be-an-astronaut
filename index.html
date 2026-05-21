@@ -52,6 +52,8 @@
             <button id="btn-debug-inject-unread">+1,000 Applications</button>
             <button id="btn-debug-inject-creds">+500 Creds</button>
             <button id="btn-debug-inject-paper">+100 Paper Sheets</button>
+            <br><br>
+            <a href="?design">Open Component Library (?design)</a>
         </div>
 
         <!-- Visual Bankruptcy Shroud Overlay -->
@@ -207,6 +209,27 @@
             </div>
         </div>
 
+        <!-- Email Tab -->
+        <div id="email-container" class="hidden">
+            <!-- List view -->
+            <div id="email-list-view">
+                <h2 class="section-title">Email</h2>
+                <div id="email-list"></div>
+            </div>
+
+            <!-- Detail view -->
+            <div id="email-detail-view" class="hidden">
+                <h2 class="section-title">Email</h2>
+                <div class="stat-row">
+                    <button id="btn-email-back" class="btn-inline">&#8592; Back to Inbox</button>
+                </div>
+                <div id="email-detail-from" class="email-meta-line"></div>
+                <div id="email-detail-subject" class="email-meta-line email-subject-line"></div>
+                <div id="email-detail-body" class="email-body-area"></div>
+                <div id="email-detail-actions"></div>
+            </div>
+        </div>
+
         <!-- PHASE 2: Corporate Grind Desk (Macrofirm) -->
         <div id="phase2-container" class="hidden">
             <h2 class="section-title">Business: Macrofirm Headquarters</h2>
@@ -269,6 +292,7 @@
         <button class="tab-btn" id="tab-goals">Personal Goals</button>
         <button class="tab-btn tab-active" id="tab-job-search">Indebt.com</button>
         <button class="tab-btn hidden" id="tab-macrofirm">Macrofirm Job</button>
+        <button class="tab-btn" id="tab-email">Email</button>
     </nav>
 
     <script type="module" src="/src/main.ts"></script>

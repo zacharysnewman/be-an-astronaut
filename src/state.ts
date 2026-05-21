@@ -38,6 +38,8 @@ export const state: GameState = {
 
   currentPaperPrice: 0.30,
   lastComplimentTime: null,
+  emails: [],
+  macrofirmApplied: false,
 };
 
 export let lastTimestamp        = performance.now();

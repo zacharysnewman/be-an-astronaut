@@ -16,6 +16,14 @@ function shouldShowUpgrade(maxResource: number, cost: number, purchased: boolean
   return !purchased && maxResource >= cost * 0.25;
 }
 
+// Tracks whether the job card is mid-fade so render doesn't force-hide it
+let jobCardFading = false;
+export function setJobCardFading(v: boolean): void { jobCardFading = v; }
+
+// Which email is currently open in the detail view (null = list view)
+let openEmailId: string | null = null;
+export function setOpenEmailId(id: string | null): void { openEmailId = id; }
+
 function renderPhase1(): void {
   ui.income.innerText = '-$0.01/s';
   ui.income.classList.add('bad');
@@ -70,11 +78,14 @@ function renderPhase1(): void {
   // Service provider section is disabled
   ui.providerContainer.classList.add('hidden');
 
-  if (state.maxACReached >= 10000) {
-    ui.jobCard.classList.remove('hidden');
-    ui.btnInterview.disabled = state.applyCredits < 100000;
-  } else {
-    ui.jobCard.classList.add('hidden');
+  // Job card: only show when revealed and not yet applied; skip toggling hidden during fade
+  if (!jobCardFading) {
+    if (state.maxACReached >= 10000 && !state.macrofirmApplied) {
+      ui.jobCard.classList.remove('hidden');
+      ui.btnInterview.disabled = state.applyCredits < 100000;
+    } else {
+      ui.jobCard.classList.add('hidden');
+    }
   }
 
   ui.dbFiniteMult.innerText   = state.finiteMultiplier.toFixed(2);
@@ -144,6 +155,68 @@ function renderGoals(): void {
   ui.goalCheckJob.innerText = jobDone ? '☑' : '☐';
 }
 
+function renderEmail(): void {
+  const unreadCount = state.emails.filter(e => !e.read).length;
+  ui.tabEmail.textContent = unreadCount > 0 ? `Email (${unreadCount})` : 'Email';
+
+  if (ui.emailContainer.classList.contains('hidden')) return;
+
+  if (openEmailId) {
+    const email = state.emails.find(e => e.id === openEmailId);
+    if (!email) {
+      openEmailId = null;
+    } else {
+      ui.emailListView.classList.add('hidden');
+      ui.emailDetailView.classList.remove('hidden');
+      ui.emailDetailFrom.textContent = `From: ${email.from}`;
+      ui.emailDetailSubject.textContent = email.subject;
+      ui.emailDetailBody.innerHTML = email.bodyHtml;
+
+      ui.emailDetailActions.innerHTML = '';
+      for (const action of email.actions) {
+        if (!action.executed) {
+          const btn = document.createElement('button');
+          btn.className = 'btn-inline btn-apply';
+          btn.dataset.actionId = action.id;
+          btn.textContent = action.label;
+          ui.emailDetailActions.appendChild(btn);
+        }
+      }
+      return;
+    }
+  }
+
+  // List view
+  ui.emailListView.classList.remove('hidden');
+  ui.emailDetailView.classList.add('hidden');
+
+  ui.emailList.innerHTML = '';
+  if (state.emails.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'italic';
+    empty.textContent = 'No messages.';
+    ui.emailList.appendChild(empty);
+  } else {
+    for (const email of [...state.emails].reverse()) {
+      const row = document.createElement('div');
+      row.className = 'email-row' + (email.read ? '' : ' email-row-unread');
+      row.dataset.emailId = email.id;
+
+      const from = document.createElement('span');
+      from.className = 'email-from';
+      from.textContent = email.from;
+
+      const subject = document.createElement('span');
+      subject.className = 'email-row-subject';
+      subject.textContent = email.subject;
+
+      row.appendChild(from);
+      row.appendChild(subject);
+      ui.emailList.appendChild(row);
+    }
+  }
+}
+
 export function updateUI(): void {
   const isBankrupt = state.phase === 1 && state.money <= 0.0;
   ui.money.innerText = formatMoney(isBankrupt ? 0 : displayedMoney);
@@ -165,4 +238,5 @@ export function updateUI(): void {
   renderGoals();
   renderPhase1();
   if (state.phase >= 2) renderPhase2();
+  renderEmail();
 }

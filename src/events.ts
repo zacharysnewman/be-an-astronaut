@@ -3,7 +3,7 @@ import { ui } from './ui';
 import { logMessage, formatMoney, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
-import { updateUI } from './render';
+import { updateUI, setJobCardFading, setOpenEmailId } from './render';
 import { switchTab } from './tabs';
 import {
   BASE_SUBMITTER_COST,
@@ -127,9 +127,31 @@ export function registerEventListeners(): void {
   registerProviderTab(ui.btnBliply, 'bliply');
 
   ui.btnInterview.addEventListener('click', () => {
-    if (state.applyCredits >= 100000) {
+    if (state.applyCredits >= 100000 && !state.macrofirmApplied) {
       state.applyCredits -= 100000;
-      transitionToPhase(2);
+      state.macrofirmApplied = true;
+
+      state.emails.push({
+        id: 'macrofirm-offer',
+        from: 'HR@Macrofirm.com',
+        subject: 'Job Offer — Specialist, Macrofirm',
+        bodyHtml: `<p>Dear Applicant,</p>
+<p>Thank you for your interest in the <b>Specialist</b> position at <b>Macrofirm</b>. After a thorough review of your application materials, we are pleased to extend a formal offer of employment.</p>
+<p>You will be assigned to <b>Desk 4B</b>, effective immediately upon acceptance. Compensation is structured at a rate of <b>$0.60&ndash;$1.20/hr</b>, commensurate with corporate grade level.</p>
+<p>Please review these terms and click below to confirm your acceptance.</p>`,
+        read: false,
+        actions: [{ id: 'accept-macrofirm-offer', label: 'Accept Offer', executed: false }],
+      });
+
+      setJobCardFading(true);
+      ui.jobCard.classList.add('fading-out');
+      logMessage('Macrofirm application submitted. Check your Email tab for an offer.', 'promo');
+      updateUI();
+
+      setTimeout(() => {
+        setJobCardFading(false);
+        updateUI();
+      }, 1000);
     }
   });
 
@@ -220,6 +242,40 @@ export function registerEventListeners(): void {
   ui.tabJobSearch.addEventListener('click', () => switchTab('job-search'));
   ui.tabGoals.addEventListener('click', () => switchTab('goals'));
   ui.tabMacrofirm.addEventListener('click', () => switchTab('macrofirm'));
+  ui.tabEmail.addEventListener('click', () => switchTab('email'));
+
+  // Email: back button
+  ui.btnEmailBack.addEventListener('click', () => {
+    setOpenEmailId(null);
+    updateUI();
+  });
+
+  // Email: open email from list
+  ui.emailList.addEventListener('click', (e) => {
+    const row = (e.target as Element).closest('[data-email-id]') as HTMLElement | null;
+    if (row?.dataset.emailId) {
+      const email = state.emails.find(em => em.id === row.dataset.emailId);
+      if (email) email.read = true;
+      setOpenEmailId(row.dataset.emailId);
+      updateUI();
+    }
+  });
+
+  // Email: action buttons (e.g. Accept Offer)
+  ui.emailDetailActions.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest('[data-action-id]') as HTMLElement | null;
+    if (!btn?.dataset.actionId) return;
+
+    if (btn.dataset.actionId === 'accept-macrofirm-offer') {
+      const email = state.emails.find(em => em.id === 'macrofirm-offer');
+      if (email) {
+        const action = email.actions.find(a => a.id === 'accept-macrofirm-offer');
+        if (action) action.executed = true;
+      }
+      setOpenEmailId(null);
+      transitionToPhase(2);
+    }
+  });
 
   // Debug panel
   document.getElementById('debug-toggle')!.addEventListener('click', () => {
