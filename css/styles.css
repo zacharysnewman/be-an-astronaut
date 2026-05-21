@@ -17,13 +17,13 @@ html {
 
 body {
     font-family: 'Times New Roman', Times, serif;
-    background-color: #000000;
+    background-color: #4a4a4a;
     color: #000000;
     max-width: 650px;
     margin: 0 auto;
-    padding: 0 10px 40px 10px;
-    padding-left: max(10px, env(safe-area-inset-left, 0px));
-    padding-right: max(10px, env(safe-area-inset-right, 0px));
+    padding: 0 14px 40px 14px;
+    padding-left: max(14px, env(safe-area-inset-left, 0px));
+    padding-right: max(14px, env(safe-area-inset-right, 0px));
     padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     font-size: 16px;
     line-height: 1.5;
@@ -86,9 +86,9 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 15px;
-    padding-left: max(15px, env(safe-area-inset-left, 0px));
-    padding-right: max(15px, env(safe-area-inset-right, 0px));
+    padding: 6px 16px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
     max-width: 650px;
     margin: 0 auto;
     overflow: hidden;
@@ -687,7 +687,7 @@ button:disabled .action-meta {
     max-width: 650px;
     margin: 0 auto;
     pointer-events: none;
-    z-index: 107;
+    z-index: 117;
     border-left: 2px solid #dfdfdf;
     border-right: 2px solid #808080;
     border-bottom: 2px solid #808080;
