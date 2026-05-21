@@ -83,7 +83,7 @@ function renderPhase1(): void {
 }
 
 function renderPhase2(): void {
-  const salary = state.level * 0.01;
+  const salary = state.level * 0.02;
   const net = salary - 0.01;
   const netStr = net >= 0 ? `+${formatMoney(net)}/s` : `${formatMoney(net)}/s`;
   ui.income.innerText = netStr;

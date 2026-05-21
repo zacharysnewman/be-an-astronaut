@@ -52,7 +52,7 @@ function tickPhase1(dt: number): void {
 }
 
 function tickPhase2(dt: number): void {
-  state.money += (state.level * 0.01) * dt;
+  state.money += (state.level * 0.02) * dt;
 
   const typistDraftRate = state.typistLevel * 2.0;
   const possibleDrafts = Math.min(typistDraftRate * dt, state.paper);
