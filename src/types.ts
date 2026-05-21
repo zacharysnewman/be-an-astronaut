@@ -1,6 +1,5 @@
 export type Phase    = 1 | 2;
 export type Provider = 'finite' | 'weeklink' | 'bliply';
-export type LogType  = 'bad' | 'good' | 'promo' | 'system' | '';
 
 export interface EmailAction {
   id:       string;

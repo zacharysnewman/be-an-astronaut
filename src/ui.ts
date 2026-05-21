@@ -90,7 +90,6 @@ export const ui = {
   money: el('money-display'),
   income: el('income-display'),
   headerFees: el('header-fees'),
-  log: el('log'),
   debugPanel: el('debug-panel'),
   bankruptcyOverlay: el('bankruptcy-overlay'),
 

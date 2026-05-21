@@ -32,51 +32,10 @@ body {
     position: relative;
 }
 
-/* Console Style Header */
-#log-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: calc(62px + env(safe-area-inset-top, 0px));
-    padding-top: env(safe-area-inset-top, 0px);
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
-    z-index: 120;
-    border-bottom: 2px solid #333;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-#log {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-    padding: 8px 15px;
-    padding-left: max(15px, env(safe-area-inset-left, 0px));
-    padding-right: max(15px, env(safe-area-inset-right, 0px));
-    user-select: text;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    font-size: 12px;
-    line-height: 1.4;
-}
-
-#log::-webkit-scrollbar { width: 8px; }
-#log::-webkit-scrollbar-track { background: #000; }
-#log::-webkit-scrollbar-thumb { background: #333; }
-
-.log-init { color: #aaaaaa; }
-.log-error { color: #ff5555; font-weight: bold; }
-
 /* Account Balance Row (sticky within page chrome) */
 #header-row {
     position: sticky;
-    top: calc(88px + env(safe-area-inset-top, 0px));
+    top: calc(26px + env(safe-area-inset-top, 0px));
     height: 54px;
     background-color: #ffffff;
     z-index: 115;
@@ -104,7 +63,7 @@ body {
 }
 
 .content-container {
-    margin-top: calc(88px + env(safe-area-inset-top, 0px));
+    margin-top: calc(26px + env(safe-area-inset-top, 0px));
     background-color: #ffffff;
     padding: 8px;
 }
@@ -620,7 +579,7 @@ button:disabled .action-meta {
 /* Win95 App Window Chrome */
 #app-titlebar {
     position: fixed;
-    top: calc(62px + env(safe-area-inset-top, 0px));
+    top: env(safe-area-inset-top, 0px);
     left: 0;
     right: 0;
     max-width: 650px;
@@ -676,7 +635,7 @@ button:disabled .action-meta {
 
 #app-chrome {
     position: fixed;
-    top: calc(62px + env(safe-area-inset-top, 0px));
+    top: calc(26px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
     bottom: 0;
