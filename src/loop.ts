@@ -1,6 +1,7 @@
 import type { Phase } from './types';
-import { EFFICIENCY_TIER_MULTS } from './constants';
+import { EFFICIENCY_TIER_MULTS, INDEBT } from './constants';
 import { state } from './state';
+import { createIndebtPromoEmail } from './emails';
 import {
   lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
   moneyDisplayTimer,
@@ -48,6 +49,14 @@ function tickPhase1(dt: number): void {
       addTotalAppsSubmitted(actualSubmissions);
       state.hasSubmittedApp = true;
     }
+  }
+
+  if (state.availableJobs >= 1) {
+    state.indebtPromoSent = false;
+  } else if (!state.indebtPromoSent && state.money < 1.0) {
+    state.indebtPromoSent = true;
+    state.emails.push(createIndebtPromoEmail());
+    logMessage(`New promotional offer from ${INDEBT}. Check your Email tab.`, 'promo');
   }
 }
 

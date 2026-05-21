@@ -1,3 +1,14 @@
+# UI metaphor
+
+The game UI represents a **web browser**. Each bottom tab is a website the player is visiting:
+
+- **Mail.com** — the player's email inbox
+- **Indebt.com** — the job search portal
+- **Macrofirm.com** — the corporate intranet (unlocked in Phase 2)
+- **Notes.com** — the player's personal notes / goals
+
+Tab labels must follow this `.com` naming convention. New tabs should be named like websites.
+
 # Button sizing
 
 All inline content buttons (any button that appears inside a stat row, card, or overlay — i.e. not tab-bar buttons or provider-tab grid buttons) must carry `class="btn-inline"`. This matches the sizing of the Find and Submit buttons.
@@ -65,6 +76,12 @@ All fictional brand/company names used in game copy, emails, log messages, and U
 Current constants: `MACROFIRM`, `INDEBT`, `ZENMO`.
 
 When adding a new fictional brand, define its constant in `src/constants.ts` first, then reference it everywhere.
+
+# Debug tooling
+
+Every feature that has a time-gated, one-shot, or hard-to-reproduce UI state (loading screens, intro sequences, promo emails, phase transitions) must have a corresponding debug button in the `#debug-panel`. Debug buttons let you replay or force-enter those states from any game state without wiping progress.
+
+Name them clearly: "Replay Intro Screen", "Force Send Promo Email", etc. Add them under a labeled `<i>Section Name:</i>` group in the debug panel HTML, and wire the handlers at the bottom of `registerEventListeners()` in `events.ts`.
 
 # Design library
 

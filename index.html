@@ -53,6 +53,11 @@
             <button id="btn-debug-inject-creds">+500 Creds</button>
             <button id="btn-debug-inject-paper">+100 Paper Sheets</button>
             <br><br>
+            <br>
+            <i>Intro Screen:</i><br>
+            <button id="btn-debug-replay-splash">Replay Intro Screen</button>
+            <button id="btn-debug-skip-splash">Skip Intro Screen</button>
+            <br><br>
             <a href="?design">Open Component Library (?design)</a>
         </div>
 
@@ -76,9 +81,9 @@
             </div>
         </div>
 
-        <!-- Personal Goals Panel -->
+        <!-- Notes Panel -->
         <div id="goals-container" class="hidden">
-            <h2 class="section-title">Personal Goals</h2>
+            <h2 class="section-title">Notes.com</h2>
             <div class="notepad">
                 <div class="notepad-section">Long Term</div>
                 <div class="notepad-line">
@@ -213,13 +218,13 @@
         <div id="email-container" class="hidden">
             <!-- List view -->
             <div id="email-list-view">
-                <h2 class="section-title">Email</h2>
+                <h2 class="section-title">Mail.com</h2>
                 <div id="email-list"></div>
             </div>
 
             <!-- Detail view -->
             <div id="email-detail-view" class="hidden">
-                <h2 class="section-title">Email</h2>
+                <h2 class="section-title">Mail.com</h2>
                 <div class="stat-row">
                     <button id="btn-email-back" class="btn-inline">&#8592; Back to Inbox</button>
                 </div>
@@ -228,6 +233,7 @@
                 <div id="email-detail-body" class="email-body-area"></div>
                 <div id="email-detail-actions">
                     <button id="btn-accept-offer" class="btn-inline btn-apply hidden">Accept Offer</button>
+                    <button id="btn-indebt-promo" class="btn-inline btn-apply hidden">Free Job Search!</button>
                 </div>
             </div>
         </div>
@@ -291,11 +297,31 @@
 
     <!-- Bottom Tab Bar -->
     <nav id="tab-bar">
-        <button class="tab-btn" id="tab-goals">Personal Goals</button>
+        <button class="tab-btn" id="tab-email">Mail.com</button>
         <button class="tab-btn tab-active" id="tab-job-search">Indebt.com</button>
-        <button class="tab-btn hidden" id="tab-macrofirm">Macrofirm Job</button>
-        <button class="tab-btn" id="tab-email">Email</button>
+        <button class="tab-btn hidden" id="tab-macrofirm">Macrofirm.com</button>
+        <button class="tab-btn" id="tab-goals">Notes.com</button>
     </nav>
+
+    <!-- Internet Excursion Loading Screen -->
+    <div id="loading-overlay">
+        <div class="splash-inner">
+            <div class="splash-titlebar">
+                <span class="splash-titlebar-icon">&#9632;</span>
+                Internet Excursion 2.0
+            </div>
+            <div class="splash-body">
+                <div class="splash-logo">e</div>
+                <div class="splash-brand">Internet Excursion</div>
+                <div class="splash-tagline">Version 2.0 &mdash; Browse the Web Today!</div>
+                <div class="splash-progress-track">
+                    <div class="splash-progress-fill"></div>
+                </div>
+                <div class="splash-status">Connecting to network...</div>
+            </div>
+            <div class="splash-statusbar">Loading...</div>
+        </div>
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
 </body>

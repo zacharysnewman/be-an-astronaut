@@ -2,6 +2,7 @@ import { loadCloudState } from './storage';
 import { transitionToPhase, mainLoop } from './loop';
 import { registerEventListeners } from './events';
 import { state } from './state';
+import { showSplash } from './splash';
 
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('touchmove', (e: TouchEvent) => {
@@ -14,4 +15,5 @@ window.addEventListener('load', () => {
   loadCloudState();
   transitionToPhase(state.phase);
   requestAnimationFrame(mainLoop);
+  showSplash();
 });

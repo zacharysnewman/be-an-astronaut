@@ -16,6 +16,7 @@ export const ui = {
   emailDetailActions: el('email-detail-actions'),
   btnEmailBack: el<HTMLButtonElement>('btn-email-back'),
   btnAcceptOffer: el<HTMLButtonElement>('btn-accept-offer'),
+  btnIndebtPromo: el<HTMLButtonElement>('btn-indebt-promo'),
 
   tabJobSearch: el<HTMLButtonElement>('tab-job-search'),
   tabGoals: el<HTMLButtonElement>('tab-goals'),

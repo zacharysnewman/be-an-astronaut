@@ -1,5 +1,5 @@
 import type { Email } from './types';
-import { MACROFIRM, ZENMO } from './constants';
+import { MACROFIRM, INDEBT, ZENMO } from './constants';
 import { formatMoney } from './utils';
 
 export function createMacrofirmOfferEmail(): Email {
@@ -13,6 +13,20 @@ export function createMacrofirmOfferEmail(): Email {
 <p>Please review these terms and click below to confirm your acceptance.</p>`,
     read: false,
     actions: [{ id: 'accept-macrofirm-offer', label: 'Accept Offer', executed: false }],
+  };
+}
+
+export function createIndebtPromoEmail(): Email {
+  return {
+    id: `indebt-promo-${Date.now()}`,
+    from: `promotions@${INDEBT}`,
+    subject: `[PROMO] Complimentary Job Search — on us!`,
+    bodyHtml: `<p>Hi there,</p>
+<p>We noticed your job listing pool is running a little dry. Don't get discouraged — every great career has its rough patches!</p>
+<p>As a valued ${INDEBT} member, we're treating you to a <b>complimentary job search</b>, on the house. Click the button below to refresh your listings at no charge.</p>
+<p style="color:#888;font-size:0.85em;">— The ${INDEBT} Team</p>`,
+    read: false,
+    actions: [{ id: 'indebt-free-search', label: 'Free Job Search!', executed: false }],
   };
 }
 

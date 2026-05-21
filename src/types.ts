@@ -48,4 +48,5 @@ export interface GameState {
   lastComplimentTime:   number | null;
   emails:               Email[];
   macrofirmApplied:     boolean;
+  indebtPromoSent:      boolean;
 }

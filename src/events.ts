@@ -1,8 +1,9 @@
-import { state, addTotalAppsSubmitted } from './state';
+import { state, addTotalAppsSubmitted, setDisplayedMoney } from './state';
 import { ui } from './ui';
 import { logMessage, formatMoney, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
+import { showSplash, skipSplash } from './splash';
 import { updateUI, setJobCardFading, setOpenEmailId } from './render';
 import { switchTab } from './tabs';
 import {
@@ -14,6 +15,7 @@ import {
   JOB_SEARCH_TIER_COSTS,
   SAVE_STORAGE_KEY,
   MACROFIRM,
+  INDEBT,
 } from './constants';
 import { createMacrofirmOfferEmail, createZenmoParentalEmail } from './emails';
 
@@ -22,6 +24,7 @@ export function registerEventListeners(): void {
     if (state.money <= 0.0) {
       const amount = 5.00;
       state.money += amount;
+      setDisplayedMoney(state.money);
       state.emails.push(createZenmoParentalEmail(amount, "Love you honey, when you get hungry there's some leftover meatloaf upstairs."));
       logMessage('Wired parental bailout capital. Bank balance credited with +$5.00.', 'system');
     }
@@ -31,6 +34,7 @@ export function registerEventListeners(): void {
   ui.btnFind.addEventListener('click', () => {
     if (state.money >= 1.00) {
       state.money -= 1.00;
+      setDisplayedMoney(state.money);
       const mult = Math.pow(10, state.jobSearchTier);
       state.availableJobs = (Math.floor(Math.random() * 101) + 100) * mult;
     }
@@ -152,6 +156,7 @@ export function registerEventListeners(): void {
   ui.btnPaper.addEventListener('click', () => {
     if (state.money >= state.currentPaperPrice) {
       state.money -= state.currentPaperPrice;
+      setDisplayedMoney(state.money);
       state.paper += 10.0;
       logMessage(`Acquired printing ream sheets at market rate of ${formatMoney(state.currentPaperPrice)}.`, 'good');
     }
@@ -266,6 +271,23 @@ export function registerEventListeners(): void {
     transitionToPhase(2);
   });
 
+  // Email: Indebt.com promo free job search (static element, direct listener)
+  ui.btnIndebtPromo.addEventListener('click', () => {
+    const promoEmail = state.emails.find(em =>
+      em.actions.some(a => a.id === 'indebt-free-search' && !a.executed)
+    );
+    if (promoEmail) {
+      const action = promoEmail.actions.find(a => a.id === 'indebt-free-search');
+      if (action) action.executed = true;
+    }
+    const mult = Math.pow(10, state.jobSearchTier);
+    state.availableJobs = (Math.floor(Math.random() * 101) + 100) * mult;
+    logMessage(`${INDEBT} complimentary search activated. Job listings refreshed.`, 'promo');
+    setOpenEmailId(null);
+    switchTab('job-search');
+    updateUI();
+  });
+
   // Debug panel
   document.getElementById('debug-toggle')!.addEventListener('click', () => {
     ui.debugPanel.classList.toggle('hidden');
@@ -325,5 +347,13 @@ export function registerEventListeners(): void {
     state.paper += 100;
     logMessage('[DEBUG] Injected resources +100 to system.', 'system');
     updateUI();
+  });
+
+  document.getElementById('btn-debug-replay-splash')!.addEventListener('click', () => {
+    showSplash();
+  });
+
+  document.getElementById('btn-debug-skip-splash')!.addEventListener('click', () => {
+    skipSplash();
   });
 }
