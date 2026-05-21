@@ -648,7 +648,34 @@ button:disabled .action-meta {
     border-bottom: 2px solid #808080;
 }
 
-/* Internet Excursion Loading Screen */
+/* Reusable Win95 window component */
+.win-window {
+    border-top: 2px solid #dfdfdf;
+    border-left: 2px solid #dfdfdf;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    background: #ffffff;
+}
+
+.win-window-titlebar {
+    background: linear-gradient(to right, #000080 60%, #1a5fb4);
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.03em;
+}
+
+.win-window-icon {
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+/* Internet Expedition Loading Screen */
 #loading-overlay {
     position: fixed;
     inset: 0;
@@ -661,26 +688,12 @@ button:disabled .action-meta {
 
 .splash-inner {
     width: min(320px, 90vw);
-    border: 2px solid #000000;
-    box-shadow: 4px 4px 0 #000000;
-    background: #ffffff;
 }
 
 .splash-titlebar {
-    background: #000080;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 3px 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    letter-spacing: 0.03em;
 }
 
 .splash-titlebar-icon {
-    font-size: 10px;
 }
 
 .splash-body {
