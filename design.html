@@ -341,6 +341,7 @@
     </div>
     <div class="sb-category">Game Components</div>
     <button class="sb-link active" data-story="job-card">Job Card</button>
+    <button class="sb-link" data-story="splash">Splash Screen</button>
     <button class="sb-link" data-story="email">Email</button>
     <button class="sb-link" data-story="buttons">Buttons</button>
     <button class="sb-link" data-story="badges">Badges &amp; Labels</button>
@@ -436,6 +437,56 @@
             </div>
             <div class="json-body">
               <pre id="json-output"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SPLASH SCREEN ── -->
+      <div id="story-splash" class="story">
+        <h1 class="story-title">Splash Screen</h1>
+        <p class="story-desc">The "Internet Excursion" loading screen shown on every game start and resume. A Win95-style dialog with an animated progress bar. Progress animation lasts ~2.5s; overlay fades out after ~2.8s. Debug buttons in the debug panel can replay or instantly skip it.</p>
+
+        <div class="comp-section">Loading state (progress in-progress)</div>
+        <div class="preview-frame">
+          <div class="gp" style="background:#c0c0c0;padding:32px;display:flex;align-items:center;justify-content:center">
+            <div class="splash-inner">
+              <div class="splash-titlebar">
+                <span class="splash-titlebar-icon">&#9632;</span>
+                Internet Excursion 2.0
+              </div>
+              <div class="splash-body">
+                <div class="splash-logo">e</div>
+                <div class="splash-brand">Internet Excursion</div>
+                <div class="splash-tagline">Version 2.0 &mdash; Browse the Web Today!</div>
+                <div class="splash-progress-track">
+                  <div class="splash-progress-fill" style="width:60%"></div>
+                </div>
+                <div class="splash-status">Loading Indebt.com portal...</div>
+              </div>
+              <div class="splash-statusbar">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Complete state (100% / Done)</div>
+        <div class="preview-frame">
+          <div class="gp" style="background:#c0c0c0;padding:32px;display:flex;align-items:center;justify-content:center">
+            <div class="splash-inner">
+              <div class="splash-titlebar">
+                <span class="splash-titlebar-icon">&#9632;</span>
+                Internet Excursion 2.0
+              </div>
+              <div class="splash-body">
+                <div class="splash-logo">e</div>
+                <div class="splash-brand">Internet Excursion</div>
+                <div class="splash-tagline">Version 2.0 &mdash; Browse the Web Today!</div>
+                <div class="splash-progress-track">
+                  <div class="splash-progress-fill" style="width:100%"></div>
+                </div>
+                <div class="splash-status">Done.</div>
+              </div>
+              <div class="splash-statusbar">Done.</div>
             </div>
           </div>
         </div>

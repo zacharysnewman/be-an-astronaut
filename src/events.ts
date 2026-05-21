@@ -3,6 +3,7 @@ import { ui } from './ui';
 import { logMessage, formatMoney, getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
+import { showSplash, skipSplash } from './splash';
 import { updateUI, setJobCardFading, setOpenEmailId } from './render';
 import { switchTab } from './tabs';
 import {
@@ -346,5 +347,13 @@ export function registerEventListeners(): void {
     state.paper += 100;
     logMessage('[DEBUG] Injected resources +100 to system.', 'system');
     updateUI();
+  });
+
+  document.getElementById('btn-debug-replay-splash')!.addEventListener('click', () => {
+    showSplash();
+  });
+
+  document.getElementById('btn-debug-skip-splash')!.addEventListener('click', () => {
+    skipSplash();
   });
 }

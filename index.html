@@ -53,6 +53,11 @@
             <button id="btn-debug-inject-creds">+500 Creds</button>
             <button id="btn-debug-inject-paper">+100 Paper Sheets</button>
             <br><br>
+            <br>
+            <i>Intro Screen:</i><br>
+            <button id="btn-debug-replay-splash">Replay Intro Screen</button>
+            <button id="btn-debug-skip-splash">Skip Intro Screen</button>
+            <br><br>
             <a href="?design">Open Component Library (?design)</a>
         </div>
 
@@ -297,6 +302,26 @@
         <button class="tab-btn hidden" id="tab-macrofirm">Macrofirm.com</button>
         <button class="tab-btn" id="tab-goals">Notes.com</button>
     </nav>
+
+    <!-- Internet Excursion Loading Screen -->
+    <div id="loading-overlay">
+        <div class="splash-inner">
+            <div class="splash-titlebar">
+                <span class="splash-titlebar-icon">&#9632;</span>
+                Internet Excursion 2.0
+            </div>
+            <div class="splash-body">
+                <div class="splash-logo">e</div>
+                <div class="splash-brand">Internet Excursion</div>
+                <div class="splash-tagline">Version 2.0 &mdash; Browse the Web Today!</div>
+                <div class="splash-progress-track">
+                    <div class="splash-progress-fill"></div>
+                </div>
+                <div class="splash-status">Connecting to network...</div>
+            </div>
+            <div class="splash-statusbar">Loading...</div>
+        </div>
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
 </body>

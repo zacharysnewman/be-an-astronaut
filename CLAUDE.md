@@ -77,6 +77,12 @@ Current constants: `MACROFIRM`, `INDEBT`, `ZENMO`.
 
 When adding a new fictional brand, define its constant in `src/constants.ts` first, then reference it everywhere.
 
+# Debug tooling
+
+Every feature that has a time-gated, one-shot, or hard-to-reproduce UI state (loading screens, intro sequences, promo emails, phase transitions) must have a corresponding debug button in the `#debug-panel`. Debug buttons let you replay or force-enter those states from any game state without wiping progress.
+
+Name them clearly: "Replay Intro Screen", "Force Send Promo Email", etc. Add them under a labeled `<i>Section Name:</i>` group in the debug panel HTML, and wire the handlers at the bottom of `registerEventListeners()` in `events.ts`.
+
 # Design library
 
 Every new game component and every distinct UI state of an existing component must be represented in `design.html` (accessible at `?design`). This includes new card layouts, overlays, upgrade rows, and interactive states like disabled, active, or locked.
