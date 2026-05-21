@@ -57,3 +57,11 @@ Also note: the deployed base path is `/be-an-astronaut/`. Internal links between
 The Internet Service provider selection UI (`#provider-container`) is **hardcoded disabled** — always hidden. Do NOT add logic to show it. The underlying provider state variables remain in `state.ts` for future use, but `render.ts` always keeps `ui.providerContainer` hidden. We'll decide when to re-enable it later.
 
 Internet fees are a **flat $0.01/s** always — provider multipliers and automation flat fees have been removed from `loop.ts`. Do NOT add provider-based or automation-based fee scaling. If re-enabling providers, this must be revisited.
+
+# Design library
+
+Every new game component and every distinct UI state of an existing component must be represented in `design.html` (accessible at `?design`). This includes new card layouts, overlays, upgrade rows, and interactive states like disabled, active, or locked.
+
+Add a story or variant to the relevant section in `design.html`. The disabled state of a button is as important to document as the enabled state.
+
+**No CSS duplication.** `design.html` imports `css/styles.css` directly — do NOT copy game styles into `design.html`. All component styles belong in `css/styles.css` only. The `.gp` wrapper in `design.html` exists solely to restore `font-family: 'Times New Roman'` (overridden at the shell level); it is not a styling namespace.
