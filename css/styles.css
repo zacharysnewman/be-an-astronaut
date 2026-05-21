@@ -106,7 +106,7 @@ body {
 .content-container {
     margin-top: calc(88px + env(safe-area-inset-top, 0px));
     background-color: #ffffff;
-    padding: 0 8px;
+    padding: 8px;
 }
 
 .clearfix {
