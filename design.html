@@ -542,6 +542,14 @@
     }
 
     .gp .btn-apply:hover { background: #1a4080; }
+
+    .gp .btn-apply:disabled,
+    .gp .btn-apply.btn-apply-disabled {
+      background: #2557a7;
+      color: #fff;
+      border-color: #1a4080;
+      opacity: 0.45;
+    }
   </style>
 </head>
 <body>
@@ -698,6 +706,22 @@
                   <span class="action-name">Plug in Ethernet Cable</span>
                   <span class="action-meta">Auto-Submitter &times;10 output &mdash; Cost: <b>1,500 AC</b></span>
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-section">Apply Button</div>
+        <div class="preview-frame">
+          <div class="gp">
+            <div class="comp-grid">
+              <div class="comp-item">
+                <span class="comp-label">.btn-inline.btn-apply</span>
+                <button class="btn-inline btn-apply">Apply</button>
+              </div>
+              <div class="comp-item">
+                <span class="comp-label">.btn-inline.btn-apply:disabled</span>
+                <button class="btn-inline btn-apply btn-apply-disabled" disabled>Apply</button>
               </div>
             </div>
           </div>
