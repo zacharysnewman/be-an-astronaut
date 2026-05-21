@@ -2,6 +2,21 @@ export type Phase    = 1 | 2;
 export type Provider = 'finite' | 'weeklink' | 'bliply';
 export type LogType  = 'bad' | 'good' | 'promo' | 'system' | '';
 
+export interface EmailAction {
+  id:       string;
+  label:    string;
+  executed: boolean;
+}
+
+export interface Email {
+  id:       string;
+  from:     string;
+  subject:  string;
+  bodyHtml: string;
+  read:     boolean;
+  actions:  EmailAction[];
+}
+
 export interface GameState {
   phase:                Phase;
   money:                number;
@@ -31,4 +46,6 @@ export interface GameState {
   procurementUnlocked:  boolean;
   currentPaperPrice:    number;
   lastComplimentTime:   number | null;
+  emails:               Email[];
+  macrofirmApplied:     boolean;
 }

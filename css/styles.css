@@ -275,6 +275,16 @@ body.overlay-active {
 }
 
 /* Job Card */
+@keyframes job-card-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+#job-card.fading-out {
+    animation: job-card-fade-out 1s forwards;
+    pointer-events: none;
+}
+
 #job-card {
     border: 2px solid #000000;
     padding: 14px;
@@ -542,4 +552,70 @@ button:disabled .action-meta {
 .notepad-line.goal-done span:not(.goal-check) {
     text-decoration: line-through;
     color: #aaaaaa;
+}
+
+/* Email */
+#email-list-view > h2.section-title:first-child,
+#email-detail-view > h2.section-title:first-child {
+    margin-top: 8px;
+}
+
+.email-row {
+    border-bottom: 1px solid #dddddd;
+    padding: 8px 4px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+
+.email-row:hover {
+    background-color: #f5f5f5;
+}
+
+.email-from {
+    display: block;
+    font-size: 13px;
+    color: #000000;
+}
+
+.email-row-subject {
+    display: block;
+    font-size: 13px;
+    color: #555555;
+}
+
+.email-row-unread .email-from {
+    font-weight: bold;
+}
+
+.email-row-unread .email-row-subject {
+    color: #000000;
+}
+
+.email-meta-line {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #555555;
+    margin-bottom: 4px;
+}
+
+.email-subject-line {
+    font-weight: bold;
+    color: #000000;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+
+.email-body-area {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.email-body-area p {
+    margin: 0 0 12px 0;
+}
+
+#email-detail-actions {
+    margin-top: 8px;
 }
