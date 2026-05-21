@@ -180,14 +180,19 @@ function renderEmail(): void {
         lastDetailEmailId = email.id;
       }
 
-      // Show/hide the static Accept Offer button based on action state
+      // Show/hide static action buttons based on current email's actions
       const offerAction = email.actions.find(a => a.id === 'accept-macrofirm-offer');
       ui.btnAcceptOffer.classList.toggle('hidden', !offerAction || offerAction.executed);
+
+      const promoAction = email.actions.find(a => a.id === 'indebt-free-search');
+      ui.btnIndebtPromo.classList.toggle('hidden', !promoAction || promoAction.executed);
       return;
     }
   }
 
   lastDetailEmailId = null;
+  ui.btnAcceptOffer.classList.add('hidden');
+  ui.btnIndebtPromo.classList.add('hidden');
 
   // List view
   ui.emailListView.classList.remove('hidden');

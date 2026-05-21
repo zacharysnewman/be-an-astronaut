@@ -1,4 +1,4 @@
-export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v13';
+export const SAVE_STORAGE_KEY = 'cubicle_chronicles_save_v14';
 
 export const MACROFIRM = 'Macrofirm';
 export const INDEBT    = 'Indebt.com';

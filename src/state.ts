@@ -40,6 +40,7 @@ export const state: GameState = {
   lastComplimentTime: null,
   emails: [],
   macrofirmApplied: false,
+  indebtPromoSent: false,
 };
 
 export let lastTimestamp        = performance.now();
