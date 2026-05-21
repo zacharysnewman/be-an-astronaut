@@ -22,7 +22,7 @@ export function registerEventListeners(): void {
     if (state.money <= 0.0) {
       const amount = 5.00;
       state.money += amount;
-      state.emails.push(createZenmoParentalEmail(amount));
+      state.emails.push(createZenmoParentalEmail(amount, "Love you honey, when you get hungry there's some leftover meatloaf upstairs."));
       logMessage('Wired parental bailout capital. Bank balance credited with +$5.00.', 'system');
     }
     updateUI();
