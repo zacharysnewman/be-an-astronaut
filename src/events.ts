@@ -1,6 +1,5 @@
 import { state, addTotalAppsSubmitted, setDisplayedMoney } from './state';
 import { ui } from './ui';
-import { getGeometricCost } from './utils';
 import { triggerCloudSave } from './storage';
 import { transitionToPhase } from './loop';
 import { showSplash, skipSplash } from './splash';
@@ -8,14 +7,12 @@ import { updateUI, setJobCardFading, setOpenEmailId } from './render';
 import { switchTab } from './tabs';
 import {
   BASE_SUBMITTER_COST,
-  BASE_TYPIST_COST,
-  BASE_COURIER_COST,
-  PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
   SAVE_STORAGE_KEY,
 } from './constants';
 import { createMacrofirmOfferEmail, createZenmoParentalEmail } from './emails';
+import { generateMathQuestion, getCurrentQuestion } from './math';
 
 export function registerEventListeners(): void {
   ui.btnBeg.addEventListener('click', () => {
@@ -141,28 +138,38 @@ export function registerEventListeners(): void {
     }
   });
 
-  ui.btnPaper.addEventListener('click', () => {
-    if (state.money >= state.currentPaperPrice) {
-      state.money -= state.currentPaperPrice;
-      setDisplayedMoney(state.money);
-      state.paper += 10.0;
-    }
-    updateUI();
-  });
+  // Math keypad — answer 0-9
+  let mathFeedbackTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  ui.btnWrite.addEventListener('click', () => {
-    if (state.paper >= 1.0) {
-      state.paper -= 1.0;
-      state.reports += 1.0;
+  function showMathFeedback(correct: boolean): void {
+    if (mathFeedbackTimeout) clearTimeout(mathFeedbackTimeout);
+    ui.mathFeedback.classList.remove('hidden', 'math-correct', 'math-wrong');
+    if (correct) {
+      ui.mathFeedback.classList.add('math-correct');
+      ui.mathFeedback.innerText = 'Correct! +10';
+    } else {
+      ui.mathFeedback.classList.add('math-wrong');
+      ui.mathFeedback.innerText = 'Wrong! -1';
     }
-    updateUI();
-  });
+    mathFeedbackTimeout = setTimeout(() => {
+      ui.mathFeedback.classList.add('hidden');
+    }, 900);
+  }
 
-  ui.btnSubmit.addEventListener('click', () => {
-    if (state.reports >= 1.0) {
-      state.reports -= 1.0;
-      state.credibility += 5.0;
+  document.getElementById('math-keypad')!.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest('[data-digit]') as HTMLElement | null;
+    if (!btn) return;
+    const digit = parseInt(btn.dataset.digit!, 10);
+    const current = getCurrentQuestion();
+    if (!current) return;
+    const correct = digit === current.answer;
+    if (correct) {
+      state.customerPoints += 10;
+    } else {
+      state.customerPoints = Math.max(0, state.customerPoints - 1);
     }
+    showMathFeedback(correct);
+    generateMathQuestion();
     updateUI();
   });
 
@@ -186,32 +193,6 @@ export function registerEventListeners(): void {
     if (state.approval >= 80.0) {
       state.level += 1;
       state.approval = 30.0;
-    }
-    updateUI();
-  });
-
-  ui.btnUpgradeTypist.addEventListener('click', () => {
-    const cost = getGeometricCost(BASE_TYPIST_COST, 1.5, state.typistLevel);
-    if (state.credibility >= cost) {
-      state.credibility -= cost;
-      state.typistLevel += 1;
-    }
-    updateUI();
-  });
-
-  ui.btnUpgradeCourier.addEventListener('click', () => {
-    const cost = getGeometricCost(BASE_COURIER_COST, 1.5, state.courierLevel);
-    if (state.credibility >= cost) {
-      state.credibility -= cost;
-      state.courierLevel += 1;
-    }
-    updateUI();
-  });
-
-  ui.btnUpgradeProcurement.addEventListener('click', () => {
-    if (state.credibility >= PROCURE_FIXED_COST && !state.procurementUnlocked) {
-      state.credibility -= PROCURE_FIXED_COST;
-      state.procurementUnlocked = true;
     }
     updateUI();
   });
@@ -311,13 +292,8 @@ export function registerEventListeners(): void {
     updateUI();
   });
 
-  document.getElementById('btn-debug-inject-creds')!.addEventListener('click', () => {
-    state.credibility += 500;
-    updateUI();
-  });
-
-  document.getElementById('btn-debug-inject-paper')!.addEventListener('click', () => {
-    state.paper += 100;
+  document.getElementById('btn-debug-inject-customer-points')!.addEventListener('click', () => {
+    state.customerPoints += 500;
     updateUI();
   });
 

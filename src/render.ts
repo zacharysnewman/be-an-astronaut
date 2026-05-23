@@ -1,14 +1,12 @@
 import { state, displayedMoney, totalAppsSubmitted } from './state';
 import { ui } from './ui';
-import { formatMoney, getGeometricCost } from './utils';
+import { formatMoney } from './utils';
 import {
   BASE_SUBMITTER_COST,
-  BASE_TYPIST_COST,
-  BASE_COURIER_COST,
-  PROCURE_FIXED_COST,
   EFFICIENCY_TIER_COSTS,
   JOB_SEARCH_TIER_COSTS,
 } from './constants';
+import { getCurrentQuestion } from './math';
 
 const formatComma = (val: number) => Math.floor(val).toLocaleString('en-US');
 
@@ -104,24 +102,11 @@ function renderPhase2(): void {
   ui.headerFees.innerText = netStr;
   ui.headerFees.className = net >= 0 ? 'good' : 'bad';
 
-  ui.level.innerText   = String(state.level);
-  ui.appr.innerText    = state.approval.toFixed(0);
-  ui.paper.innerText   = state.paper.toFixed(1);
-  ui.reports.innerText = String(Math.floor(state.reports));
-  ui.perf.innerText    = state.credibility.toFixed(0);
-
-  ui.paperCostDisplay.innerText = formatMoney(state.currentPaperPrice);
-  ui.btnPaper.disabled  = state.money < state.currentPaperPrice;
-  ui.btnWrite.disabled  = state.paper < 1;
-  ui.btnSubmit.disabled = state.reports < 1;
+  ui.level.innerText         = String(state.level);
+  ui.appr.innerText          = state.approval.toFixed(0);
+  ui.customerPoints.innerText = Math.floor(state.customerPoints).toLocaleString('en-US');
 
   ui.btnLunch.classList.toggle('hidden', state.approval < 80);
-
-  if (state.typistLevel > 0 || state.courierLevel > 0) {
-    ui.reportRate.innerText = `+${state.typistLevel * 2}/s | -${state.courierLevel * 2}/s`;
-  } else {
-    ui.reportRate.innerText = '';
-  }
 
   if (state.lastComplimentTime) {
     const passed = ((Date.now() - state.lastComplimentTime) / 1000).toFixed(1);
@@ -131,23 +116,8 @@ function renderPhase2(): void {
     ui.timer.innerText = 'Manager Status: Stable';
   }
 
-  const typistCost = getGeometricCost(BASE_TYPIST_COST, 1.5, state.typistLevel);
-  ui.typistBadge.innerText       = String(state.typistLevel);
-  ui.typistCostDisplay.innerText = formatComma(typistCost);
-  ui.btnUpgradeTypist.disabled   = state.credibility < typistCost;
-
-  const courierCost = getGeometricCost(BASE_COURIER_COST, 1.5, state.courierLevel);
-  ui.courierBadge.innerText       = String(state.courierLevel);
-  ui.courierCostDisplay.innerText = formatComma(courierCost);
-  ui.btnUpgradeCourier.disabled   = state.credibility < courierCost;
-
-  if (state.procurementUnlocked) {
-    ui.btnUpgradeProcurement.disabled    = true;
-    ui.procurementStatusDisplay.innerText = 'Integrated';
-  } else {
-    ui.btnUpgradeProcurement.disabled    = state.credibility < PROCURE_FIXED_COST;
-    ui.procurementStatusDisplay.innerText = 'Cost: 100 Creds';
-  }
+  const q = getCurrentQuestion();
+  if (q) ui.mathQuestionText.innerText = q.text;
 }
 
 function renderGoals(): void {

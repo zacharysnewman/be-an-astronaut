@@ -27,34 +27,22 @@ export const state: GameState = {
   providerPriceIndex: 0,
 
   level: 1,
-  credibility: 0.0,
+  customerPoints: 0.0,
   approval: 50.0,
-  reports: 0.0,
-  paper: 10.0,
-
-  typistLevel: 0,
-  courierLevel: 0,
-  procurementUnlocked: false,
-
-  currentPaperPrice: 0.30,
   lastComplimentTime: null,
   emails: [],
   macrofirmApplied: false,
   indebtPromoSent: false,
 };
 
-export let lastTimestamp        = performance.now();
-export let paperPriceTimer      = 0.0;
-export let cloudSaveTimer       = 0.0;
-export let warningThrottleTimer = 0.0;
-export let moneyDisplayTimer    = 0.0;
+export let lastTimestamp     = performance.now();
+export let cloudSaveTimer    = 0.0;
+export let moneyDisplayTimer = 0.0;
 export let displayedMoney       = state.money;
 export let totalAppsSubmitted   = 0.0;
 
-export function setLastTimestamp(v: number): void        { lastTimestamp = v; }
-export function setPaperPriceTimer(v: number): void      { paperPriceTimer = v; }
-export function setCloudSaveTimer(v: number): void       { cloudSaveTimer = v; }
-export function setWarningThrottleTimer(v: number): void { warningThrottleTimer = v; }
-export function setMoneyDisplayTimer(v: number): void    { moneyDisplayTimer = v; }
+export function setLastTimestamp(v: number): void    { lastTimestamp = v; }
+export function setCloudSaveTimer(v: number): void   { cloudSaveTimer = v; }
+export function setMoneyDisplayTimer(v: number): void { moneyDisplayTimer = v; }
 export function setDisplayedMoney(v: number): void       { displayedMoney = v; }
 export function addTotalAppsSubmitted(v: number): void   { totalAppsSubmitted += v; }
