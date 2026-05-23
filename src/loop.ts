@@ -2,10 +2,11 @@ import type { Phase } from './types';
 import { EFFICIENCY_TIER_MULTS } from './constants';
 import { state } from './state';
 import { createIndebtPromoEmail } from './emails';
+import { initMathQuestion } from './math';
 import {
-  lastTimestamp, paperPriceTimer, cloudSaveTimer, warningThrottleTimer,
+  lastTimestamp, cloudSaveTimer,
   moneyDisplayTimer,
-  setLastTimestamp, setPaperPriceTimer, setCloudSaveTimer, setWarningThrottleTimer,
+  setLastTimestamp, setCloudSaveTimer,
   addTotalAppsSubmitted,
   setMoneyDisplayTimer, setDisplayedMoney,
 } from './state';
@@ -18,6 +19,7 @@ export function transitionToPhase(target: Phase): void {
   if (target === 2) {
     state.phase = 2;
     state.approval = 50.0;
+    initMathQuestion();
     ui.bankruptcyOverlay.classList.add('hidden');
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
     switchTab('macrofirm');
@@ -59,34 +61,8 @@ function tickPhase1(dt: number): void {
 function tickPhase2(dt: number): void {
   state.money += (state.level * 0.02) * dt;
 
-  const typistDraftRate = state.typistLevel * 2.0;
-  const possibleDrafts = Math.min(typistDraftRate * dt, state.paper);
-  if (possibleDrafts > 0) {
-    state.paper -= possibleDrafts;
-    state.reports += possibleDrafts;
-  } else if (state.paper <= 0 && state.typistLevel > 0) {
-    if (warningThrottleTimer <= 0) {
-      setWarningThrottleTimer(4.0);
-    }
-  }
-
-  const courierSubRate = state.courierLevel * 2.0;
-  const possibleSubmissions = Math.min(courierSubRate * dt, state.reports);
-  if (possibleSubmissions > 0) {
-    state.reports -= possibleSubmissions;
-    state.credibility += possibleSubmissions * 5.0;
-  }
-
-  state.credibility -= 1.0 * dt;
-  if (state.credibility < 0.0) state.credibility = 0.0;
-
   state.approval -= 0.5 * dt;
   if (state.approval < 0.0) state.approval = 0.0;
-
-  if (state.procurementUnlocked && state.paper <= 0.02 && state.money >= state.currentPaperPrice) {
-    state.money -= state.currentPaperPrice;
-    state.paper += 10.0;
-  }
 }
 
 export function mainLoop(timestamp: number): void {
@@ -98,22 +74,11 @@ export function mainLoop(timestamp: number): void {
   tickPhase1(dt);
   if (state.phase >= 2) tickPhase2(dt);
 
-  setPaperPriceTimer(paperPriceTimer + dt);
-  if (paperPriceTimer >= 1.0) {
-    setPaperPriceTimer(paperPriceTimer - 1.0);
-    const rollState = Math.floor(Math.random() * 3);
-    const priceVariation = 0.01 + (Math.random() * 0.03);
-    if (rollState === 0)      state.currentPaperPrice = Math.min(0.50, state.currentPaperPrice + priceVariation);
-    else if (rollState === 1) state.currentPaperPrice = Math.max(0.10, state.currentPaperPrice - priceVariation);
-  }
-
   setCloudSaveTimer(cloudSaveTimer + dt);
   if (cloudSaveTimer >= 15.0) {
     setCloudSaveTimer(cloudSaveTimer - 15.0);
     triggerCloudSave();
   }
-
-  if (warningThrottleTimer > 0) setWarningThrottleTimer(warningThrottleTimer - dt);
 
   setMoneyDisplayTimer(moneyDisplayTimer + dt);
   if (moneyDisplayTimer >= 1.0) {

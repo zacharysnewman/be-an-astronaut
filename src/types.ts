@@ -36,14 +36,8 @@ export interface GameState {
   bliplyMultiplier:     number;
   providerPriceIndex:   number;
   level:                number;
-  credibility:          number;
+  customerPoints:       number;
   approval:             number;
-  reports:              number;
-  paper:                number;
-  typistLevel:          number;
-  courierLevel:         number;
-  procurementUnlocked:  boolean;
-  currentPaperPrice:    number;
   lastComplimentTime:   number | null;
   emails:               Email[];
   macrofirmApplied:     boolean;

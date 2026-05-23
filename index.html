@@ -42,8 +42,7 @@
             <button id="btn-debug-inject-money">+$1,000 Cash</button>
             <button id="btn-debug-inject-apps">+1,000 Apply Credits</button>
             <button id="btn-debug-inject-unread">+1,000 Applications</button>
-            <button id="btn-debug-inject-creds">+500 Creds</button>
-            <button id="btn-debug-inject-paper">+100 Paper Sheets</button>
+            <button id="btn-debug-inject-customer-points">+500 Customer Points</button>
             <br><br>
             <br>
             <i>Intro Screen:</i><br>
@@ -245,45 +244,26 @@
                 <button id="btn-lunch" class="btn-inline hidden">Take Boss to Lunch</button>
             </div>
 
-            <h2 class="section-title">Manufacturing &amp; Logistics</h2>
+            <h2 class="section-title">Help Desk</h2>
 
-            <div class="stat-row">
-                Paper Inventory: <span id="paper-display">10</span> sheets
-                <button id="btn-paper" class="btn-inline">Buy Paper</button>
-                <span>Cost: <span id="paper-cost-display">$0.30</span></span>
+            <div class="stat-row">Customer Points: <span id="customer-points-display">0</span></div>
+
+            <div class="retro-box">
+                <div id="math-question-text">Loading question...</div>
+                <div id="math-feedback" class="hidden"></div>
             </div>
 
-            <div class="stat-row">
-                Reports Drafted: <span id="reports-display">0</span>
-                <span id="report-rate-display" class="bold good"></span>
-            </div>
-
-            <div class="stat-row">
-                Staff Credibility: <span id="perf-display">0</span>
-            </div>
-
-            <div class="stat-row stat-row-spaced">
-                <button id="btn-write" class="btn-inline">Write Report</button>
-                <button id="btn-submit" class="btn-inline" disabled>Submit Report</button>
-            </div>
-
-            <div id="hr-deck-card">
-                <h2 class="section-title">Human Resources</h2>
-
-                <div class="stat-row">
-                    <button id="btn-upgrade-typist" class="btn-inline">Hire Typist</button>
-                    Level: <span id="typist-level-badge">0</span> | Cost: <span id="typist-cost-display">125</span> Creds
-                </div>
-
-                <div class="stat-row">
-                    <button id="btn-upgrade-courier" class="btn-inline">Deploy Courier</button>
-                    Level: <span id="courier-level-badge">0</span> | Cost: <span id="courier-cost-display">150</span> Creds
-                </div>
-
-                <div id="procurement-upgrade-row" class="stat-row">
-                    <button id="btn-upgrade-procurement" class="btn-inline">Execute Procurement Script</button>
-                    <span id="procurement-status-display">Cost: 100 Creds</span>
-                </div>
+            <div id="math-keypad">
+                <button class="btn-inline" data-digit="0">0</button>
+                <button class="btn-inline" data-digit="1">1</button>
+                <button class="btn-inline" data-digit="2">2</button>
+                <button class="btn-inline" data-digit="3">3</button>
+                <button class="btn-inline" data-digit="4">4</button>
+                <button class="btn-inline" data-digit="5">5</button>
+                <button class="btn-inline" data-digit="6">6</button>
+                <button class="btn-inline" data-digit="7">7</button>
+                <button class="btn-inline" data-digit="8">8</button>
+                <button class="btn-inline" data-digit="9">9</button>
             </div>
         </div>
 
